@@ -11,7 +11,7 @@ const MUST_LOG = process.env.MUST_LOG || 0;
 const PORT = process.env.PORT || 3001;
 const FIRST_SUPERADMIN = process.env.FIRST_SUPERADMIN || "loshenry2023@gmail.com";
 const EMAIL = process.env.EMAIL || "loshenry2023@gmail.com";
-const PASSWORD_EMAIL = process.env.PASSWORD_EMAIL || "zbca hpnf sire jglo";
+const PASSWORD_EMAIL = process.env.PASSWORD_EMAIL || "nswm kmyt rgdf pjry";
 const NODEMAILER_HOST = process.env.NODEMAILER_HOST || "smtp.gmail.com";
 const NODEMAILER_PORT = process.env.NODEMAILER_PORT || 465;
 
