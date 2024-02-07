@@ -15,6 +15,7 @@ const PASSWORD_EMAIL = process.env.PASSWORD_EMAIL || "nswm kmyt rgdf pjry";
 const NODEMAILER_HOST = process.env.NODEMAILER_HOST || "smtp.gmail.com";
 const NODEMAILER_PORT = process.env.NODEMAILER_PORT || 465;
 
+
 module.exports = {
   DB_USER,
   DB_PASSWORD,
