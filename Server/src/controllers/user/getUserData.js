@@ -76,6 +76,7 @@ const getUserData = async (req, res) => {
                 specialties: existingUser.Specialties,
                 createdAt: existingUserCompany.createdAt,
                 companyName: existingUserCompany.nameCompany,
+                imgCompany: existingUserCompany.imgCompany,
                 subscribedPlan: existingUserCompany.subscribedPlan,
                 expireAt: existingUserCompany.expireAt
             }
