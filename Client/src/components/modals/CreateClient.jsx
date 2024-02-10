@@ -112,7 +112,7 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
           token: client.token,
         }
         
-        const response = await axios.post(`${API_URL_BASE}/newclient`, data)
+        const response = await axios.post(`${API_URL_BASE}/v1/newclient`, data)
         
         if (response.data.created === "ok") {
             setSubmitLoader(false)

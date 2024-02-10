@@ -35,7 +35,7 @@ const ServicesTable = () => {
   const handleDelete = async () => {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/deleteservice/${serviceId}`,
+        `${API_URL_BASE}/v1/deleteservice/${serviceId}`,
         { token }
       );
       if (response.data.deleted === "ok") {

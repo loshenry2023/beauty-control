@@ -37,7 +37,7 @@ const SpecialtiesTable = ({ branches }) => {
   const handleDelete = async () => {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/deletespecialty/${specialtyId}`,
+        `${API_URL_BASE}/v1/deletespecialty/${specialtyId}`,
         { token }
       );
       if (response.data.deleted === "ok") {

@@ -138,7 +138,7 @@ const EditServiceModal = ({
       };
 
       const response = await axios.put(
-        `${API_URL_BASE}/service/${filaService.id}`,
+        `${API_URL_BASE}/v1/service/${filaService.id}`,
         data
       );
 

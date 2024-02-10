@@ -156,7 +156,7 @@ const DateDetail = () => {
 
     try {
       const response = await axios.put(
-        `${API_URL_BASE}/calendar/${appointmentId}`,
+        `${API_URL_BASE}/v1/calendar/${appointmentId}`,
         data
       );
     } catch (error) {}
@@ -209,7 +209,7 @@ const DateDetail = () => {
       };
 
       const response = await axios.post(
-        `${API_URL_BASE}/newhistoricproc`,
+        `${API_URL_BASE}/v1/newhistoricproc`,
         dateData
       );
       if (response.data.created === "ok") {

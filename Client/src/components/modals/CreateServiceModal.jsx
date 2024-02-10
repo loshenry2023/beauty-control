@@ -113,7 +113,7 @@ const CreateServiceModal = ({
           token: token,
         };
 
-        const response = await axios.post(`${API_URL_BASE}/service`, data);
+        const response = await axios.post(`${API_URL_BASE}/v1/service`, data);
 
         if (response.data.created === "ok") {
           setSubmitLoader(false)

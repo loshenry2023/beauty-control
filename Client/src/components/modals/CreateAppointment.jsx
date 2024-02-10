@@ -133,7 +133,7 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
                 token: token
             };
 
-            const response = await axios.post(`${API_URL_BASE}/newcalendar`, data);
+            const response = await axios.post(`${API_URL_BASE}/v1/newcalendar`, data);
 
             const place = dateInfo.branch.branchName === 'Restrepo' ? 'https://maps.app.goo.gl/mjDcG7ZvJjjW6HzGA' : 'https://maps.app.goo.gl/urGxSpTtibWLYTsF8'
             const facebook = 'https://www.facebook.com/lauravargas.cp/'
@@ -178,7 +178,7 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
 
                 })
                 setChosenClient({ name: "Elige", lastName: "cliente" })
-                axios.post(`${API_URL_BASE}/sendmail`, sendEmail);
+                axios.post(`${API_URL_BASE}/v1/sendmail`, sendEmail);
                 setRefrescarCita(!refrescarCita);
             } else {
                 setSubmitLoader(false)

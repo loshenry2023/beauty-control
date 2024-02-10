@@ -9,6 +9,7 @@ import UserDetail from "./views/UserDetail.jsx";
 import Agenda from "./views/Agenda.jsx";
 import SpecialistDate from "./views/SpecialistDate.jsx";
 import DevelopedBy from "./views/DevelopedBy/DevelopedBy.jsx";
+import SuperSuperAdminDashboard from "./views/SuperSuperAdminDashboard.jsx";
 
 import Consumables from "./views/Consumables.jsx";
 import ConsHistoryPrice from "./components/ConsHistoryPrice.jsx";
@@ -38,7 +39,8 @@ const {
   CLIENTSPROFILES,
   DATEDETAIL,
   SPECIALISTMONITORING,
-  DEVELOPEDBY
+  DEVELOPEDBY,
+  SSADMIN
 } = getParamsEnv();
 
 const App = () => {
@@ -62,6 +64,7 @@ const App = () => {
         <Route path="historyprice/:productId" element={<ConsHistoryPrice />} />
         <Route path="*" element={<Error />} />
         <Route path="controlTables" element={<ControlTables />} />
+        <Route path={SSADMIN} element={<SuperSuperAdminDashboard />} />
       </Routes>
     </div>
   );

@@ -98,7 +98,7 @@ const CreateSpecialtyModal = ({
       };
   
       const response = await axios.put(
-        `${API_URL_BASE}/specialty/${filaSpecialty.id}`,
+        `${API_URL_BASE}/v1/specialty/${filaSpecialty.id}`,
         data
       );
   

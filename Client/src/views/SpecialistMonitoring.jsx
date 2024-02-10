@@ -87,7 +87,7 @@ const SpecialistMonitoring = () => {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `${API_URL_BASE}/getbalance`,
+          `${API_URL_BASE}/v1/getbalance`,
           filterDate
         );
         setSpecialsit(response.data);

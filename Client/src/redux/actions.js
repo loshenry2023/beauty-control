@@ -68,7 +68,7 @@ export const getcalendarcount = (calendarData) => {
   return async function (dispatch) {
     try {
       const response = await axios.post(
-        API_URL_BASE + "/getcalendarcount",
+        API_URL_BASE + "/v1/getcalendarcount",
         calendarData
       );
       return dispatch({
@@ -92,7 +92,7 @@ export const getcalendarcount = (calendarData) => {
 export const getBranches = (token) => {
   return async function (dispatch) {
     try {
-      const response = await axios.post(API_URL_BASE + "/branches", token);
+      const response = await axios.post(API_URL_BASE + "/v1/branches", token);
       return dispatch({
         type: GET_BRANCHES,
         payload: response.data,
@@ -114,7 +114,7 @@ export const getBranches = (token) => {
 export const getSpecialties = (token) => {
   return async function (dispatch) {
     try {
-      const response = await axios.post(API_URL_BASE + "/specialties", token);
+      const response = await axios.post(API_URL_BASE + "/v1/specialties", token);
       return dispatch({
         type: GET_SPECIALTIES,
         payload: response.data,
@@ -136,7 +136,7 @@ export const getSpecialties = (token) => {
 export const getServices = (token) => {
   return async function (dispatch) {
     try {
-      const response = await axios.post(API_URL_BASE + "/getservices", token);
+      const response = await axios.post(API_URL_BASE + "/v1/getservices", token);
       return dispatch({
         type: GET_SERVICES,
         payload: response.data,
@@ -166,7 +166,7 @@ export const getClients = (
   birthdaysMonth,
   token
 ) => {
-  const endPoint = API_URL_BASE + "/getclients?";
+  const endPoint = API_URL_BASE + "/v1/getclients?";
   return async function (dispatch) {
     try {
       const { data } = await axios.post(
@@ -201,7 +201,7 @@ export const getClientId = (id, token) => {
   return async function (dispatch) {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/getclient/${id}`,
+        `${API_URL_BASE}/v1/getclient/${id}`,
         token
       );
       return dispatch({
@@ -240,7 +240,7 @@ export const getUsers = (
   createDateStart,
   token
 ) => {
-  const endPoint = API_URL_BASE + "/users?";
+  const endPoint = API_URL_BASE + "/v1/users?";
   return async function (dispatch) {
     try {
       const { data } = await axios.post(
@@ -274,7 +274,7 @@ export const getUsers = (
 };
 
 export const getspecialists = (branchWorking, token) => {
-  const endPoint = API_URL_BASE + "/specialists?";
+  const endPoint = API_URL_BASE + "/v1/specialists?";
   return async function (dispatch) {
     try {
       const { data } = await axios.post(
@@ -301,7 +301,7 @@ export const getspecialists = (branchWorking, token) => {
 };
 
 export const getCalendar = (branch, dateFrom, dateTo, userId, token) => {
-  const endPoint = API_URL_BASE + "/getcalendar?";
+  const endPoint = API_URL_BASE + "/v1/getcalendar?";
   return async function (dispatch) {
     try {
       const { data } = await axios.post(
@@ -343,7 +343,7 @@ export const getUserId = (id, token) => {
   return async function (dispatch) {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/userdetails/${id}`,
+        `${API_URL_BASE}/v1/userdetails/${id}`,
         token
       );
       return dispatch({
@@ -368,7 +368,7 @@ export const deleteUser = (id, token) => {
   return async function (dispatch) {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/deleteuserdata/${id}`,
+        `${API_URL_BASE}/v1/deleteuserdata/${id}`,
         { token }
       );
       return dispatch({
@@ -393,7 +393,7 @@ export const deleteUser = (id, token) => {
 export const setLogout = (token) => {
   return async function (dispatch) {
     try {
-      const response = await axios.post(API_URL_BASE + "/logoutuser", {
+      const response = await axios.post(API_URL_BASE + "/v1/logoutuser", {
         token,
       });
       return dispatch({
@@ -412,7 +412,7 @@ export const setLogout = (token) => {
 export const getBalance = (balance) => {
   return async function (dispatch) {
     try {
-      const { data } = await axios.post(API_URL_BASE + "/getbalance", balance);
+      const { data } = await axios.post(API_URL_BASE + "/v1/getbalance", balance);
 
       return dispatch({
         type: GET_BALANCE,
@@ -478,7 +478,7 @@ export const getProducts = (
   return async (dispatch) => {
     dispatch(getProductsRequest());
     try {
-      const response = await axios.post(API_URL_BASE + "/products", {
+      const response = await axios.post(API_URL_BASE + "/v1/products", {
         productName,
         description,
         code,
@@ -528,7 +528,7 @@ export const createProduct = (newProductData) => {
       const state = getState();
 
       const response = await axios.post(
-        API_URL_BASE + "/productsCreate",
+        API_URL_BASE + "/v1/productsCreate",
         newProductData
       );
       dispatch(createProductSuccess(response.data));
@@ -552,7 +552,7 @@ export const editProduct = (productId, updatedProduct) => {
 
     try {
       const response = await axios.put(
-        `${API_URL_BASE}/products/${productId}`,
+        `${API_URL_BASE}/v1/products/${productId}`,
         updatedProduct,
         {
           headers: {
@@ -601,7 +601,7 @@ export const getProductPricesHistory = (productId) => async (dispatch) => {
   try {
     dispatch(getProductPricesHistoryRequest());
     const response = await axios.get(
-      API_URL_BASE + `/products/${productId}/prices-history`
+      API_URL_BASE + `/v1/products/${productId}/prices-history`
     );
     dispatch(getProductPricesHistorySuccess(response.data));
   } catch (error) {
@@ -641,7 +641,7 @@ export const updateProductPrice = (productId, newPrice) => {
 
     try {
       const response = await axios.put(
-        API_URL_BASE + `/products/${productId}/price`,
+        API_URL_BASE + `/v1/products/${productId}/price`,
         {
           newPrice,
         }
@@ -670,7 +670,7 @@ export const updateProductPrice = (productId, newPrice) => {
 export const getPayMethods = (token) => {
   return async function (dispatch) {
     try {
-      const response = await axios.post(API_URL_BASE + "/payments", token);
+      const response = await axios.post(API_URL_BASE + "/v1/payments", token);
       return dispatch({
         type: GET_PAY_METHODS,
         payload: response.data,

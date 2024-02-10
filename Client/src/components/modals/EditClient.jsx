@@ -137,7 +137,7 @@ const EditClient = ({
         };
 
         const response = await axios.put(
-          `${API_URL_BASE}/client/${detailId}`,
+          `${API_URL_BASE}/vi/client/${detailId}`,
           data
         );
 

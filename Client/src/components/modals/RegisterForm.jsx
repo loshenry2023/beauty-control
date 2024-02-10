@@ -137,7 +137,7 @@ function RegisterForm({
           comission: userData.commission,
           token: tokenID,
         };
-        const response = await axios.post(`${API_URL_BASE}/newuser`, data);
+        const response = await axios.post(`${API_URL_BASE}/v1/newuser`, data);
 
         const sendEmail = {
           origin: user.userName,
@@ -170,7 +170,7 @@ function RegisterForm({
             setDisableSubmit(false);
             closeModal();
 
-            axios.post(`${API_URL_BASE}/sendmail`, sendEmail);
+            axios.post(`${API_URL_BASE}/v1/sendmail`, sendEmail);
           }, 3000);
         } else {
           setDisableSubmit(false);

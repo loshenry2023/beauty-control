@@ -89,7 +89,7 @@ const CreateSpecialtyModal = ({
         token: token,
       };
 
-      const response = await axios.post(`${API_URL_BASE}/specialty`, data);
+      const response = await axios.post(`${API_URL_BASE}/v1/specialty`, data);
 
       if (response.data.created === "ok") {
         setSubmitLoader(false)

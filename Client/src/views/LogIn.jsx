@@ -14,7 +14,7 @@ import { AiFillYahoo } from "react-icons/ai";
 
 // Variables de entorno:
 import getParamsEnv from "../functions/getParamsEnv";
-const { ROOT, HOME, AGENDA, API_URL_BASE, BRANCH } = getParamsEnv();
+const { ROOT, HOME, AGENDA, API_URL_BASE, BRANCH, SSADMIN } = getParamsEnv();
 
 //Firebase
 import {
@@ -34,16 +34,22 @@ const LogIn = () => {
 
   useEffect(() => {
     if (role === "superAdmin" || role === "admin" || role === "especialista") {
+      
       if (branches.length == 1) {
         dispatch(setBranch({ ...branches[0] }));
         if (role === "superAdmin") {
           navigate(HOME)
-        } else[
+        } else {
           navigate(AGENDA)
-        ]
+      }
       } else {
+        
         navigate(BRANCH)
       }
+    } else if (role === "superSuperAdmin") {
+      console.log("entrando al hola")
+      navigate(SSADMIN)
+    
     }
   }, [role]);
 
@@ -75,7 +81,7 @@ const LogIn = () => {
         idUser: idToken, // mando el gigantesco token real
       };
       const retrieveUser = await axios.post(
-        API_URL_BASE + "/userdata",
+        API_URL_BASE + "/v1/userdata",
         dataToValidate
       );
       const userData = retrieveUser.data;
@@ -125,7 +131,7 @@ const LogIn = () => {
       };
 
       const retrieveUser = await axios.post(
-        API_URL_BASE + "/userdata",
+        API_URL_BASE + "/v1/userdata",
         dataToValidate
       );
 
@@ -135,6 +141,7 @@ const LogIn = () => {
       setBranches(branches);
       setRole(role);
       dispatch(getToken(accessToken));
+      console.log(userData, "userdata")
     } catch (error) {
       if (error.message.includes("404")) {
         toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)

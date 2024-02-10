@@ -89,7 +89,7 @@ const CreatePayMethodModal = ({
         token: token,
       };
 
-      const response = await axios.post(`${API_URL_BASE}/payment`, data);
+      const response = await axios.post(`${API_URL_BASE}/v1/payment`, data);
 
       if (response.data.created === "ok") {
         setSubmitLoader(false)

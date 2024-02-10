@@ -95,7 +95,7 @@ const Calendar = ({
   const handleDelete = async () => {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/deletecalendar/${citaId}`,
+        `${API_URL_BASE}/v1/deletecalendar/${citaId}`,
         { token }
       );
       if (response.data.deleted === "ok") {

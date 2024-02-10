@@ -73,7 +73,7 @@ function NewConsumableModal({ onClose }) {
 
       try {
         const response = await axios.post(
-          API_URL_BASE + "/products",
+          API_URL_BASE + "/v1/products",
           newConsumable
         );
 

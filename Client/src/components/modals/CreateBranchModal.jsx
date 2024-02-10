@@ -75,7 +75,7 @@ const CreateBranchModal = ({
         token: token,
       };
 
-      const response = await axios.post(`${API_URL_BASE}/branch`, data);
+      const response = await axios.post(`${API_URL_BASE}/v1/branch`, data);
 
       if (response.data.created === "ok") {
         setSubmitLoader(false)

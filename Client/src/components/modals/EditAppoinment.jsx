@@ -290,7 +290,7 @@ const EditAppointment = ({ setShowEditAppointment, setSpecialty, token, date, se
       setSubmitLoader(true)
 
 
-      const response = await axios.put(`${API_URL_BASE}/calendar/${date.id}`, data);
+      const response = await axios.put(`${API_URL_BASE}/v1/calendar/${date.id}`, data);
 
       const place = address.includes("Restrepo") ? 'https://maps.app.goo.gl/mjDcG7ZvJjjW6HzGA' : 'https://maps.app.goo.gl/urGxSpTtibWLYTsF8'
       const facebook = 'https://www.facebook.com/lauravargas.cp/'
@@ -314,7 +314,7 @@ const EditAppointment = ({ setShowEditAppointment, setSpecialty, token, date, se
           setDisableSubmit(false)
         }, 3000);
 
-        axios.post(`${API_URL_BASE}/sendmail`, sendEmail)
+        axios.post(`${API_URL_BASE}/v1/sendmail`, sendEmail)
         setRefrescarCita(!refrescarCita);
       } else {
         setDisableSubmit(false)

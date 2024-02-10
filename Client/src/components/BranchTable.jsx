@@ -36,7 +36,7 @@ const BranchTable = ({ branches }) => {
   const handleDelete = async () => {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/deletebranch/${branchId}`,
+        `${API_URL_BASE}/v1/deletebranch/${branchId}`,
         { token }
       );
       if (response.data.deleted === "ok") {

@@ -77,7 +77,7 @@ const ClientInfo = () => {
   const deleteConfirmed = async (confirmed) => {
     setShowDeleteConfirmation(true);
     if (confirmed) {
-      const deletedClient = await axios.post(`${API_URL_BASE}/deleteclient/${detailId}`, { token: token })
+      const deletedClient = await axios.post(`${API_URL_BASE}/v1/deleteclient/${detailId}`, { token: token })
       toast.success("Cliente eliminado correctamente");
       setTimeout(() => {
         navigate(CLIENTSPROFILES);

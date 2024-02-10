@@ -29,7 +29,7 @@ useEffect(() => {
       };
     
       const retrieveUser = await axios.post(
-        API_URL_BASE + "/userdata",
+        API_URL_BASE + "/v1/userdata",
         userData
       );
 

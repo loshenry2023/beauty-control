@@ -99,7 +99,7 @@ const EditPayMethodModal = ({
       };
 
       const response = await axios.put(
-        `${API_URL_BASE}/payment/${filaPayMethod.id}`,
+        `${API_URL_BASE}/v1/payment/${filaPayMethod.id}`,
         data
       );
 

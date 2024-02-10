@@ -149,7 +149,7 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                     token: tokenID
                 };
 
-                const response = await axios.put(`${API_URL_BASE}/edituserdata/${userId.id}`, data);
+                const response = await axios.put(`${API_URL_BASE}/v1/edituserdata/${userId.id}`, data);
 
                 if (response.data.updated === "ok") {
                     setSubmitLoader(false)

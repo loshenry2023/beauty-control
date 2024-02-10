@@ -4,6 +4,7 @@ export default function getParamsEnv() {
   const LOGIN = import.meta.env.VITE_LOGIN || "/login";
   const BRANCH = import.meta.env.VITE_BRANCH || "/branch";
   const HOME = import.meta.env.VITE_HOME || "/home";
+  const SSADMIN = import.meta.env.VITE_SSADMIN || "/organizationControl"
   const USERPROFILES = import.meta.env.VITE_PROFILES || "/userProfiles";
   const AGENDA = import.meta.env.AGENDA || "/agenda";
   const USERDETAILBASE = import.meta.env.VITE_DETAIL_BASE || "/detail";
@@ -12,7 +13,7 @@ export default function getParamsEnv() {
   const CLIENTDETAIL = import.meta.env.VITE_CLIENT_DETAIL || "/client-detail/:id";
   const CLIENTSPROFILES = import.meta.env.VITE_CLIENTS_PROFILES || "/clientsProfiles";
   const TERMSANDPRIVACY = import.meta.env.VITE_TERMS_AND_PRIVACY || "/terms-and-privacy";
-  const API_URL_BASE = import.meta.env.VITE_API_URL_BASE || "http://localhost:3001/laura-vargas";
+  const API_URL_BASE = import.meta.env.VITE_API_URL_BASE || "http://localhost:3001/beautycontrol";
   const DATEDETAIL = import.meta.env.VITE_DATE_DETAIL || "/dateDetail/:id";
   const DATEDETAILBASE = import.meta.env.VITE_DATE_DETAIL_BASE || "/dateDetail";
   const SPECIALISTMONITORING = import.meta.env.VITE_SPECIALIST_MONITORING || "/specialistMonitoring";
@@ -67,6 +68,7 @@ export default function getParamsEnv() {
     EDITPRODUCT,
     HISTORYPRICEBASE,
     EDITPRODUCTBASE,
-    DEVELOPEDBY
+    DEVELOPEDBY,
+    SSADMIN
   };
 }
