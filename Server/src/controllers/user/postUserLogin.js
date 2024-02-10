@@ -18,7 +18,6 @@ const postUserLogin = async (req, res) => {
             where: { userName: { [Op.iLike]: nameLowercase } },
         });
         if (!existingUserCompany) {
-            //showLog(`00`);
             showLog(`postUserLogin: user ${nameUser} not found`);
             return res.status(404).send(`Usuario ${nameUser} no encontrado.`);
         }
@@ -27,6 +26,9 @@ const postUserLogin = async (req, res) => {
             showLog(`postUserLogin: user ${nameUser}: the subscription expired`);
             return res.status(402).send(`La suscripción expiró.`);
         }
+        // Actualizo la marca que indica que la próxima vez ya no será su primer ingreso:
+        const isFirst = (existingUserCompany.firstLogin === "0") ? "0" : "1";
+        existingUserCompany.firstLogin = "0";
         // Actualizo el token:
         existingUserCompany.token = idUser;
         // Establezco la hora de login, para calcular el tiempo de inactividad en los próximos llamados:
@@ -39,6 +41,7 @@ const postUserLogin = async (req, res) => {
                 id: existingUserCompany.id,
                 userName: existingUserCompany.userName,
                 role: "superSuperAdmin",
+                firstLogin: isFirst,
                 createdAt: existingUserCompany.createdAt,
                 companySubscribedPlan: existingUserCompany.subscribedPlan,
                 companyName: existingUserCompany.nameCompany,
@@ -79,6 +82,7 @@ const postUserLogin = async (req, res) => {
             name: existingUser.name,
             lastName: existingUser.lastName,
             role: existingUser.role,
+            firstLogin: isFirst,
             createdAt: existingUser.createdAt,
             companySubscribedPlan: existingUserCompany.subscribedPlan,
             companyName: existingUserCompany.nameCompany,
