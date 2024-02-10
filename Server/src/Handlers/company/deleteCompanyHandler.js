@@ -1,6 +1,7 @@
 const deleteReg = require("../../controllers/deleteReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
+const { DB_NAME } = require("../../functions/paramsEnv");
 
 const deleteCompanyHandler = async (req, res) => {
   try {
@@ -17,6 +18,7 @@ const deleteCompanyHandler = async (req, res) => {
       return res.status(401).send(`Sin permiso.`);
     }
     if (!nameCompany) { throw Error("Faltan datos"); }
+    if (nameCompany === DB_NAME) { throw Error("Sin permiso"); }
 
     const data = {
       tableName: "",
