@@ -1,18 +1,16 @@
 // ! Obtiene el balance y la comisión, según los datos de ingreso. Este proceso corre por partes.
-const {
-  User,
-  HistoryService,
-  Incoming,
-  Service,
-  Payment,
-} = require("../../DB_connection");
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const showLog = require("../../functions/showLog");
 const { Op } = require("sequelize");
 
-const getRegBalance = async (dataQuery) => {
+const getRegBalance = async (dataQuery, dbName) => {
   const { branchName, dateFrom, dateTo, idUser, idPayment, idService } =
     dataQuery;
   showLog(`getRegBalance`);
+
+  const { conn, User, HistoryService, Incoming, Service, Payment } = await connectDB(dbName);
+  await conn.sync({ alter: true });
+
   let dFrom = "";
   let dTo = "";
   if (dateFrom) {
@@ -124,10 +122,8 @@ const getRegBalance = async (dataQuery) => {
     // Paso 4: Ya tengo todos los datos necesarios. Recorro cada usuario y le asigno los procedimientos que coincidan en su historial:
     let serviceOut = []; // para formar el objeto de cada procedimiento
     let servicesOut = []; // para ir acumulando los procedimientos
-
     let paymentOut = []; // para formar el objeto de cada medio de pago
     let paymentsOut = []; // para ir acumulando los medios de pago
-
     let historyOut = {
       // para formar el objeto de cada usuario
       userID: "",
@@ -142,7 +138,6 @@ const getRegBalance = async (dataQuery) => {
 
     for (const user of userInfo) {
       // Busco todos los registros en el historial para ese usuario, que coincidan con los procedimientos, medios de pago, sede y rango de fechas solicitados:
-
       const regService = await HistoryService.findAll({
         attributes: ["date", "branchName", "idUser", "serviceName"],
         where: {
@@ -176,7 +171,6 @@ const getRegBalance = async (dataQuery) => {
 
       for (const service of regService) {
         // Voy armando el array de procedimientos:
-
         const match = serviceInfo.find(
           (svice) => svice.serviceName === service.serviceName
         );
@@ -189,7 +183,6 @@ const getRegBalance = async (dataQuery) => {
         servicesOut.push(serviceOut);
       }
       paymentsOut = [];
-
       for (const service of regService) {
         // Voy armando el array de pagos:
         if (service.Incomings && service.Incomings.length > 0) {
@@ -208,7 +201,6 @@ const getRegBalance = async (dataQuery) => {
           });
         }
       }
-
       // Voy armando el array final de salida:
       historyOut = {
         userID: user.id,
@@ -221,9 +213,14 @@ const getRegBalance = async (dataQuery) => {
       };
       usersWithHistory.push(historyOut);
     }
+    await conn.close(); // cierro la conexión
     showLog(`getRegBalance OK`);
     return { count: userCount, rows: usersWithHistory };
   } catch (err) {
+    // Cierro la conexión:
+    if (conn) {
+      await conn.close();
+    }
     showLog(`getRegBalance -> error: ${err.message}`);
     return err.message;
   }

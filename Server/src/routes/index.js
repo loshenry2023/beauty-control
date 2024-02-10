@@ -1,129 +1,139 @@
-//! Controllers
+//? Controllers
 const router = require("express").Router();
 // Únicamente para el deploy:
 const getMain = require("../controllers/getMain");
-// Usuarios:
+//! Empresas:
+const postCompanyHandler = require("../Handlers/company/postCompanyHandler");
+const putCompanyHandler = require("../Handlers/company/putCompanyHandler");
+const putCompanysHandler = require("../Handlers/company/putCompanysHandler");
+const getCompanyHandler = require("../Handlers/company/getCompanyHandler");
+const deleteCompanyHandler = require("../Handlers/company/deleteCompanyHandler");
+//! Usuarios:
 const postUserHandler = require("../Handlers/user/postUserHandler");
 const putUserHandler = require("../Handlers/user/putUserHandler");
 const deleteUserHandler = require("../Handlers/user/deleteUserHandler");
-const usersHandler = require("../Handlers/user/usersHandler");
+const getUsersHandler = require("../Handlers/user/getUsersHandler");
 const getUserData = require("../controllers/user/getUserData");
 const postUserLogin = require("../controllers/user/postUserLogin");
 const postUserLogout = require("../controllers/user/postUserLogout");
 const getCalendarCount = require("../controllers/user/getCalendarCount");
-// Espeialistas:
-const getSpecialists = require("../Handlers/user/getSpecialists");
-// Especialidades:
+const getSpecialistsHandler = require("../Handlers/user/getSpecialistsHandler");
+//! Especialidades:
 const postSpecialtyHandler = require("../Handlers/specialty/postSpecialtyHandler");
 const putSpecialtyHandler = require("../Handlers/specialty/putSpecialtyHandler");
 const deleteSpecialtyHandler = require("../Handlers/specialty/deleteSpecialtyHandler");
 const getSpecialtiesHandler = require("../Handlers/specialty/getSpecialtiesHandler");
-// Medios de pago:
+//! Medios de pago:
 const postPaymentHandler = require("../Handlers/payment/postPaymentHandler");
 const putPaymentHandler = require("../Handlers/payment/putPaymentHandler");
 const deletePaymentHandler = require("../Handlers/payment/deletePaymentHandler");
 const getPaymentsHandler = require("../Handlers/payment/getPaymentsHandler");
-// Sedes:
+//! Sedes:
 const postBranchHandler = require("../Handlers/branch/postBranchHandler");
 const putBranchHandler = require("../Handlers/branch/putBranchHandler");
 const deleteBranchHandler = require("../Handlers/branch/deleteBranchHandler");
 const getBranchHandler = require("../Handlers/branch/getBranchHandler");
-// Otros:
+//! Otros:
 const sendMail = require("../Handlers/mail/sendMailHandler");
-// Procedimientos:
+//! Procedimientos:
 const putServiceHandler = require("../Handlers/service/putServiceHandler");
 const deleteServiceHandler = require("../Handlers/service/deleteServiceHandler");
 const getServicesHandler = require("../Handlers/service/getServicesHandler");
 const postServiceHandler = require("../Handlers/service/postServiceHandler");
-// Clientes:
+//! Clientes:
 const postClientHandler = require("../Handlers/client/postClientHandler");
 const deleteClientHandler = require("../Handlers/client/deleteClientHandler");
 const putClientHandler = require("../Handlers/client/putClientHandler");
 const getClientHandler = require("../Handlers/client/getClientHandler");
 const getAllClientHandler = require("../Handlers/client/getAllClientHandler");
-// Histórico de procedimientos:
+//! Histórico de procedimientos:
 const postHistoricProcHandler = require("../Handlers/historicServices/postHistoricProcHandler");
 const getHistoricByClientHandler = require("../Handlers/historicServices/getHistoricByClientHandler");
 const getHistoricByUsertHandler = require("../Handlers/historicServices/getHistoricByUsertHandler");
-// Calendario:
+//! Calendario:
 const postCalendarHandler = require("../Handlers/calendar/postCalendarHandler");
 const deleteCalendarHandler = require("../Handlers/calendar/deleteCalendarHandler");
 const putCalendarHandler = require("../Handlers/calendar/putCalendarHandler");
 const getCalendarHandler = require("../Handlers/calendar/getCalendarHandler");
-// Categorías de gastos:
+//! Categorías de gastos:
 const postCatHandler = require("../Handlers/catGastos/postCatHandler");
 const putCatHandler = require("../Handlers/catGastos/putCatHandler");
 const deleteCatHandler = require("../Handlers/catGastos/deleteCatHandler");
 const getCatHandler = require("../Handlers/catGastos/getCatHandler");
-//inventario
-const productHandlers = require("../Handlers/products/productHandlers");
-// Balance y comisiones:
+//! inventario
+// const productHandlers = require("../Handlers/products/productHandlers");
+//! Balance y comisiones:
 const getBalance = require("../Handlers/balance/getBalance");
 
-//! Rutas
-// Usuarios:
-router.post("/newuser", postUserHandler); //  crea un usuario
-router.put("/edituserdata/:id", putUserHandler); //  edita un usuario
-router.post("/deleteuserdata/:id", deleteUserHandler); //  elimina un usuario
-router.post("/users", usersHandler); // obtiene y devuelve todos los usuarios
-router.post("/userdetails/:id", getUserData); // obtiene y devuelve los detalles de un usuario por id
-router.post("/userdata", postUserLogin); // obtiene los datos de un usuario para el login, registra el token y devuelve sus datos asociados
-router.post("/logoutuser", postUserLogout); // logout de usuario, borra el token registrado
-router.post("/getcalendarcount", getCalendarCount); // obtiene y devuelve la cantidad de citas para un usuario en una sede
-// Especialidades:
-router.post("/specialty", postSpecialtyHandler); //  crea una especialidad
-router.put("/specialty/:id", putSpecialtyHandler); //  edita una especialidad
-router.post("/deletespecialty/:id", deleteSpecialtyHandler); //  elimina una especialidad
-router.post("/specialties", getSpecialtiesHandler); // obtiene y devuelve todas las especialidades
-// Medios de pago:
-router.post("/payment", postPaymentHandler); //  crea un medio de pago
-router.put("/payment/:id", putPaymentHandler); //  edita un pago
-router.post("/deletepayment/:id", deletePaymentHandler); //  elimina un medio de pago
-router.post("/payments", getPaymentsHandler); // obtiene y devuelve todos los medios de pago
-// Sedes:
-router.post("/branch", postBranchHandler); // crea una sede
-router.put("/branch/:id", putBranchHandler); // edita una sede
-router.post("/deletebranch/:id", deleteBranchHandler); //  elimina una sede
-router.post("/branches", getBranchHandler); // obtiene y devuelve todas las sedes
-// Otras:
+//? Rutas
+//! Empresas:
+router.post("/v1/companyadmin", postCompanyHandler); // crea una nueva empresa
+router.put("/v1/companyadmin", putCompanyHandler); // edita una empresa
+router.put("/v1/companyadmins", putCompanysHandler); // edita y devuelve una empresa 
+router.post("/v1/companyadminlist", getCompanyHandler); //obtiene y devuelve todas las empresas
+router.post("/v1/companyadmindel", deleteCompanyHandler); // elimina una empresa
+//! Usuarios:
+router.post("/v1/newuser", postUserHandler); //  crea un usuario
+router.put("/v1/edituserdata/:id", putUserHandler); //  edita un usuario
+router.post("/v1/deleteuserdata/:id", deleteUserHandler); //  elimina un usuario
+router.post("/v1/users", getUsersHandler); // obtiene y devuelve todos los usuarios
+router.post("/v1/userdetails/:id", getUserData); // obtiene y devuelve los detalles de un usuario por id
+router.post("/v1/userdata", postUserLogin); // obtiene los datos de un usuario para el login, registra el token y devuelve sus datos asociados
+router.post("/v1/logoutuser", postUserLogout); // logout de usuario, borra el token registrado
+router.post("/v1/getcalendarcount", getCalendarCount); // obtiene y devuelve la cantidad de citas para un usuario en una sede
+router.post("/v1/specialists", getSpecialistsHandler); // obtiene todos los usuario con rol de especialista
+//! Especialidades:
+router.post("/v1/specialty", postSpecialtyHandler); //  crea una especialidad
+router.put("/v1/specialty/:id", putSpecialtyHandler); //  edita una especialidad
+router.post("/v1/deletespecialty/:id", deleteSpecialtyHandler); //  elimina una especialidad
+router.post("/v1/specialties", getSpecialtiesHandler); // obtiene y devuelve todas las especialidades
+//! Medios de pago:
+router.post("/v1/payment", postPaymentHandler); //  crea un medio de pago
+router.put("/v1/payment/:id", putPaymentHandler); //  edita un pago
+router.post("/v1/deletepayment/:id", deletePaymentHandler); //  elimina un medio de pago
+router.post("/v1/payments", getPaymentsHandler); // obtiene y devuelve todos los medios de pago
+//! Sedes:
+router.post("/v1/branch", postBranchHandler); // crea una sede
+router.put("/v1/branch/:id", putBranchHandler); // edita una sede
+router.post("/v1/deletebranch/:id", deleteBranchHandler); //  elimina una sede
+router.post("/v1/branches", getBranchHandler); // obtiene y devuelve todas las sedes
+//! Otras:
 router.get("/", getMain); // únicamente para el deploy
-router.post("/sendmail", sendMail); // envía un mail
-// Procedimientos:
-router.post("/service", postServiceHandler); //  crea un procedimiento
-router.put("/service/:id", putServiceHandler); //  edita un procedimiento
-router.post("/deleteservice/:id", deleteServiceHandler); //  elimina un procedimiento
-router.post("/getservices", getServicesHandler); // obtiene y devuelve todos los procedimientos
-// Clientes:
-router.post("/newclient", postClientHandler); //  crea un cliente
-router.put("/client/:id", putClientHandler); //  edita un cliente
-router.post("/deleteclient/:id", deleteClientHandler); //  elimina un cliente
-router.post("/getclient/:id", getClientHandler); // obtiene y devuelve los detalles de un cliente
-router.post("/getclients", getAllClientHandler); // obtiene y devuelve los datos principales de todos los clientes
-// Histórico de procedimientos:
-router.post("/newhistoricproc", postHistoricProcHandler); //  crea un registro en el histórico de procedimientos
-// registrar el id de cliente y llamar por params
-router.post("/gethistoricbyclient/:id", getHistoricByClientHandler); // obtiene y devuelve el histórico de los procedimientos. Filtra por client id
-router.post("/gethistoricbyuser/:id", getHistoricByUsertHandler); // obtiene y devuelve el histórico de los procedimientos. Filtra por usuario
-// Calendario:
-router.post("/newcalendar", postCalendarHandler); //  crea un evento en calendario
-router.put("/calendar/:id", putCalendarHandler); //  edita un evento en calendario
-router.post("/deletecalendar/:id", deleteCalendarHandler); //  elimina un evento en calendario
-router.post("/getcalendar", getCalendarHandler); // obtiene y devuelve todos los eventos en calendario. Filtra por fecha y por especialista por query
-// Categorías de gastos:
-router.post("/catgasto", postCatHandler); // crea una categoría
-router.put("/catgastos/:id", putCatHandler); // edita una categoría
-router.post("/deletecatgastos/:id", deleteCatHandler); //  elimina una categoría
-router.post("/catgastos", getCatHandler); // obtiene y devuelve todas las categorías
-// inventario:
-router.post("/products", productHandlers.getAllProductsHandler);
-router.get("/product-prices", productHandlers.getProductPrices);
-router.post("/productsCreate", productHandlers.createProduct);
-router.put("/products/:id", productHandlers.editProduct);
-router.put("/products/:id/price", productHandlers.updateProductPrice);
-router.get("/products/:productId/prices-history", productHandlers.getProductPricesHistory);
-// specialists:
-router.post("/specialists", getSpecialists); // obtiene todos los usuario con rol de especialista
-// Balance y comisiones:
-router.post("/getbalance", getBalance); // obtiene todos los usuarios para el balance y comisiones
+router.post("/v1/sendmail", sendMail); // envía un mail
+//! Procedimientos:
+router.post("/v1/service", postServiceHandler); //  crea un procedimiento
+router.put("/v1/service/:id", putServiceHandler); //  edita un procedimiento
+router.post("/v1/deleteservice/:id", deleteServiceHandler); //  elimina un procedimiento
+router.post("/v1/getservices", getServicesHandler); // obtiene y devuelve todos los procedimientos
+//! Clientes:
+router.post("/v1/newclient", postClientHandler); //  crea un cliente
+router.put("/v1/client/:id", putClientHandler); //  edita un cliente
+router.post("/v1/deleteclient/:id", deleteClientHandler); //  elimina un cliente
+router.post("/v1/getclient/:id", getClientHandler); // obtiene y devuelve los detalles de un cliente
+router.post("/v1/getclients", getAllClientHandler); // obtiene y devuelve los datos principales de todos los clientes
+//! Histórico de procedimientos:
+router.post("/v1/newhistoricproc", postHistoricProcHandler); //  crea un registro en el histórico de procedimientos
+//! registrar el id de cliente y llamar por params
+router.post("/v1/gethistoricbyclient/:id", getHistoricByClientHandler); // obtiene y devuelve el histórico de los procedimientos. Filtra por client id
+router.post("/v1/gethistoricbyuser/:id", getHistoricByUsertHandler); // obtiene y devuelve el histórico de los procedimientos. Filtra por usuario
+//! Calendario:
+router.post("/v1/newcalendar", postCalendarHandler); //  crea un evento en calendario
+router.put("/v1/calendar/:id", putCalendarHandler); //  edita un evento en calendario
+router.post("/v1/deletecalendar/:id", deleteCalendarHandler); //  elimina un evento en calendario
+router.post("/v1/getcalendar", getCalendarHandler); // obtiene y devuelve todos los eventos en calendario. Filtra por fecha y por especialista por query
+//! Categorías de gastos:
+router.post("/v1/catgasto", postCatHandler); // crea una categoría
+router.put("/v1/catgastos/:id", putCatHandler); // edita una categoría
+router.post("/v1/deletecatgastos/:id", deleteCatHandler); //  elimina una categoría
+router.post("/v1/catgastos", getCatHandler); // obtiene y devuelve todas las categorías
+//! Inventario:
+// router.post("/v1/products", productHandlers.getAllProductsHandler);
+// router.get("/v1/product-prices", productHandlers.getProductPrices);
+// router.post("/v1/productsCreate", productHandlers.createProduct);
+// router.put("/v1/products/:id", productHandlers.editProduct);
+// router.put("/v1/products/:id/price", productHandlers.updateProductPrice);
+// router.get("/v1/products/:productId/prices-history", productHandlers.getProductPricesHistory);
+//! Balance y comisiones:
+router.post("/v1/getbalance", getBalance); // obtiene todos los usuarios para el balance y comisiones
 
 module.exports = router;

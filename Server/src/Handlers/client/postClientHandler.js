@@ -1,4 +1,4 @@
-const { conn, Client } = require('../../DB_connection');
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const postReg = require("../../controllers/postReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -14,12 +14,29 @@ const postClientHandler = async (req, res) => {
       showLog(checked.mensaje);
       return res.status(checked.code).send(checked.mensaje);
     }
-    if (checked.role === "especialista") {
-      showLog(checked.role === "especialista" ? `Wrong role.` : `Wrong token.`);
+    if (checked.role === "especialista" || checked.role === "superSuperAdmin") {
+      showLog((checked.role === "especialista" || checked.role === "superSuperAdmin") ? `Wrong role.` : `Wrong token.`);
       return res.status(401).send(`Sin permiso.`);
     }
 
-    const resp = await postReg(Client, "Client", req.body, conn);
+    const { conn, Client } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+
+    const data = {
+      userLogged: checked.userName,
+      tableName: Client,
+      tableNameText: "Client",
+      data: req.body,
+      conn: conn,
+      tableName2: "",
+      tableName3: "",
+      tableName4: "",
+      tableName5: "",
+      dbName: checked.dbName,
+      nameCompany: checked.nameCompany,
+    }
+    const resp = await postReg(data);
+    await conn.close(); // cierro la conexión
 
     if (resp.created === 'ok') {
       showLog(`postClientHandler OK`);

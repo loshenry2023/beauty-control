@@ -1,5 +1,5 @@
 // ! Obtiene la cantidad de citas de un usuario para la fecha actual, en la sede indicada.
-const { User, Branch, Calendar } = require('../../DB_connection');
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
 const { Op } = require('sequelize');
@@ -15,11 +15,16 @@ const getCalendarCount = async (req, res) => {
             showLog(checked.mensaje);
             return res.status(checked.code).send(checked.mensaje);
         }
+        if (checked.role === "superSuperAdmin") {
+            showLog(`Wrong role.`);
+            return res.status(401).send(`Sin permiso.`);
+        }
+
         if (!branchID || !userID) { throw Error("Faltan datos"); }
         // Obtengo las sedes relacionadas y las citas que tiene reservadas en cada una para la fecha actual:
         const miDate = new Date();
         const currentDateWithoutTime = miDate.toISOString().slice(0, 10);
-        const appointments = await calendarPromises(branchID, currentDateWithoutTime, userID);
+        const appointments = await calendarPromises(branchID, currentDateWithoutTime, userID, checked.dbName);
         const userData = {
             count: appointments,
         }
@@ -31,8 +36,10 @@ const getCalendarCount = async (req, res) => {
     }
 }
 
-async function calendarPromises(branchId, currentDateWithoutTime, idUser) {
+async function calendarPromises(branchId, currentDateWithoutTime, idUser, dbName) {
     // Obtengo la cantidad de citas para la sede actual, para la fecha actual:
+    const { conn, User, Branch, Calendar } = await connectDB(dbName);
+    await conn.sync({ alter: true });
     const result = await Calendar.findAndCountAll({
         attributes: ["id"],
         where: {
@@ -56,6 +63,7 @@ async function calendarPromises(branchId, currentDateWithoutTime, idUser) {
         ],
     });
     const Out = result.count;
+    await conn.close();
     return Out;
 }
 

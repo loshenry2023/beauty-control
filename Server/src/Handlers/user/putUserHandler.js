@@ -1,4 +1,4 @@
-const { conn, User } = require('../../DB_connection');
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const putReg = require("../../controllers/putReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -20,7 +20,27 @@ const putUserHandler = async (req, res) => {
       return res.status(401).send(`Sin permiso.`);
     }
     if (!id) { throw Error("Faltan datos"); }
-    const resp = await putReg(User, "User", req.body, id, conn);
+
+    const { conn, User } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+
+    const data = {
+      tableName: User,
+      tableNameText: "User",
+      data: req.body,
+      id: id,
+      conn: conn,
+      tableName2: "",
+      tableName3: "",
+      tableName4: "",
+      tableName5: "",
+      userLogged: checked.userName,
+      dbName: checked.dbName,
+      nameCompany: checked.nameCompany
+    }
+    const resp = await putReg(data);
+    await conn.close(); // cierro la conexión
+
     if (resp.created === 'ok') {
       showLog(`putUserHandler OK`);
       return res.status(200).json({ "updated": "ok" });

@@ -16,9 +16,7 @@ server.use((req, res, next) => {
 });
 // Middleware para manejar formato json (body):
 server.use(express.json());
-// Middleware para anteponerle "/videogames" a las rutas:
-server.use("/laura-vargas", router);
-
-//server.use(cronJobs);
+// Middleware para anteponerle "/beautycontrol" a las rutas:
+server.use("/beautycontrol", router);
 
 module.exports = server;
