@@ -64,7 +64,7 @@ const ControlTables = () => {
           <SideBar />
           <div className="flex flex-col w-full p-4 items-center mx-auto">
             <div className="flex items-center justify-center mb-4">
-              <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+              <h1 className="underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
                 Control de tablas
               </h1>
             </div>

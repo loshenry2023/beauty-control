@@ -235,15 +235,15 @@ const Agenda = () => {
               <h1
                 className={
                   user.role !== "especialista"
-                    ? "text-center md:items-start text-2xl underline underline-offset-4 mx-5 tracking-wide font-fontTitle dark:text-beige sm:text-left"
-                    : "text-center md:items-start text-2xl underline underline-offset-4 mb-10 tracking-wide font-fontTitle dark:text-beige sm:text-left"
+                    ? "text-center md:items-start text-3xl underline underline-offset-4 mx-5 tracking-wide font-fontTitle dark:text-beige sm:text-left"
+                    : "text-center md:items-start text-3xl underline underline-offset-4 mb-10 tracking-wide font-fontTitle dark:text-beige sm:text-left"
                 }
               >
                 Gestión de citas
               </h1>
               {user.role === "especialista" ? null : (
                 <section className="shadow shadow-black rounded-xl p-2 mx-5 bg-secondaryColor dark:bg-darkPrimary dark:shadow-darkText">
-                  <h1 className="text-xl  dark:text-darkText p-2 m-0 text-center xl:text-left">Agendar cita</h1>
+                  <h2 className="text-2xl  dark:text-darkText p-2 m-0 text-center xl:text-left">Agendar cita</h2>
                   <div className=" flex flex-col items-center flex-wrap gap-5 md:flex-row mr-5 mb-2 md:justify-center xl:justify-none">
                     <FaPlusCircle
                       className="text-center mt-1.5 cursor-pointer dark:text-darkText"

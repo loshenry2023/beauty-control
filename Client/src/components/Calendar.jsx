@@ -169,9 +169,9 @@ const Calendar = ({
         <div className="mt-10  flex flex-col gap-10 justify-center items-center w-full sm:w-full xl:flex-row">
           <div className="w-72 sm:w-96 sm:h-96 md:w-[550px]">
             <div className="flex justify-between items-center scale-90">
-              <h1 className="select-none font-semibold dark:text-darkText">
+              <h2 className="text-xl select-none font-semibold dark:text-darkText">
                 {months[today.month()]}, {today.year()}
-              </h1>
+              </h2>
               <div className="flex gap-10 items-center ">
                 <GrFormPrevious
                   className="w-5 h-5 cursor-pointer hover:scale-105 transition-all dark:text-darkText"
@@ -179,14 +179,14 @@ const Calendar = ({
                     setToday(today.month(today.month() - 1));
                   }}
                 />
-                <h1
-                  className=" cursor-pointer hover:scale-105 transition-all dark:text-darkText"
+                <h2
+                  className="text-xl cursor-pointer hover:scale-105 transition-all dark:text-darkText"
                   onClick={() => {
                     setToday(currentDate);
                   }}
                 >
                   Hoy
-                </h1>
+                </h2>
                 <GrFormNext
                   className="w-5 h-5 cursor-pointer hover:scale-105 transition-all dark:text-darkText"
                   onClick={() => {
@@ -200,7 +200,7 @@ const Calendar = ({
                 return (
                   <h1
                     key={index}
-                    className="text-sm text-center h-14 w-14 grid place-content-center text-gray-500 select-none"
+                    className="ml-3 text-center h-14 w-14 grid place-content-center text-gray-500 select-none"
                   >
                     {day}
                   </h1>
@@ -255,9 +255,9 @@ const Calendar = ({
           </div>
           <div className="flex flex-col w-72 sm:px-5 overflow-auto sm:w-96 sm:h-96 md:w-[600px]">
             {/* // se pued eponer mas con h-full // */}
-            <h1 className="font-semibold mb-2 dark:text-darkText">
+            <h2 className="text-2xl font-semibold mb-2 dark:text-darkText">
               {capitalizedDate(formatedDate)} 
-            </h1>
+            </h2>
             <p className="text-sm dark:text-darkText"> Los rangos horarios son de uso exclusivo para filtrar citas</p>
             <div className="flex flex-row gap-2 mt-0.5 mb-3">
               <button
@@ -453,15 +453,15 @@ const Calendar = ({
                         </div>
                       )}
                     </div>
-                    <p className="text-md tracking-wide font-light dark:text-darkText">
+                    <p className="text-md tracking-wide font-medium dark:text-darkText">
                       {" "}
-                      <span className="font-medium">Especialista:</span>{" "}
+                      <span className="font-bold">Especialista:</span>{" "}
                       {cita.User === null
                         ? "Error en la carga de especialista"
                         : `${cita.User.name} ${cita.User.lastName}`}
                     </p>
-                    <p className="text-md tracking-wide font-light dark:text-darkText">
-                      <span className="font-medium">Procedimiento:</span>{" "}
+                    <p className="text-md tracking-wide font-medium dark:text-darkText">
+                      <span className="font-bold">Procedimiento:</span>{" "}
                       {cita.Service === null
                         ? "Error en la carga de procedimiento. Llamar cliente"
                         : cita.Service.serviceName}

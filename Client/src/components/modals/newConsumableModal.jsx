@@ -107,7 +107,7 @@ function NewConsumableModal({ onClose }) {
         <div>
           <div className="w-4/5 mx-auto bg-white shadow rounded-lg p-6 md:w-full dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Agregar nuevo insumo
               </h1>
               <IoClose
@@ -117,7 +117,7 @@ function NewConsumableModal({ onClose }) {
             </div>
             <form onSubmit={handleSubmit}>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Nombre:
                 </label>
                 <input
@@ -132,11 +132,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.productName && (
-                  <p className="text-xs text-red-500">{errors.productName}</p>
+                  <p className=" text-red-500">{errors.productName}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Código del producto:
                 </label>
                 <input
@@ -153,11 +153,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.productCode && (
-                  <p className="text-xs text-red-500">{errors.productCode}</p>
+                  <p className=" text-red-500">{errors.productCode}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   {" "}
                   Descripción:
                 </label>
@@ -173,11 +173,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.description && (
-                  <p className="text-xs text-red-500">{errors.description}</p>
+                  <p className=" text-red-500">{errors.description}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Proveedor:
                 </label>
                 <input
@@ -192,11 +192,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.supplier && (
-                  <p className="text-xs text-red-500">{errors.supplier}</p>
+                  <p className=" text-red-500">{errors.supplier}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Cantidad:
                 </label>
                 <input
@@ -211,11 +211,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.amount && (
-                  <p className="text-xs text-red-500">{errors.amount}</p>
+                  <p className=" text-red-500">{errors.amount}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Precio:
                 </label>
                 <input
@@ -230,7 +230,7 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.price && (
-                  <p className="text-xs text-red-500">{errors.price}</p>
+                  <p className=" text-red-500">{errors.price}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">

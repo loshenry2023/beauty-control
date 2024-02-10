@@ -175,7 +175,7 @@ function EditConsumableForm({
         <div className="container">
           <div className="w-full bg-white shadow rounded-lg p-6 md:mx-auto md:w-1/2 2xl:w-1/3 dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Editar insumo
               </h1>
               <IoClose
@@ -187,7 +187,7 @@ function EditConsumableForm({
               {user.role === "superAdmin" && (
                 <>
                   <div className="mb-2">
-                    <label className="pl-1 text-sm font-bold dark:text-darkText">Nombre:</label>
+                    <label className="pl-1  font-bold dark:text-darkText">Nombre:</label>
                     <input
                       className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                       type="text"
@@ -196,7 +196,7 @@ function EditConsumableForm({
                     />
                   </div>
                   <div className="mb-2">
-                    <label className="pl-1 text-sm font-bold dark:text-darkText">
+                    <label className="pl-1  font-bold dark:text-darkText">
                       Descripción:
                     </label>
                     <input
@@ -207,7 +207,7 @@ function EditConsumableForm({
                     />
                   </div>
                   <div className="mb-2">
-                    <label className="pl-1 text-sm font-bold dark:text-darkText">Proveedor:</label>
+                    <label className="pl-1  font-bold dark:text-darkText">Proveedor:</label>
                     <input
                       className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                       type="text"
@@ -218,7 +218,7 @@ function EditConsumableForm({
                 </>
               )}
               <div className="mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Cantidad Actual:
                 </label>
                 <input
@@ -232,7 +232,7 @@ function EditConsumableForm({
 
               {user.role === "admin" ? (
                 <div className="mb-2">
-                  <label className="pl-1 text-sm font-bold dark:text-darkText">
+                  <label className="pl-1  font-bold dark:text-darkText">
                     Cantidad a Quitar:
                   </label>
                   <div className="flex items-center">
@@ -262,7 +262,7 @@ function EditConsumableForm({
               {user.role === "superAdmin" ? (
                 <>
                   <div className="mb-2">
-                    <label className="pl-1 text-sm font-bold dark:text-darkText">
+                    <label className="pl-1  font-bold dark:text-darkText">
                       Cantidad a Quitar/Agregar:
                     </label>
                     <div className="flex items-center">
@@ -295,7 +295,7 @@ function EditConsumableForm({
                     </div>
                   </div>
                   <div className="mb-2">
-                    <label className="pl-1 text-sm font-bold dark:text-darkText">Precio:</label>
+                    <label className="pl-1  font-bold dark:text-darkText">Precio:</label>
                     <input
                       className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                       type="number"

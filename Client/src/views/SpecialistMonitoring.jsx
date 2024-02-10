@@ -115,7 +115,7 @@ const SpecialistMonitoring = () => {
           ) : user.role === "superAdmin" ? (
             <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
               <div className="flex gap-2">
-                <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle text-black dark:text-darkText sm:text-left">
+                <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle text-black dark:text-darkText sm:text-left">
                   {" "}
                   Seguimiento Especialistas{" "}
                 </h1>
@@ -131,7 +131,7 @@ const SpecialistMonitoring = () => {
                     type="date"
                     defaultValue={formattedDate}
                     onChange={handleDate}
-                    className="w-full text-center border rounded-md border-black px-2 text-sm md:w-fit dark:invert"
+                    className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
                   />
                 </div>
                 <div className="flex gap-2">
@@ -144,7 +144,7 @@ const SpecialistMonitoring = () => {
                     type="date"
                     defaultValue={formattedDate}
                     onChange={handleDate}
-                    className="w-full text-center border rounded-md border-black px-2 text-sm md:w-fit dark:invert"
+                    className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
                   />
                 </div>
               </div>

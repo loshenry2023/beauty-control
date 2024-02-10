@@ -25,25 +25,25 @@ const ControlTables = () => {
     switch (activeTab) {
       case "services":
         return (
-          <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
+          <div className="flex flex-col mt-5 gap-5 w-2/3 mx-auto">
             <ServicesTable />
           </div>
         );
       case "PayMethods":
         return (
-          <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
+          <div className="flex flex-col mt-5 gap-5 w-2/3 mx-auto">
             <PayMethodsTable methods={methods} />
           </div>
         );
       case "branches":
         return (
-          <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
+          <div className="flex flex-col mt-5 gap-5 w-2/3 mx-auto">
             <BranchTable branches={branches} />
           </div>
         );
       case "specialties":
         return (
-          <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
+          <div className="flex flex-col mt-5 gap-5 w-2/3 mx-auto">
             <SpecialtiesTable />
           </div>
         );
@@ -61,12 +61,12 @@ const ControlTables = () => {
         <div className="flex flex-row flex-grow dark:bg-darkBackground">
           <SideBar />
           <div className="flex flex-col w-full p-4 items-center mx-auto">
-            <div className="flex items-center justify-center mb-4">
-              <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+            <div className="flex items-center justify-center mt-10 mb-5">
+              <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
                 Control de tablas
               </h1>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 md:gap-8 justify-center sm:justify-start">
+            <div className="flex flex-col md:flex-row gap-2 sm:gap-4 md:gap-8 justify-center sm:justify-start">
               <button
                 className={
                   activeTab === "services"

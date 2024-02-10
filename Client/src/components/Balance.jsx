@@ -255,7 +255,7 @@ const Balance = ({ specialists, services, payMethods }) => {
           <Loader />
         ) : (
           <div className="flex flex-col mt-10 gap-5">
-            <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+            <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
               Balance
             </h1>
             <section className="flex flex-wrap md:flex-row gap-5">
@@ -269,7 +269,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                   name="dateFrom"
                   defaultValue={formattedDate}
                   onChange={handleDate}
-                  className="w-full border rounded-md border-black px-2 text-sm dark:invert xl:w-fit"
+                  className="w-full border rounded-md border-black px-2  dark:invert xl:w-fit"
                 />
               </div>
               <div className="flex gap-2 w-full xl:w-fit">
@@ -282,7 +282,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                   name="dateTo"
                   defaultValue={formattedDate}
                   onChange={handleDate}
-                  className="w-full border rounded-md border-black px-2 text-sm dark:invert xl:w-fit"
+                  className="w-full border rounded-md border-black px-2  dark:invert xl:w-fit"
                 />
               </div>
             </section>
@@ -293,7 +293,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                 </label>
                 <select
                   type="text"
-                  className="border w-full rounded-md border-black px-2 text-sm dark:invert xl:w-fit"
+                  className="border w-full rounded-md border-black px-2  dark:invert xl:w-fit"
                   onChange={(e) => handleDataToFetch(e)}
                   name="idUser"
                 >
@@ -311,7 +311,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                 </label>
                 <select
                   type="text"
-                  className="border rounded-md w-full border-black px-2 text-sm  dark:invert xl:w-fit"
+                  className="border rounded-md w-full border-black px-2   dark:invert xl:w-fit"
                   onChange={(e) => handleDataToFetch(e)}
                   name="idService"
                 >
@@ -329,7 +329,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                 </label>
                 <select
                   type="text"
-                  className="border rounded-md w-full border-black px-2 text-sm  dark:invert xl:w-fit"
+                  className="border rounded-md w-full border-black px-2   dark:invert xl:w-fit"
                   onChange={(e) => handleDataToFetch(e)}
                   name="idPayment"
                 >
@@ -345,20 +345,20 @@ const Balance = ({ specialists, services, payMethods }) => {
             <div className="w-full mt-10 flex flex-col items-center justify-between xl:flex-row sm:justify-start">
               <section className="flex flex-col gap-4 sm:flex-row xl:flex-col">
                 <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-secondaryColor dark:hover:bg-zinc-800">
-                  <h1 className="text-2xl dark:text-darkText flex flex-col items-center">
+                  <h2 className="text-2xl dark:text-darkText flex flex-col items-center">
                     Total ingresos:{" "}
                     <span className=" mt-2">
                       {" "}
                       ${formatNumber(totalIncomes)}
                     </span>
-                  </h1>
+                  </h2>
                 </div>
                 <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-secondaryColor dark:hover:bg-zinc-800">
-                  <h1 className="text-center text-2xl dark:text-darkText">
+                  <h2 className="text-center text-2xl dark:text-darkText">
                     {comision
                       ? `Comision: ${comision}%`
                       : "Selecciona un especialista para visualizar comisión"}
-                  </h1>
+                  </h2>
                 </div>
               </section>
               {totalIncomes !== 0 ? (
@@ -379,7 +379,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                       <ul className="mt-4 dark:text-darkText">
                         {chartDataPaymentMethods.map((entry) => (
                           <div
-                            className="text-xs"
+                            className=""
                             key={`legend-${entry.name}`} // Cambiado a entry.name como clave
                             style={{ marginBottom: "12px" }}
                           >
@@ -414,8 +414,8 @@ const Balance = ({ specialists, services, payMethods }) => {
                   </div>
                 </section>
               ) : (
-                <h2 className=" text-center w-full text-xl mt-10 xl:mt-0  dark:text-darkText">
-                  No hay informacion para los filtros seleccionados.
+                <h2 className=" text-center w-full text-3xl mt-10 xl:mt-0  dark:text-darkText">
+                  No hay informacion para los filtros seleccionados
                 </h2>
               )}
             </div>

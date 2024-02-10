@@ -63,14 +63,14 @@ const ConsHistoryPrice = () => {
                       className="cursor-pointer mt-2 w-5 h-5 text-black dark:text-darkText mr-2"
                     />
                   </span>
-                  <h1 className="text-xl text-black font-semibold mb-4 dark:text-darkText ">
+                  <h1 className="text-3xl text-black font-semibold mb-4 dark:text-darkText ">
                     {/* Historial de Precios - {pricesHistory[0]?.productName} */}
                     Historial de Precios
                   </h1>
                 </div>
                 <div className="w-full flex flex-row mx-auto">
                   <div className="w-1/3 bg-white rounded-lg p-6 dark:bg-darkBackground">
-                    <table className="'border border-black w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige'">
+                    <table className="'border border-black w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige'">
                       <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                         <tr>
                           <th scope="col" className="px-6 py-3 w-1/2">
@@ -96,7 +96,7 @@ const ConsHistoryPrice = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="text-sm px-6 py-4 w-2/3">
+                  <div className=" px-6 py-4 w-2/3">
                     <BarChartComponent
                       data={pricesHistory}
                       colors={["#FFC8C8"]}

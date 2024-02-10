@@ -124,7 +124,7 @@ const NavBar = () => {
             alt="userPhoto"
             className="h-10 w-10 shadow-md shadow-black rounded-full"
           />
-          <span className="text-sm font-medium sm:text-lg">
+          <span className=" font-medium sm:text-lg">
             {" "}
             {user.name} {" "} {user.lastName} {" - "} {user.role === "superAdmin" ? "Admin General" : capitalizeFirstLetter(user.role)}  {" - "} {workingBranch.branchName}
           </span>
@@ -143,7 +143,7 @@ const NavBar = () => {
           />}
           <CiBellOn className="relative h-6 w-6" />
           {user.role === "superAdmin" || user.role === "admin" || appointments.count === 0 ? null :
-            showRed && <span onClick={() => eraseNotifications()} className="text-sm flex flex-row items-center justify-center font-bold mx-auto my-auto absolute w-4 h-4 top-[40px] right-[76px] rounded-full bg-red-500 cursor-pointer"> {appointments.count}  </span>}
+            showRed && <span onClick={() => eraseNotifications()} className=" flex flex-row items-center justify-center font-bold mx-auto my-auto absolute w-4 h-4 top-[40px] right-[76px] rounded-full bg-red-500 cursor-pointer"> {appointments.count}  </span>}
           <Link to={ROOT}>
             <IoExitOutline className="h-6 w-6 " onClick={handleLogout} />
           </Link>

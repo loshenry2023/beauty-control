@@ -193,12 +193,12 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                 
                     <div className="w-full bg-white shadow rounded-lg p-4 pt-2 pb-2 mx-auto md:w-1/2 2xl:w-1/3 scale-90 dark:bg-darkBackground">
                         <div className='flex justify-between '>
-                            <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">Editar usuario</h1>
+                            <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">Editar usuario</h1>
                             <IoClose onClick={closeModal} className='cursor-pointer mt-1 w-5 h-5 hover:scale-125 dark:text-darkText' />
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className="first-letter:grid grid-cols-1 mb-1">
-                                <label className="mb-2 text-sm font-medium text-gray-900 dark:text-darkText">Cuenta de usuario (Email)</label>
+                                <label className="mb-2  font-medium text-gray-900 dark:text-darkText">Cuenta de usuario (Email)</label>
                                 <input
                                     placeholder="Gmail Usuario"
                                     className={`cursor-not-allowed border bg-gray-200 text-gray-500 border-black p-2 rounded w-full ${errors.userName !== undefined && "border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
@@ -208,11 +208,11 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                     value={userData.userName}
                                     disabled
                                 />
-                                {errors.userName !== "" && <p className="text-xs text-red-500">{errors.userName}</p>}
+                                {errors.userName !== "" && <p className=" text-red-500">{errors.userName}</p>}
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-1">
                                 <div>
-                                    <label className='block mb-2 text-sm font-medium text-gray-900 dark:text-darkText'>Nombre</label>
+                                    <label className='block mb-2  font-medium text-gray-900 dark:text-darkText'>Nombre</label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
@@ -221,10 +221,10 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                         placeholder="Nombre"
                                         className={`border border-black p-2 rounded w-full ${errors.name !== undefined && "border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                     />
-                                    {errors.name !== "" && <p className="text-xs text-red-500">{errors.name}</p>}
+                                    {errors.name !== "" && <p className=" text-red-500">{errors.name}</p>}
                                 </div>
                                 <div>
-                                    <label className='block mb-1 text-sm font-medium text-gray-900 dark:text-darkText'>Apellido</label>
+                                    <label className='block mb-1  font-medium text-gray-900 dark:text-darkText'>Apellido</label>
                                     <input
                                         type="text"
                                         placeholder="Apellido"
@@ -233,11 +233,11 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                         name="lastName"
                                         value={userData.lastName}
                                     />
-                                    {errors.lastName !== "" && <p className="text-xs text-red-500">{errors.lastName}</p>}
+                                    {errors.lastName !== "" && <p className=" text-red-500">{errors.lastName}</p>}
                                 </div>
                             </div>
                             <div className="first-letter:grid grid-cols-1 gap-2 mb-1">
-                                <label className='block mb-1 text-sm font-medium text-gray-900 dark:text-darkText'>Email para notificaciones</label>
+                                <label className='block mb-1  font-medium text-gray-900 dark:text-darkText'>Email para notificaciones</label>
                                 <input
                                     placeholder="Email para notifiaciones"
                                     className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
@@ -246,11 +246,11 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                     name="notificationEmail"
                                     value={userData.notificationEmail}
                                 />
-                                {errors.notificationEmail !== "" && <p className="text-xs text-red-500">{errors.notificationEmail}</p>}
+                                {errors.notificationEmail !== "" && <p className=" text-red-500">{errors.notificationEmail}</p>}
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-1">
                                 <div>
-                                    <label className='block mb-1 text-sm font-medium text-gray-900 dark:text-darkText'>Telefono</label>
+                                    <label className='block mb-1  font-medium text-gray-900 dark:text-darkText'>Telefono</label>
                                     <input
                                         placeholder="Telefono 1"
                                         className={`border border-black p-2 rounded w-full ${errors.phoneNumber1 !== undefined && "border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
@@ -259,10 +259,10 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                         name="phoneNumber1"
                                         value={userData.phoneNumber1}
                                     />
-                                    {errors.phoneNumber1 !== "" && <p className="text-xs text-red-500">{errors.phoneNumber1}</p>}
+                                    {errors.phoneNumber1 !== "" && <p className=" text-red-500">{errors.phoneNumber1}</p>}
                                 </div>
                                 <div>
-                                    <label className='block mb-1 text-sm font-medium text-gray-900 dark:text-darkText'>Telefono alternativo</label>
+                                    <label className='block mb-1  font-medium text-gray-900 dark:text-darkText'>Telefono alternativo</label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
@@ -271,12 +271,12 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                         placeholder="Telefono 2"
                                         className={`border border-black p-2 rounded w-full ${errors.phoneNumber2 !== undefined && "border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                     />
-                                    {errors.phoneNumber2 !== "" && <p className="text-xs text-red-500">{errors.phoneNumber2}</p>}
+                                    {errors.phoneNumber2 !== "" && <p className=" text-red-500">{errors.phoneNumber2}</p>}
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2 mb-1">
                                 <div>
-                                    <label className='block mb-1 text-sm font-medium text-gray-900 dark:text-darkText'>% de comisión</label>
+                                    <label className='block mb-1  font-medium text-gray-900 dark:text-darkText'>% de comisión</label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
@@ -285,16 +285,16 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                         placeholder="Comision"
                                         className={`border border-black p-2 rounded w-full ${errors.commission !== undefined && "border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                     />
-                                    {errors.commission !== "" && <p className="text-xs text-red-500 ">{errors.commission}</p>}
+                                    {errors.commission !== "" && <p className=" text-red-500 ">{errors.commission}</p>}
                                 </div>
                                 <div>
-                                    <label className='block mb-1 text-sm font-medium text-gray-900 dark:text-darkText'>Rol</label>
+                                    <label className='block mb-1  font-medium text-gray-900 dark:text-darkText'>Rol</label>
                                     <select
                                         onChange={handleChange}
                                         name="rol"
                                         value={userData.rol}
                                         placeholder='Selecciona un rol'
-                                        className={`bg-gray-50 border border-black text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ${errors.rol !== undefined && "border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
+                                        className={`bg-gray-50 border border-black text-black sm: rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 ${errors.rol !== undefined && "border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                     >
                                         {roles.map((rol, index) => (
                                             <option key={index} value={rol}>
@@ -302,12 +302,12 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                             </option>
                                         ))}
                                     </select>
-                                    {errors.rol !== "" && <p className="text-xs text-red-500">{errors.rol}</p>}
+                                    {errors.rol !== "" && <p className=" text-red-500">{errors.rol}</p>}
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
                                 <div className="mb-2">
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-darkText">Especialidades</label>
+                                    <label className="block mb-2  font-medium text-gray-900 dark:text-darkText">Especialidades</label>
                                     {specialties.map((specialty, index) => (
                                         <div key={index} className="flex items-center">
                                             <input
@@ -319,15 +319,15 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                                 onChange={handleChange}
                                                 className="mr-2 dark:bg-darkPrimary dark:text-darkText dark:border-none "
                                             />
-                                            <label htmlFor={specialty} className="text-sm text-gray-900 dark:text-darkText">
+                                            <label htmlFor={specialty} className=" text-gray-900 dark:text-darkText">
                                                 {specialty.specialtyName}
                                             </label>
                                         </div>
                                     ))}
-                                    {errors.specialtyName !== "" && <p className="text-xs text-red-500">{errors.specialtyName}</p>}
+                                    {errors.specialtyName !== "" && <p className=" text-red-500">{errors.specialtyName}</p>}
                                 </div>
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-darkText">Sedes</label>
+                                    <label className="block mb-2  font-medium text-gray-900 dark:text-darkText">Sedes</label>
                                     {branches.map((b, index) => (
                                         <div key={index} className="flex items-center">
                                             <input
@@ -339,12 +339,12 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                                 onChange={handleChange}
                                                 className="mr-2"
                                             />
-                                            <label htmlFor={b} className="text-xs text-gray-900 dark:text-darkText">
+                                            <label htmlFor={b} className=" text-gray-900 dark:text-darkText">
                                                 {b.branchName}
                                             </label>
                                         </div>
                                     ))}
-                                    {errors.branch !== "" && <span className="text-xs text-red-500">{errors.branch}</span>}
+                                    {errors.branch !== "" && <span className=" text-red-500">{errors.branch}</span>}
                                 </div>
                             </div>
                             <div>
