@@ -28,7 +28,7 @@ export const UploadWidget = ({ setUserData }) => {
 
   return (
     <span
-      className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+      className="h-10 w-fit cursor-pointer shadow shadow-black bg-primaryPink text-black px-9 py-2 rounded-md hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
       onClick={() => widgetRef.current.open()}
     >
       Subir Imagen

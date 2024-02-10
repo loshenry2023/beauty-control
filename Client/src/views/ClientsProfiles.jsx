@@ -88,7 +88,7 @@ const ClientsProfiles = () => {
                   Clientes{" "}
                 </h1>
                 {user.role !== "especialista" ?
-                  <IoPersonAddOutline className='h-6 w-6 mt-0.5 cursor-pointer dark:text-darkText' onClick={handleClientFormModal} /> : null
+                  <IoPersonAddOutline className='h-6 w-6 mt-1.5 cursor-pointer dark:text-darkText' onClick={handleClientFormModal} /> : null
                 }
               </div>
               <ClientFilters setNameOrLastName={setNameOrLastName} nameOrLastName={nameOrLastName} setAttribute={setAttribute} setOrder={setOrder} setPage={setPage} setSize={setSize} setBirthdaysMonth={setBirthdaysMonth} setCreateDateStart={setCreateDateStart} setCreateDateEnd={setCreateDateEnd} createDateStart={createDateStart} createDateEnd={createDateEnd} />

@@ -30,7 +30,7 @@ export const UploadWidgetDate = ({ setPhoto, setPhotoLoaded }) => {
 
   return (
     <span
-      className="flex items-center cursor-pointer shadow shadow-black bg-primaryPink text-black rounded-md px-2 hover:bg-blue-600 transition duration-300 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary dark:hover:bg-zinc-800"
+      className="flex items-center cursor-pointer shadow shadow-black bg-primaryPink text-black rounded-md px-2 hover:bg-primaryColor hover:text-white transition-colors duration-700 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary dark:hover:bg-zinc-800"
       onClick={() => widgetRef.current.open()}
     >
       Subir Imagen

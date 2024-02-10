@@ -155,7 +155,7 @@ function UserProfiles() {
                         }}
                         type="text"
                         placeholder="Buscar por nombre..."
-                        className="w-full border border-black focus:outline-none focus:ring-1 focus:ring-grey px-1 text-sm dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+                        className="w-full border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
                       />
                       <select
                         onChange={(e) => {

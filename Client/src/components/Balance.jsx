@@ -344,7 +344,7 @@ const Balance = ({ specialists, services, payMethods }) => {
             </section>
             <div className="w-full mt-10 flex flex-col items-center justify-between xl:flex-row sm:justify-start">
               <section className="flex flex-col gap-4 sm:flex-row xl:flex-col">
-                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800">
+                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-secondaryColor dark:hover:bg-zinc-800">
                   <h1 className="text-2xl dark:text-darkText flex flex-col items-center">
                     Total ingresos:{" "}
                     <span className=" mt-2">
@@ -353,7 +353,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                     </span>
                   </h1>
                 </div>
-                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800">
+                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-secondaryColor dark:hover:bg-zinc-800">
                   <h1 className="text-center text-2xl dark:text-darkText">
                     {comision
                       ? `Comision: ${comision}%`
@@ -370,7 +370,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                   />
                   <div className="mx-2">
                     <button
-                      className="w-40 p-2 mt-10 rounded-2xl shadow-md font-bold shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800 dark:text-darkText xl:mt-0"
+                      className="w-40 p-2 mt-10 rounded-2xl shadow-md font-bold shadow-black hover:bg-secondaryColor transition-colors duration-700 dark:bg-darkPrimary  dark:hover:bg-zinc-800 dark:text-darkText xl:mt-0"
                       onClick={() => setShowDetails(!showDetails)}
                     >
                       {showDetails ? "Ocultar detalles" : "Mostrar detalles"}
@@ -422,9 +422,7 @@ const Balance = ({ specialists, services, payMethods }) => {
             {totalIncomes !== 0 ? (
               <section className="mb-10 w-full flex flex-col items-center justify-center">
                 <button
-                  className={`mt-5 xl:ml-[70px] w-fit p-2 rounded-2xl shadow-md font-bold shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800 dark:text-darkText ${
-                    showAdditionalCharts ? "bg-blue-500 text-white" : ""
-                  }`}
+                  className="mt-5 xl:ml-[70px] w-fit p-2 px-4 rounded-2xl shadow-md font-bold shadow-black hover:bg-secondaryColor transition-colors duration-700 dark:bg-darkPrimary  dark:hover:bg-zinc-800 dark:text-darkText"
                   onClick={handleToggleCharts}
                 >
                   {showAdditionalCharts

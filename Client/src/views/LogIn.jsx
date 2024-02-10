@@ -161,14 +161,14 @@ const LogIn = () => {
             </div>
             <button
               onClick={() => handleYahoo(false)}
-              className="w-full px-4 py-2 border flex justify-center  gap-2 rounded-lg border-slate-700 hover:bg-grey hover:text-white transition-color duration-700 ease-in-out"
+              className="w-full px-4 py-2 border flex justify-center  gap-2 rounded-lg border-slate-700 hover:bg-secondaryColor hover:text-white transition-color duration-700 ease-in-out"
             >
               <AiFillYahoo className="h-6 w-6 text-blue-900" />
               <span>Iniciar sesión con Yahoo</span>
             </button>
             <button
               onClick={handleGoogle}
-              className="w-full px-4 py-2 border flex justify-center gap-2 rounded-lg border-slate-700 hover:bg-grey hover:text-white transition-color duration-700 ease-in-out "
+              className="w-full px-4 py-2 border flex justify-center gap-2 rounded-lg border-slate-700 hover:bg-secondaryColor hover:text-white transition-color duration-700 ease-in-out "
             >
               <FcGoogle className="h-6 w-6" />
               <span>Iniciar sesión con Google</span>

@@ -71,7 +71,7 @@ const ConsHistoryPrice = () => {
                 <div className="w-full flex flex-row mx-auto">
                   <div className="w-1/3 bg-white rounded-lg p-6 dark:bg-darkBackground">
                     <table className="'border border-black w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige'">
-                      <thead className="bg-secondaryPink text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-grey">
+                      <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                         <tr>
                           <th scope="col" className="px-6 py-3 w-1/2">
                             Precio

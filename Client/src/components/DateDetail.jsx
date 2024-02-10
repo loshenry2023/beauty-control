@@ -259,8 +259,8 @@ const DateDetail = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-auto ">
         {/* Client Details */}
 
-        <div className="p-6 bg-secondaryPink rounded-md dark:bg-darkPrimary">
-          <div className="border-4 border-double border-primaryPink max-w-screen-sm rounded overflow-hidden shadow-lg mx-auto dark:border-zinc-800">
+        <div className="p-6 bg-primaryColor rounded-md dark:bg-darkPrimary">
+          <div className="bg-secondaryColor max-w-screen-sm rounded-2xl overflow-hidden shadow-lg mx-auto dark:border-4 dark:border-zinc-800">
             <div className="grid grid-cols-1 place-items-center xl:place-items-start xl:grid-cols-3 sm:p-5 dark:bg-darkBackground">
               <img
                 src={clientInfo.image}
@@ -306,9 +306,9 @@ const DateDetail = () => {
         </div>
 
         {/* Observations Section */}
-        <div className="flex items-center p-6 bg-secondaryPink rounded-md dark:bg-darkPrimary">
-          <div className="border-4 border-double border-primaryPink max-w-screen-sm rounded overflow-hidden shadow-lg mx-auto dark:border-zinc-800">
-            <div className="grid grid-cols-1 gap-20 p-5 mx-auto xl:h-60 xl:grid-cols-2 dark:bg-darkBackground">
+        <div className="flex items-center p-6 bg-primaryColor rounded-md dark:bg-darkPrimary">
+          <div className="bg-primaryColor max-w-screen-sm rounded-2xl overflow-hidden mx-auto dark:border-4 dark:border-zinc-800">
+            <div className="grid grid-cols-1 bg-secondaryColor gap-20 p-5 mx-auto xl:h-60 xl:grid-cols-2 dark:bg-darkBackground">
               <div
                 className={`flex flex-col flex-wrap gap-4 p-4 rounded-md shadow-sm md:justify-center shadow-black dark:text-darkText dark:bg-darkPrimary dark:shadow-darkText`}
                 style={observationSectionStyle}
@@ -332,7 +332,7 @@ const DateDetail = () => {
               </div>
               <div
                 className={`flex flex-col flex-wrap gap-4 p-4 rounded-md shadow-sm md:justify-center shadow-black dark:text-darkText dark:bg-darkPrimary dark:shadow-darkText ${
-                  isConsentVisible ? "visible" : "bg-gray-500"
+                  isConsentVisible ? "visible" : "bg-secondaryColor"
                 }`}
                 style={observationSectionStyleConsent}
               >
@@ -364,9 +364,9 @@ const DateDetail = () => {
 
         {/* History Services Section */}
         {isLoading && (
-          <div className="p-6 bg-secondaryPink rounded-md dark:bg-darkPrimary">
+          <div className="p-6 flex justify-center bg-primaryColor rounded-md dark:bg-darkPrimary">
             {clientInfo.HistoryServices ? (
-              <div className="overflow-auto max-h-[450px] scrollbar-container">
+              <div className="bg-secondaryColor w-full h-fit rounded-2xl overflow-auto max-h-[450px] scrollbar-container dark:bg-darkPrimary ">
                 <HistoryServices history={clientInfo.HistoryServices} />
               </div>
             ) : (
@@ -376,13 +376,13 @@ const DateDetail = () => {
         )}
 
         {/* Payment Section */}
-        <div className="p-6 bg-secondaryPink rounded-md flex flex-col gap-4 dark:bg-darkPrimary">
-          <div className="p-4 border-4 border-double border-primaryPink rounded overflow-hidden shadow-lg mx-auto dark:dark:border-zinc-800">
+        <div className="p-6 bg-primaryColor rounded-md flex flex-col gap-4 dark:bg-darkPrimary">
+          <div className="p-4 rounded-2xl bg-secondaryColor overflow-hidden shadow-lg mx-auto dark:bg-darkBackground dark:border-4  dark:dark:border-zinc-800">
             <div className="flex flex-col gap-6 mx-auto">
               <div className="flex flex-row rounded-lg dark:bg-darkBackground">
-                <div className=" rounded overflow-hidden shadow-lg p-6 flex flex-row flex-wrap gap-2 justify-center">
+                <div className=" rounded overflow-hidden p-6 flex flex-row flex-wrap gap-2 justify-center">
                   <div className="rounded overflow-hidden flex-grow p-6 shadow-sm shadow-black dark:bg-darkPrimary dark:shadow-darkText">
-                    <p className="text-xl font-medium text-gray-700 dark:text-darkText">
+                    <p className="text-xl font-medium text-black dark:text-darkText">
                       Procedimiento
                     </p>
                     <p className="text-sm text-left 2xl:text-center dark:text-darkText">
@@ -390,7 +390,7 @@ const DateDetail = () => {
                     </p>
                   </div>
                   <div className="rounded overflow-auto shadow-sm flex-grow p-6 shadow-black dark:bg-darkPrimary dark:shadow-darkText">
-                    <label className="text-xl font-medium text-gray-700 dark:text-darkText">
+                    <label className="text-xl font-medium text-black dark:text-darkText">
                       Observaciones
                     </label>
                     <p className="text-sm text-left 2xl:text-center dark:text-darkText">
@@ -398,7 +398,7 @@ const DateDetail = () => {
                     </p>
                   </div>
                   <div className="rounded overflow-hidden shadow-sm flex-grow p-6 shadow-black dark:bg-darkPrimary dark:shadow-darkText">
-                    <p className="text-xl font-medium text-gray-700 dark:text-darkText">
+                    <p className="text-xl font-medium text-black dark:text-darkText">
                       {" "}
                       Precio final
                     </p>
@@ -408,28 +408,28 @@ const DateDetail = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center flex-wrap md:flex-row sm:justify-start  gap-10 rounded-lg dark:bg-darkBackground">
-                <div className="rounded overflow-hidden shadow-sm shadow-black p-2 m-2 flex flex-col gap-4">
+              <div className="p-6 flex flex-col justify-center items-center flex-wrap md:flex-row sm:justify-start gap-10 rounded-lg dark:bg-darkPrimary">
+                <div className="rounded overflow-hidden shadow-sm shadow-black dark:shadow-white  p-2 m-2 flex flex-col gap-4 dark:bg-darkPrimary">
                   <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2 ">
-                    <label className="block text-md font-medium text-black dark:text-darkText">
+                    <label className="ml-1 block text-md font-medium text-black dark:text-darkText">
                       Precio $
                     </label>
                     <input
                       type="number"
                       value={price.amount1}
                       onChange={(e) => handlePriceChange(e, "amount1")}
-                      className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                      className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                       placeholder="Ingrese el precio"
                     />
                   </div>
                   <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2">
-                    <label className="block text-md font-medium text-black dark:bg-darkPrimary dark:text-darkText">
+                    <label className="ml-1 block text-md font-medium text-black dark:bg-darkPrimary dark:text-darkText">
                       Medio de Pago A
                     </label>
                     <select
                       value={paymentMethods.paymentMethod1}
                       onChange={(e) => handlePaymentMethodChange(e, 1)}
-                      className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                      className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                     >
                       <option value="" disabled>
                         Elige medio de pago
@@ -456,27 +456,27 @@ const DateDetail = () => {
                   )}
                 </button>
                 {showPayment2 && (
-                  <div className="rounded overflow-hidden shadow-sm shadow-black p-2 m-2 flex flex-col gap-4">
+                  <div className="rounded overflow-hidden shadow-sm shadow-black dark:shadow-white p-2 m-2 flex flex-col gap-4">
                     <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2 ">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-darkText">
+                      <label className="ml-1 block text-md font-medium text-black dark:bg-darkPrimary dark:text-darkText">
                         Precio $
                       </label>
                       <input
                         type="number"
                         value={price.amount2}
                         onChange={(e) => handlePriceChange(e, "amount2")}
-                        className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                        className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                         placeholder="Ingrese el precio"
                       />
                     </div>
                     <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:bg-darkPrimary dark:text-darkText">
+                      <label className="ml-1 block text-md font-medium text-black dark:text-darkText">
                         Medio de Pago B
                       </label>
                       <select
                         value={paymentMethods.paymentMethod2}
                         onChange={(e) => handlePaymentMethodChange(e, 2)}
-                        className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                        className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                       >
                         <option value="" disabled>
                           Elige medio de pago
@@ -499,11 +499,9 @@ const DateDetail = () => {
               <button
                 disabled={isButtonDisabled}
                 onClick={handleCheckPrice}
-                className={`btn bg-primaryPink px-4 py-2 rounded-full cursor-pointer shadow shadow-black ${
-                  isButtonDisabled ? "disabled-btn" : ""
-                } `}
+                className={isButtonDisabled ? "btn px-4 py-2 rounded-full shadow shadow-black dark:bg-red-500 disabled-btn cursor-not-allowed" : " cursor-pointer btn px-4 py-2 rounded-full shadow shadow-black dark:bg-red-500 disabled-btn"}
                 style={{
-                  backgroundColor: isButtonDisabled ? "grey" : "#e59494",
+                  backgroundColor: isButtonDisabled ? "" : "#A8D0B9",
                 }}
               >
                 Finalizar Cita

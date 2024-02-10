@@ -115,7 +115,7 @@ function Consumables() {
                     <div className="flex justify-center md:ml-auto">
                       <button
                         onClick={handleShowNewConsumableModal}
-                        className="bg-primaryPink hover:bg-secondaryPink text-white py-2 px-4 rounded border dark:bg-darkPrimary dark:border-darkText dark:hover:bg-gray-200 dark:hover:text-black"
+                        className="bg-primaryPink hover:bg-secondaryColor text-white py-2 px-4 rounded border dark:bg-darkPrimary dark:border-darkText dark:hover:bg-gray-200 dark:hover:text-black"
                       >
                         <div className="flex items-center">
                           Nuevo Insumo <FaPlus className="ml-2" />
@@ -143,7 +143,7 @@ function Consumables() {
                         }}
                         type="text"
                         placeholder="Buscar por nombre..."
-                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-grey px-1 text-sm md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
                       />
                       <input
                         value={description}
@@ -153,7 +153,7 @@ function Consumables() {
                         }}
                         type="text"
                         placeholder="Buscar por descripción..."
-                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-grey px-1 text-sm md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
                       />
                     </div>
                   </section>
