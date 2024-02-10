@@ -56,15 +56,10 @@ const Landing = () => {
     <section>
       <div id="home" className="bg-[url('https://res.cloudinary.com/doyafxwje/image/upload/v1703631707/Landing/dccy66yweqbiqi8at8um.jpg')] bg-cover bg-center flex flex-col justify-between h-screen lg:py-0">
         <nav className="flex flex-row items-center justify-between px-10 h-20 bg-transparent">
-          <img
-            src="https://res.cloudinary.com/doqyrz0sg/image/upload/v1702388420/aznyz3d12hy3wr3kk9j9.png"
-            className="hidden text-xl font-bold h-40 w-40 sm:flex"
-            alt="Logo"
-          ></img>
           <ul className="flex flex-row gap-5">
             <li className="text-black hover:text-blue-500 ">
               <Link
-                to="https://www.facebook.com/lauravargas.cp/"
+                to=""
                 target="_blank"
               >
                 <AiFillFacebook className="h-10 w-10 cursor-pointer" />
@@ -72,15 +67,12 @@ const Landing = () => {
             </li>
             <li className="text-black hover:text-primaryPink ">
               <Link
-                to="https://www.instagram.com/lauravargas.cpmu/"
+                to=""
                 target="_blank"
               >
                 <AiFillInstagram className="h-10 w-10 cursor-pointer" />
               </Link>
             </li>
-            {/* <li className="flex items-center shadow-md shadow-black rounded-2xl border-1 border-black border-double bg-beige font-medium px-5 cursor-pointer hover:scale-105">
-              <Link to={LOGIN}>Iniciar sesión</Link>
-            </li> */}
             <li
               className="flex items-center shadow-md shadow-black rounded-2xl border-1 border-black border-double bg-beige font-medium px-5 cursor-pointer hover:scale-105"
               onClick={handleLogin}
@@ -96,11 +88,8 @@ const Landing = () => {
         </nav>
         <div>
           <h1 className="w-full text-center text-[100px] font-bold font-fontTitle tracking-widest ">
-            Laura Vargas
+            Beauty Control
           </h1>
-          <h5 className="text-center text-4xl font-fontSubTitle">
-            Cejas y Pestañas
-          </h5>
         </div>
         <footer
           className="text-md flex justify-end items-center h-20 pr-10">

@@ -220,7 +220,7 @@ const Agenda = () => {
     return (
       <div>
         <NavBar />
-        <div className="flex flex-row h-full dark:bg-darkBackground">
+        <div className="flex flex-row mx-auto h-full dark:bg-darkBackground">
           <SideBar />
           {loading ? (
             <Loader />
@@ -228,23 +228,23 @@ const Agenda = () => {
             <div
               className={
                 user.role !== "especialista"
-                  ? "w-fit flex flex-col mx-auto m-10 gap-5"
-                  : "w-fit flex flex-col mx-auto m-10 gap-5 items-center"
+                  ? "flex flex-col mx-auto m-10 gap-5"
+                  : "flex flex-col mx-auto m-10 gap-5 items-center"
               }
             >
               <h1
                 className={
                   user.role !== "especialista"
-                    ? "items-start text-2xl underline underline-offset-4 tracking-wide font-fontTitle dark:text-beige sm:text-left"
-                    : "items-start text-2xl underline underline-offset-4 mb-10 tracking-wide font-fontTitle dark:text-beige sm:text-left"
+                    ? "text-center md:items-start text-2xl underline underline-offset-4 mx-5 tracking-wide font-fontTitle dark:text-beige sm:text-left"
+                    : "text-center md:items-start text-2xl underline underline-offset-4 mb-10 tracking-wide font-fontTitle dark:text-beige sm:text-left"
                 }
               >
                 Gestión de citas
               </h1>
               {user.role === "especialista" ? null : (
-                <section className="shadow shadow-black rounded-xl p-2 m-0 bg-secondaryPink dark:bg-darkPrimary dark:shadow-darkText">
-                  <h1 className="text-xl dark:text-darkText p-2 m-0 text-center xl:text-left">Agendar cita</h1>
-                  <div className="flex flex-col items-center flex-wrap gap-5 md:flex-row mr-5 mb-2 md:justify-center xl:justify-none">
+                <section className="shadow shadow-black rounded-xl p-2 mx-5 bg-secondaryColor dark:bg-darkPrimary dark:shadow-darkText">
+                  <h1 className="text-xl  dark:text-darkText p-2 m-0 text-center xl:text-left">Agendar cita</h1>
+                  <div className=" flex flex-col items-center flex-wrap gap-5 md:flex-row mr-5 mb-2 md:justify-center xl:justify-none">
                     <FaPlusCircle
                       className="text-center mt-1.5 cursor-pointer dark:text-darkText"
                       onClick={() => setShowClientListModal(true)}
@@ -309,10 +309,10 @@ const Agenda = () => {
                   <button
                     onClick={handleAppointmentModal}
                     disabled={!isFormCompleted}
-                    className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-primaryPink cursor-pointer" : "bg-gray-300 cursor-not-allowed"
-                      } shadow shadow-black text-black ${isFormCompleted ? "hover:bg-blue-600" : "cursor-not-allowed"
+                    className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-white cursor-pointer" : "bg-white cursor-not-allowed"
+                      } shadow shadow-black text-black ${isFormCompleted ? "hover:scale-[1.02]" : "cursor-not-allowed"
                       } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
-                        ? "dark:hover:bg-blue-600"
+                        ? "dark:hover:bg-secondaryColor"
                         : "dark:cursor-not-allowed"
                       }`}
                   >

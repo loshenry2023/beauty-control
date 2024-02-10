@@ -84,8 +84,8 @@ const BranchTable = ({ branches }) => {
       <>
         <div>
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="border border-black w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige">
-              <thead className="bg-secondaryPink text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-grey">
+            <table className="w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige dark:border">
+              <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                 <tr>
                   <th scope="col" className="px-4 py-3">
                     Nombre
@@ -114,7 +114,7 @@ const BranchTable = ({ branches }) => {
                   .map((fila, index) => (
                     <tr
                       key={index}
-                      className="text-xs group hover:bg-gray-200 cursor-pointer dark:hover:bg-gray-200 dark:hover:text-black"
+                      className="text-xs border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
                     >
                       <td className="px-4 py-4">{fila.branchName}</td>
                       <td className="px-4 py-4">{fila.address}</td>

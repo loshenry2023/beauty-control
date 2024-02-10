@@ -291,7 +291,7 @@ const Calendar = ({
                 }
                 className={
                   activeButton.range1
-                    ? "focus:ring-4 ring-primaryPink focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
+                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
@@ -330,7 +330,7 @@ const Calendar = ({
                 }
                 className={
                   activeButton.range2
-                    ? "focus:ring-4 ring-primaryPink focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
+                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
@@ -368,7 +368,7 @@ const Calendar = ({
                 }
                 className={
                   activeButton.range3
-                    ? "focus:ring-4 ring-primaryPink focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
+                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
@@ -408,8 +408,8 @@ const Calendar = ({
                   key={index}
                   className={
                     cita.current === true
-                      ? "border p-1 shadow shadow-black rounded-lg mt-2 hover:scale-105 dark:bg-darkPrimary dark:border-none"
-                      : "bg-red-100 p-1 border-black mt-2 rounded-lg hover:scale-105 dark:bg-red-950"
+                      ? "border p-1 shadow shadow-black rounded-lg mt-2 hover:scale-[1.01] dark:bg-darkPrimary dark:border-none"
+                      : "bg-secondaryColor  shadow shadow-black p-1 border-black mt-2 rounded-lg dark:bg-red-950 cursor-not-allowed"
                   }
                 >
                   <div className="flex flex-col">
@@ -453,11 +453,6 @@ const Calendar = ({
                         </div>
                       )}
                     </div>
-                    {/* <p className="text-md tracking-wide font-light dark:text-darkText">
-                      {" "}
-                      <span className="font-medium">Sede:</span>{" "}
-                      {cita.Branch.branchName}
-                    </p> */}
                     <p className="text-md tracking-wide font-light dark:text-darkText">
                       {" "}
                       <span className="font-medium">Especialista:</span>{" "}

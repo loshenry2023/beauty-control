@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Loader from '../Loader'
-
+import Loader from "../Loader";
 
 //icons
 import { IoClose } from "react-icons/io5";
@@ -49,8 +48,8 @@ const EditServiceModal = ({
     return () => window.removeEventListener("keydown", close);
   }, [service]);
 
-  const [submitLoader, setSubmitLoader] = useState(false)
-  const [disableSubmit, setDisableSubmit] = useState(false)
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -126,9 +125,8 @@ const EditServiceModal = ({
     }
 
     try {
-
-      setDisableSubmit(true)
-      setSubmitLoader(true)
+      setDisableSubmit(true);
+      setSubmitLoader(true);
 
       const data = {
         serviceName: service.name,
@@ -145,13 +143,13 @@ const EditServiceModal = ({
       );
 
       if (response.data.updated === "ok") {
-        setSubmitLoader(false)
+        setSubmitLoader(false);
         setAux(!aux);
         toast.success("Procedimiento modificado exitosamente");
 
         setTimeout(() => {
           closeModal();
-          setDisableSubmit(false)
+          setDisableSubmit(false);
           setService({
             name: "",
             specialty: {
@@ -164,13 +162,13 @@ const EditServiceModal = ({
           });
         }, 3000);
       } else {
-        setDisableSubmit(false)
-            setSubmitLoader(false)
+        setDisableSubmit(false);
+        setSubmitLoader(false);
         toast.error("Hubo un problema con la modificación");
       }
     } catch (error) {
-      setDisableSubmit(false)
-            setSubmitLoader(false)
+      setDisableSubmit(false);
+      setSubmitLoader(false);
       toast.error(
         `Hubo un problema con la modificación. ${error.response.data}`
       );
@@ -298,16 +296,17 @@ const EditServiceModal = ({
               </div>
 
               <div className="flex justify-center items-center">
-              {!submitLoader ?
-                                    <button
-                                    type="submit"
-                                    disabled={disableSubmit}
-                                    className="mt-2 px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-blue-600 focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                                >
-                                    Editar procedimiento
-                                </button> :
-                <Loader />
-              }
+                {!submitLoader ? (
+                  <button
+                    type="submit"
+                    disabled={disableSubmit}
+                    className="px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 focus:outline-none dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                  >
+                    Editar procedimiento
+                  </button>
+                ) : (
+                  <Loader />
+                )}
               </div>
             </form>
           </div>

@@ -79,14 +79,14 @@ const UserInfo = () => {
       <>
         {loading ? <Loader /> : (
         <div className="relative w-full flex justify-center items-center dark:bg-darkBackground">
-          <div className=" bg-beige border-4 border-primaryPink border-double mx-auto sm:w-3/5 lg:w-3/5 lg:grid lg:grid-cols-2 rounded-lg shadow-md shadow-grey dark:shadow-black dark:bg-darkPrimary ">
+          <div className=" bg-secondaryColor border-4 border-black border-double mx-auto sm:w-3/5 lg:w-3/5 lg:grid lg:grid-cols-2 rounded-lg shadow-md shadow-secondaryColor dark:border-white dark:shadow-black dark:bg-darkPrimary ">
             <div className="flex items-center">
               <img
-                className=" w-full shadow-md shadow-black rounded-xl border-grey object-cover sm:mx-2 sm:h-80"
+                className=" w-full shadow-md shadow-black rounded-xl border-secondaryColor object-cover sm:mx-2 sm:h-80"
                 src={userID?.image}
               />
             </div>
-            <div className="py-4 px-4 gap-2 bg-beige text-gray-800 flex flex-col sm:items-start sm:justify-between dark:bg-darkPrimary">
+            <div className="py-4 px-4 gap-2 bg-secondaryColor text-gray-800 flex flex-col sm:items-start sm:justify-between dark:bg-darkPrimary">
               <div className="flex gap-2">
                 <IoMdArrowRoundBack
                   onClick={handleGoBack}
@@ -98,7 +98,7 @@ const UserInfo = () => {
               </div>
               <h3 className="text-lg font-medium leading-tight dark:text-darkText">
                 Usuario:{" "}
-                <span className="text-md tracking-wide font-light">
+                <span className="text-md tracking-wide font-light text-black">
                   {userID?.userName}
                 </span>
               </h3>

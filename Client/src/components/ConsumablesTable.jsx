@@ -33,7 +33,7 @@ const ConsumablesTable = ({ products, user, onClose }) => {
       <>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="border border-black w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige">
-            <thead className="bg-secondaryPink text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-gre">
+            <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-gre">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Codigo

@@ -11,7 +11,7 @@ import { getBranches, getServices, getSpecialties } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 
 const ControlTables = () => {
-  const [activeTab, setActiveTab] = useState("clients");
+  const [activeTab, setActiveTab] = useState("services");
 
   const clients = useSelector((state) => state?.clients);
   const count = useSelector((state) => state?.countClient);
@@ -23,7 +23,7 @@ const ControlTables = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "clients":
+      case "services":
         return (
           <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
             <ServicesTable />
@@ -68,33 +68,41 @@ const ControlTables = () => {
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 md:gap-8 justify-center sm:justify-start">
               <button
-                className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "clients" && "bg-secondaryPink"
-                }`}
-                onClick={() => setActiveTab("clients")}
+                className={
+                  activeTab === "services"
+                    ? "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-primaryColor text-white font-medium rounded transition-colors duration-500"
+                    : "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-secondaryColor text-black rounded"
+                }
+                onClick={() => setActiveTab("services")}
               >
                 Procedimientos
               </button>
               <button
-                className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "PayMethods" && "bg-secondaryPink"
-                }`}
+                className={
+                  activeTab === "PayMethods"
+                    ? "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-primaryColor text-white font-medium rounded transition-colors duration-500"
+                    : "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-secondaryColor text-black rounded"
+                }
                 onClick={() => setActiveTab("PayMethods")}
               >
                 Medios de Pago
               </button>
               <button
-                className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "branches" && "bg-secondaryPink"
-                }`}
+                className={
+                  activeTab === "branches"
+                    ? "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-primaryColor text-white font-medium rounded transition-colors duration-500"
+                    : "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-secondaryColor text-black rounded"
+                }
                 onClick={() => setActiveTab("branches")}
               >
                 Sedes
               </button>
               <button
-                className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "specialties" && "bg-secondaryPink"
-                }`}
+                className={
+                  activeTab === "specialties"
+                    ? "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-primaryColor text-white font-medium rounded transition-colors duration-500"
+                    : "mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-secondaryColor text-black rounded"
+                }
                 onClick={() => setActiveTab("specialties")}
               >
                 Especialidades

@@ -67,7 +67,7 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
             }}
             type="text"
             placeholder="Buscar por nombre..."
-            className="font-medium w-full border border-black focus:outline-none focus:ring-1 focus:ring-grey px-1 text-sm dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+            className="font-medium w-full border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
           />
           <select
             onChange={(e) => {

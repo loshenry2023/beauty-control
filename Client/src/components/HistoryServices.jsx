@@ -34,7 +34,7 @@ const HistoryServices = ({ history }) => {
           : "w-full mx-auto my-10 flex flex-col flex-wrap justify-evenly gap-10 md:flex-row")
       }
     >
-      <div className="mx-auto mt-2 border-4 border-double border-primaryPink flex flex-col gap-1 flex-wrap p-4 h-fit rounded overflow-hidden shadow-lg dark:border-zinc-800 dark:bg-darkBackground">
+      <div className="mx-auto mt-2 border-primaryPink flex flex-col gap-1 flex-wrap p-4 h-fit rounded overflow-hidden dark:border-zinc-800 dark:bg-darkBackground">
         {historySorted.length >= 1 ? (
           <h2 className="font-medium text-center text-xl dark:text-darkText ">
             {" "}
@@ -50,7 +50,7 @@ const HistoryServices = ({ history }) => {
           return (
             <div
               key={index}
-              className="flex flex-row flex-wrap justify-between shadow-sm shadow-black p-2 hover:bg-blue-300 dark:bg-darkPrimary dark:hover:bg-zinc-800"
+              className="flex flex-row flex-wrap justify-between shadow-sm shadow-black p-2 dark:bg-darkPrimary dark:hover:bg-zinc-800"
             >
               <div className="flex flex-col justify-between">
                 <p className="text-md tracking-wide font-light dark:text-darkText">
@@ -90,7 +90,7 @@ const HistoryServices = ({ history }) => {
                 <a
                   href={service.imageServiceDone}
                   target="_blank"
-                  className="cursor-pointer shadow-md rounded-2xl w-fit px-2 bg-beige hover:bg-blue-600 hover:text-white dark:bg-darkBackground dark:text-darkText dark:hover:bg-blue-600"
+                  className="cursor-pointer shadow-md rounded-2xl w-fit px-2 bg-beige hover:bg-primaryColor transition-colors duration-700 hover:text-white dark:bg-darkBackground dark:text-darkText dark:hover:bg-blue-600"
                 >
                   <p className="text-center"> Ver foto </p>
                 </a>
