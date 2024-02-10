@@ -7,9 +7,10 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
     await conn.sync({ alter: true });
     try {
         // TODO Creo las sedes:
+        const firstBranchName = `${nameCompany}, sede 1 (¡ponle un nombre!)`;
         const branchesList = [
             {
-                branchName: `${nameCompany}, sede 1 (¡ponle un nombre!)`,
+                branchName: firstBranchName,
                 address: "Carga un domicilio",
                 phoneNumber: "+570000000000",
                 coordinates: "¡Carga el link de Google Maps apuntando a tu sucursal!",
@@ -190,7 +191,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
         });
         // Relación a sedes:
         let brnchCreated = await Branch.findAll({
-            where: { branchName: `${nameCompany} Primera sede (ponle un nombre!)` },
+            where: { branchName: firstBranchName },
         });
         await existingUserHenry.addBranch(brnchCreated);
         // Relación a especialidades:
