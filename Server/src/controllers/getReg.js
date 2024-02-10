@@ -19,7 +19,7 @@ const getReg = async (dataInc) => {
     let reg;
     switch (tableNameText) {
       case "Company":
-        reg = await tableName.findAll({
+        reg = await tableName.findAndCountAll({ //Company
           attributes: [
             [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
             "subscribedPlan",
