@@ -118,7 +118,7 @@ async function AddRegUser(User, data, conn, Company, dbName, dataLog) {
         }
         // Primero: lo agrego a la tabla de empresas:
         const regCompanyCreated = await Company.create({
-            userName, dbName, nameCompany: existingData.nameCompany, subscribedPlan: existingData.subscribedPlan, expireAt: existingData.expireAt, token: ''
+            userName, dbName, nameCompany: existingData.nameCompany, subscribedPlan: existingData.subscribedPlan, imgCompany: existingData.imgCompany, expireAt: existingData.expireAt, token: ''
         });
         wasCreated = true;
         // Obtengo el id para llevar a la tabla de usuarios:
