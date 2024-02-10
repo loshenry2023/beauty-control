@@ -27,6 +27,9 @@ module.exports = (sequelize) => {
     subscribedPlan: {
       type: DataTypes.ENUM("básico", "none"),
     },
+    firstLogin: {
+      type: DataTypes.ENUM("1", "0"),
+    },
     expireAt: {
       type: DataTypes.DATE,
       allowNull: false,

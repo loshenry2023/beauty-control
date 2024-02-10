@@ -12,7 +12,7 @@ async function createMainUser(databaseName) {
       "nameCompany": ".",
       "subscribedPlan": "none",
       "expireAt": "2080-12-31",
-      "imgCompany": "https://res.cloudinary.com/dvptbowso/image/upload/v1701979529/HenryPF/ses9qbgrnytwd9l1ovcu.png",
+      "imgCompany": "",
     }
     const data = {
       userLogged: ".",
@@ -35,7 +35,7 @@ async function createMainUser(databaseName) {
       "nameCompany": ".",
       "subscribedPlan": "none",
       "expireAt": "2080-12-31",
-      "imgCompany": "https://res.cloudinary.com/dvptbowso/image/upload/v1701979529/HenryPF/ses9qbgrnytwd9l1ovcu.png",
+      "imgCompany": "https://res.cloudinary.com/dvptbowso/image/upload/v1707602963/beuatycontrol-logo_fullv_knombo.png",
     }
     const data2 = {
       userLogged: ".",
