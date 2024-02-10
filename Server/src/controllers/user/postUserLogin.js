@@ -1,16 +1,59 @@
 // ! Obtiene los datos de un usuario para el login. Además se registra el token recibido.
-const { User, Specialty, Branch, Calendar } = require('../../DB_connection');
 const showLog = require("../../functions/showLog");
 const { Op } = require('sequelize');
+const { Company } = require("../../DB_connection_Main"); // conexión a la base de datos principal
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
+const { DB_NAME } = require("../../functions/paramsEnv");
+const logData = require("../../functions/logData");
+const isCompanyCurrent = require("../../functions/isCompanyCurrent");
 
 const postUserLogin = async (req, res) => {
     const { nameUser, idUser } = req.body;
     showLog(`postUserLogin`);
     try {
         if (!nameUser || !idUser) { throw Error("Faltan datos"); }
+        // Obtengo de la base de empresas a qué empresa y base de datos pertenece el usuario:
         const nameLowercase = nameUser.toLowerCase();
-        const existingUser = await User.findOne({
+        const existingUserCompany = await Company.findOne({
             where: { userName: { [Op.iLike]: nameLowercase } },
+        });
+        if (!existingUserCompany) {
+            //showLog(`00`);
+            showLog(`postUserLogin: user ${nameUser} not found`);
+            return res.status(404).send(`Usuario ${nameUser} no encontrado.`);
+        }
+        // Verifico si el plan de la empresa sigue vigente:
+        if (!await isCompanyCurrent(existingUserCompany.expireAt)) {
+            showLog(`postUserLogin: user ${nameUser}: the subscription expired`);
+            return res.status(402).send(`La suscripción expiró.`);
+        }
+        // Actualizo el token:
+        existingUserCompany.token = idUser;
+        // Establezco la hora de login, para calcular el tiempo de inactividad en los próximos llamados:
+        const currentTime = new Date();
+        existingUserCompany.lastUse = currentTime;
+        await existingUserCompany.save();
+        if (existingUserCompany.dbName === DB_NAME) {
+            // El usuario superSuperAdmin no requiere seguir validando otros datos.
+            const userDataCompany = {
+                id: existingUserCompany.id,
+                userName: existingUserCompany.userName,
+                role: "superSuperAdmin",
+                createdAt: existingUserCompany.createdAt,
+                companySubscribedPlan: existingUserCompany.subscribedPlan,
+                companyName: existingUserCompany.nameCompany,
+                companyExpireAt: existingUserCompany.expireAt,
+                companyImg: existingUserCompany.imgCompany,
+                token: idUser,
+            }
+            logData({ op: "L", nameCompany: existingUserCompany.nameCompany, dbName: existingUserCompany.dbName, userName: existingUserCompany.userName, desc: `User was logged in - superSuperAdmin` });
+            showLog(`postUserLogin OK`);
+            return res.status(200).json(userDataCompany);
+        }
+        // Una vez que ya tengo el nombre de la base de datos de trabajo, obtengo los datos del usuario a partir de la base de datos de la empresa:
+        const { conn, User, Specialty, Branch } = await connectDB(existingUserCompany.dbName);
+        await conn.sync({ alter: true });
+        const existingUser = await User.findByPk(existingUserCompany.id, {
             include: [
                 {
                     model: Specialty,
@@ -26,39 +69,36 @@ const postUserLogin = async (req, res) => {
             showLog(`postUserLogin: user ${nameUser} not found`);
             return res.status(404).send(`Usuario ${nameUser} no encontrado.`);
         }
-        // Actualizo el token:
-        existingUser.token = idUser;
-        // Establezco la hora de login, para calcular el tiempo de inactividad en los próximos llamados:
-        const currentTime = new Date();
-        existingUser.lastUse = currentTime;
-        await existingUser.save();
-        // Obtengo las sedes relacionadas y las citas que tiene reservadas en cada una para la fecha actual:
-        const miDate = new Date();
-        const currentDateWithoutTime = miDate.toISOString().slice(0, 10);
+        // Obtengo las sedes relacionadas:
         const userBranches = existingUser.Branches.map(branch => ({ id: branch.id, branchName: branch.branchName }));
         // Obtengo las especialidades relacionadas:
         const userSpecialties = existingUser.Specialties.map(specialty => ({ id: specialty.id, specialtyName: specialty.specialtyName }));
-
         const userData = {
-            id: existingUser.id,
+            id: existingUserCompany.id,
             userName: existingUser.userName,
-            branches: userBranches,
             name: existingUser.name,
             lastName: existingUser.lastName,
             role: existingUser.role,
+            createdAt: existingUser.createdAt,
+            companySubscribedPlan: existingUserCompany.subscribedPlan,
+            companyName: existingUserCompany.nameCompany,
+            companyExpireAt: existingUserCompany.expireAt,
+            companyImg: existingUserCompany.imgCompany,
             notificationEmail: existingUser.notificationEmail,
             phone1: existingUser.phoneNumber1,
             phone2: existingUser.phoneNumber2,
             image: existingUser.image,
             comission: existingUser.comission,
+            branches: userBranches,
             specialties: userSpecialties,
-            token: existingUser.token,
-            createdAt: existingUser.createdAt,
+            token: idUser,
         }
+        await conn.close();
+        logData({ op: "L", nameCompany: existingUserCompany.nameCompany, dbName: existingUserCompany.dbName, userName: existingUser.userName, desc: `User was logged in - ${existingUser.role}` });
         showLog(`postUserLogin OK`);
         return res.status(200).json(userData);
     } catch (err) {
-        showLog(`postUserLogin ERROR-> ${err.message}`);
+        showLog(`postUserLogin ERROR -> ${err.message}`);
         return res.status(500).send(err.message);
     }
 }

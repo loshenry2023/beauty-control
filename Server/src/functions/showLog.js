@@ -1,15 +1,7 @@
-// !  Muestra el log por consola y también lo guarda en un archivo, si se habilita por parámetro.
-const { MUST_LOG } = require('../functions/paramsEnv');
+// !  Muestra el log por consola.
 const fs = require('fs');
 
 const showLog = (text) => {
     console.log(text);
-    if (parseInt(MUST_LOG) === 1) {
-        fs.appendFile("log.txt", new Date().toLocaleString() + ": " + text + '\n', (err) => {
-            if (err) {
-                console.log("(no se guardó log)");
-            }
-        });
-    }
 };
 module.exports = showLog;

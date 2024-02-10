@@ -1,4 +1,4 @@
-const { conn, Calendar, User, Service, Client, Branch } = require('../../DB_connection');
+const { connectDB } = require(".././../DB_connection_General"); // conexión a la base de datos de trabajo
 const putReg = require("../../controllers/putReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -16,8 +16,36 @@ const putCalendarHandler = async (req, res) => {
       showLog(checked.mensaje);
       return res.status(checked.code).send(checked.mensaje);
     }
+    if (checked.role === "superSuperAdmin") { // no le permito meterse a las tablas internas de las empresas
+      showLog(`Wrong role.`);
+      return res.status(401).send(`Sin permiso.`);
+    }
+
     if (!id) { throw Error("Faltan datos"); }
-    const resp = await putReg(Calendar, "Calendar", req.body, id, conn, User, Service, Client, Branch);
+
+    const { conn, Calendar, User, Service, Client, Branch } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+    const data = {
+      tableName: Calendar,
+      tableNameText: "Calendar",
+      data: req.body,
+      id: id,
+      conn: conn,
+      tableName2: User,
+      tableName3: Service,
+      tableName4: Client,
+      tableName5: Branch,
+      userLogged: checked.userName,
+      dbName: checked.dbName,
+      nameCompany: checked.nameCompany,
+      userLogged: checked.userName,
+      dbName: checked.dbName,
+      nameCompany: checked.nameCompany
+
+    }
+    const resp = await putReg(data);
+    await conn.close(); // cierro la conexión
+
     if (resp.created === 'ok') {
       showLog(`putCalendarHandler OK`);
       return res.status(200).json({ "updated": "ok" });

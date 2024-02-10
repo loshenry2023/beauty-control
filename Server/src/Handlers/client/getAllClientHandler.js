@@ -1,4 +1,4 @@
-const { Client } = require('../../DB_connection');
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const getReg = require("../../controllers/getReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -14,7 +14,29 @@ const getAllClientHandler = async (req, res) => {
       showLog(checked.mensaje);
       return res.status(checked.code).send(checked.mensaje);
     }
-    const resp = await getReg(Client, "Clients", "", "", "", "", "", req.query);
+    if (checked.role === "superSuperAdmin") {
+      showLog(`Wrong role.`);
+      return res.status(401).send(`Sin permiso.`);
+    }
+
+    const { conn, Client } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+
+    const data = {
+      tableName: Client,
+      tableNameText: "Clients",
+      tableName2: "",
+      tableName3: "",
+      tableName4: "",
+      tableName5: "",
+      id: "",
+      dataQuery: req.query,
+      conn: "",
+      tableName6: ""
+    }
+    const resp = await getReg(data);
+    await conn.close(); // cierro la conexión
+
     const { count, rows } = resp
     if (count >= 0) {
       showLog(`getAllClientHandler OK`);

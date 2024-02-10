@@ -1,4 +1,4 @@
-const { Branch } = require('../../DB_connection');
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const putReg = require("../../controllers/putReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -21,7 +21,25 @@ const putBranchHandler = async (req, res) => {
     }
     if (!id) { throw Error("Faltan datos"); }
 
-    const resp = await putReg(Branch, "Branch", req.body, id);
+    const { conn, Branch } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+
+    const data = {
+      tableName: Branch,
+      tableNameText: "Branch",
+      data: req.body,
+      id: id,
+      conn: "",
+      tableName2: "",
+      tableName3: "",
+      tableName4: "",
+      tableName5: "",
+      userLogged: checked.userName,
+      dbName: checked.dbName,
+      nameCompany: checked.nameCompany
+    }
+    const resp = await putReg(data);
+    await conn.close(); // cierro la conexión
 
     if (resp.created === 'ok') {
       showLog(`putBranchHandler OK`);

@@ -1,5 +1,5 @@
 // ! Obtiene todos los usuarios. Llamado desde el handler. Acá no se verifica token porque lo hace el handler.
-const { User, Specialty, Branch } = require("../../DB_connection");
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const { Op } = require("sequelize");
 const showLog = require("../../functions/showLog");
 
@@ -13,8 +13,11 @@ const getAllUsers = async (
   specialty = "",
   role = "",
   createDateEnd = "",
-  createDateStart = ""
+  createDateStart = "",
+  dbName
 ) => {
+  const { conn, User, Specialty, Branch } = await connectDB(dbName);
+  await conn.sync({ alter: true });
   try {
     const { count, rows } = await User.findAndCountAll({
       include: [
@@ -52,11 +55,17 @@ const getAllUsers = async (
       limit: size,
       offset: size * page,
     });
+
+    await conn.close();
     return {
       count,
       rows,
     };
   } catch (err) {
+    // Cierro la conexión:
+    if (conn) {
+      await conn.close();
+    }
     showLog(`usersHandler -> getAllUsers error: ${err.message}`);
     return { message: err.message };
   }

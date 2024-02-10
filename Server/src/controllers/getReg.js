@@ -1,27 +1,45 @@
 // ! Obtiene registros.
 const { Op } = require("sequelize");
 const showLog = require("../functions/showLog");
-const { Specialty, Branch } = require("../DB_connection");
+const { DB_NAME } = require("../functions/paramsEnv");
 
-const getReg = async (
-  tableName,
-  tableNameText,
-  tableName2 = "",
-  tableName3 = "",
-  tableName4 = "",
-  tableName5 = "",
-  id = "",
-  dataQuery = ""
-) => {
+const getReg = async (dataInc) => {
+  const {
+    tableName,
+    tableNameText,
+    tableName2 = "",
+    tableName3 = "",
+    tableName4 = "",
+    tableName5 = "",
+    id = "",
+    dataQuery = "",
+    conn,
+    tableName6 = "" } = dataInc;
   try {
     let reg;
     switch (tableNameText) {
+      case "Company":
+        reg = await tableName.findAll({
+          attributes: [
+            [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
+            "subscribedPlan",
+            "expireAt",
+            "imgCompany",
+          ],
+          where: {
+            dbName: {
+              [Op.ne]: DB_NAME
+            },
+          },
+          order: [["nameCompany", "asc"]],
+        });
+        break;
       case "Specialists":
         const { branchWorking } = dataQuery;
         reg = await tableName.findAll({
           include: [
             {
-              model: Branch,
+              model: tableName2, //Branch,
               where: { branchName: { [Op.iLike]: `%${branchWorking}%` } },
               as: "Branches",
               through: { attributes: [] },
@@ -54,6 +72,9 @@ const getReg = async (
             "openningHours",
             "clossingHours",
             "workingDays",
+            "linkFb",
+            "linkIg",
+            "linkTk",
           ],
         });
         break;
@@ -153,32 +174,32 @@ const getReg = async (
           ],
           where: birthdaysMonth
             ? {
-                [Op.or]: [
-                  //filtro por nombres
-                  { name: { [Op.iLike]: `%${nameOrLastName}%` } },
-                  { lastName: { [Op.iLike]: `%${nameOrLastName}%` } },
-                ],
-                //filtro por mes de cumpleaños
-                monthBirthday: { [Op.iLike]: `%${birthdaysMonth}%` },
-                createdAt: {
-                  //para la fecha de creación
-                  [Op.gte]: createDateStart || "1900-01-01",
-                  [Op.lte]: createDateEnd || new Date(),
-                },
-              }
-            : {
-                [Op.or]: [
-                  //filtro por nombres
-
-                  { name: { [Op.iLike]: `%${nameOrLastName}%` } },
-                  { lastName: { [Op.iLike]: `%${nameOrLastName}%` } },
-                ],
-                createdAt: {
-                  //para la fecha de creación
-                  [Op.gte]: createDateStart || "1900-01-01",
-                  [Op.lte]: createDateEnd || new Date(),
-                },
+              [Op.or]: [
+                //filtro por nombres
+                { name: { [Op.iLike]: `%${nameOrLastName}%` } },
+                { lastName: { [Op.iLike]: `%${nameOrLastName}%` } },
+              ],
+              //filtro por mes de cumpleaños
+              monthBirthday: { [Op.iLike]: `%${birthdaysMonth}%` },
+              createdAt: {
+                //para la fecha de creación
+                [Op.gte]: createDateStart || "1900-01-01",
+                [Op.lte]: createDateEnd || new Date(),
               },
+            }
+            : {
+              [Op.or]: [
+                //filtro por nombres
+
+                { name: { [Op.iLike]: `%${nameOrLastName}%` } },
+                { lastName: { [Op.iLike]: `%${nameOrLastName}%` } },
+              ],
+              createdAt: {
+                //para la fecha de creación
+                [Op.gte]: createDateStart || "1900-01-01",
+                [Op.lte]: createDateEnd || new Date(),
+              },
+            },
           order: [
             [attribute, order],
             [attribute2, order],
@@ -261,7 +282,7 @@ const getReg = async (
               where: userId ? { id: userId } : {},
               include: [
                 {
-                  model: Specialty,
+                  model: tableName6, // Specialty
                   attributes: ["id", "specialtyName"],
                 },
               ],

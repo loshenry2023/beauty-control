@@ -5,16 +5,16 @@ const DB_USER = process.env.DB_USER || "postgres";
 const DB_PASSWORD = process.env.DB_PASSWORD || "admin";
 const DB_HOST = process.env.DB_HOST || "localhost";
 const DB_PORT = process.env.DB_PORT || 5432;
-const DB_NAME = process.env.DB_NAME || "lauravargas";
+const DB_NAME = process.env.DB_NAME || "beautycontrol";
 const SECURE = process.env.SECURE || false;
-const MUST_LOG = process.env.MUST_LOG || 0;
 const PORT = process.env.PORT || 3001;
-const FIRST_SUPERADMIN = process.env.FIRST_SUPERADMIN || "loshenry2023@gmail.com";
+const FIRST_SUPERSUPERADMIN = process.env.FIRST_SUPERSUPERADMIN || "loshenry2023@gmail.com";
 const EMAIL = process.env.EMAIL || "loshenry2023@gmail.com";
 const PASSWORD_EMAIL = process.env.PASSWORD_EMAIL || "nswm kmyt rgdf pjry";
+const EMAIL_MAIN = process.env.EMAIL_MAIN || "erraticless@gmail.com";
+const PASSWORD_EMAIL_MAIN = process.env.PASSWORD_EMAIL_MAIN || "kjpz oxne brrp ytju";
 const NODEMAILER_HOST = process.env.NODEMAILER_HOST || "smtp.gmail.com";
 const NODEMAILER_PORT = process.env.NODEMAILER_PORT || 465;
-
 
 module.exports = {
   DB_USER,
@@ -24,10 +24,11 @@ module.exports = {
   DB_NAME,
   SECURE,
   PORT,
-  MUST_LOG,
-  FIRST_SUPERADMIN,
+  FIRST_SUPERSUPERADMIN,
   EMAIL,
   PASSWORD_EMAIL,
+  EMAIL_MAIN,
+  PASSWORD_EMAIL_MAIN,
   NODEMAILER_HOST,
   NODEMAILER_PORT
 };

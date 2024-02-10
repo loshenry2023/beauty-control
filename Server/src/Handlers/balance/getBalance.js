@@ -1,4 +1,3 @@
-const { User, HistoryService, Incoming } = require('../../DB_connection');
 const getRegBalance = require("../../controllers/balance/getRegBalance");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -19,7 +18,7 @@ const getBalance = async (req, res) => {
       showLog(checked.role !== "superAdmin" ? `Wrong role.` : `Wrong token.`);
       return res.status(401).send(`Sin permiso.`);
     }
-    const resp = await getRegBalance(req.body);
+    const resp = await getRegBalance(req.body, checked.dbName);
     if (resp) {
       showLog(`getBalance OK`);
       return res.status(200).json(resp);

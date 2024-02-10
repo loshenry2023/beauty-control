@@ -1,4 +1,4 @@
-const { conn, Client } = require('../../DB_connection');
+const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
 const putReg = require("../../controllers/putReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -15,13 +15,33 @@ const putClientHandler = async (req, res) => {
       showLog(checked.mensaje);
       return res.status(checked.code).send(checked.mensaje);
     }
-    if (checked.role === "especialista") {
+    if (checked.role === "especialista" || checked.role === "superSuperAdmin") {
       showLog(`Wrong role.`);
       return res.status(401).send(`Sin permiso.`);
     }
+
     if (!id) { throw Error("Faltan datos"); }
 
-    const resp = await putReg(Client, "Client", req.body, id, conn);
+    const { conn, Client } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+
+    const data = {
+      tableName: Client,
+      tableNameText: "Client",
+      data: req.body,
+      id: id,
+      conn: conn,
+      tableName2: "",
+      tableName3: "",
+      tableName4: "",
+      tableName5: "",
+      userLogged: checked.userName,
+      dbName: checked.dbName,
+      nameCompany: checked.nameCompany
+
+    }
+    const resp = await putReg(data);
+    await conn.close(); // cierro la conexión
 
     if (resp.created === 'ok') {
       showLog(`putClientHandler OK`);

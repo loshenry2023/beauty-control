@@ -38,6 +38,18 @@ module.exports = (sequelize) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      linkFb: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      linkIg: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      linkTk: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,

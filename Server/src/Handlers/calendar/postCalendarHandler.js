@@ -1,4 +1,4 @@
-const { conn, Calendar, User, Service, Client, Branch } = require('../../DB_connection');
+const { connectDB } = require(".././../DB_connection_General"); // conexión a la base de datos de trabajo
 const postReg = require("../../controllers/postReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -14,12 +14,29 @@ const postCalendarHandler = async (req, res) => {
       showLog(checked.mensaje);
       return res.status(checked.code).send(checked.mensaje);
     }
-    if (checked.role === "especialista") {
-      showLog(checked.role === "especialista" ? `Wrong role.` : `Wrong token.`);
+    if (checked.role === "especialista" || checked.role === "superSuperAdmin") {
+      showLog((checked.role === "especialista" || checked.role === "superSuperAdmin") ? `Wrong role.` : `Wrong token.`);
       return res.status(401).send(`Sin permiso.`);
     }
 
-    const resp = await postReg(Calendar, "Calendar", req.body, conn, User, Service, Client, Branch);
+    const { conn, Calendar, User, Service, Client, Branch } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+    const data = {
+      userLogged: checked.userName,
+      tableName: Calendar,
+      tableNameText: "Calendar",
+      data: req.body,
+      conn: conn,
+      tableName2: User,
+      tableName3: Service,
+      tableName4: Client,
+      tableName5: Branch,
+      dbName: checked.dbName,
+      nameCompany: checked.nameCompany,
+    }
+    const resp = await postReg(data);
+    await conn.close(); // cierro la conexión
+
     if (resp.created === 'ok') {
       showLog(`postCalendarHandler OK`);
       return res.status(200).json({ "created": "ok" });

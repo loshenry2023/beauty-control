@@ -1,16 +1,14 @@
 {
-  "name": "laura-vargas-backend",
+  "name": "beauty-control-backend",
   "version": "1.0.0",
-  "description": "Laura Vargas backend",
+  "description": "Beauty Control backend",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "start": "nodemon index.js",
-    "test": "jest --detectOpenHandles",
-    "dev": "vite",
-    "build": "vite build"
+    "test": "jest --detectOpenHandles"
   },
   "author": "Paulo Vinci",
   "license": "ISC",

@@ -1,4 +1,4 @@
-const { Calendar, User, Service, Client, Branch } = require('../../DB_connection');
+const { connectDB } = require(".././../DB_connection_General"); // conexión a la base de datos de trabajo
 const getReg = require("../../controllers/getReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -14,7 +14,29 @@ const getCalendarHandler = async (req, res) => {
       showLog(checked.mensaje);
       return res.status(checked.code).send(checked.mensaje);
     }
-    const resp = await getReg(Calendar, "Calendar", User, Service, Client, Branch, "", req.query);
+    if (checked.role === "superSuperAdmin") {
+      showLog(`Wrong role.`);
+      return res.status(401).send(`Sin permiso.`);
+    }
+
+    const { conn, Calendar, User, Service, Client, Branch, Specialty } = await connectDB(checked.dbName);
+    await conn.sync({ alter: true });
+
+    const data = {
+      tableName: Calendar,
+      tableNameText: "Calendar",
+      tableName2: User,
+      tableName3: Service,
+      tableName4: Client,
+      tableName5: Branch,
+      id: "",
+      dataQuery: req.query,
+      conn: "",
+      tableName6: Specialty
+    }
+    const resp = await getReg(data);
+    await conn.close(); // cierro la conexión
+
     if (resp) {
       showLog(`getCalendarHandler OK`);
       return res.status(200).json(resp);
