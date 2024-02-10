@@ -182,8 +182,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                 name: "Usuario",
                 lastName: "Maestro",
                 phoneNumber1: "+570000000000",
-                image:
-                    "https://res.cloudinary.com/dvptbowso/image/upload/v1701979529/HenryPF/ses9qbgrnytwd9l1ovcu.png",
+                image: "https://res.cloudinary.com/doyafxwje/image/upload/v1707517244/Logos/beuatycontrol-logo_hlmilv.png",
                 comission: 0,
                 role: "superAdmin",
                 first: "1",

@@ -118,7 +118,7 @@ async function AddRegUser(User, data, conn, Company, dbName, dataLog) {
         }
         // Primero: lo agrego a la tabla de empresas:
         const regCompanyCreated = await Company.create({
-            userName, dbName, nameCompany: existingData.nameCompany, subscribedPlan: existingData.subscribedPlan, imgCompany: existingData.imgCompany, expireAt: existingData.expireAt, token: ''
+            userName, dbName, nameCompany: existingData.nameCompany, subscribedPlan: existingData.subscribedPlan, imgCompany: existingData.imgCompany, expireAt: existingData.expireAt, token: '', firstLogin: "1"
         });
         wasCreated = true;
         // Obtengo el id para llevar a la tabla de usuarios:
@@ -180,7 +180,7 @@ async function AddRegCompany(Company, data, userLogged, dataLog) {
         const dbName = await createDBname(); // nombre de base de datos aleatorio
         // Lo agrego a la tabla de empresas:
         const regCompanyCreated = await Company.create({
-            userName, dbName, nameCompany, subscribedPlan, expireAt, imgCompany
+            userName, dbName, nameCompany, subscribedPlan, expireAt, imgCompany, firstLogin: "1"
         });
         // Obtengo el id para devolver:
         const companyCreated = await Company.findOne({
@@ -229,7 +229,7 @@ async function AddRegUserMain(Company, data, dataLog) {
         }
         // Lo agrego a la tabla de empresas:
         const regCompanyCreated = await Company.create({
-            userName, dbName, nameCompany, subscribedPlan, expireAt, imgCompany
+            userName, dbName, nameCompany, subscribedPlan, expireAt, imgCompany, firstLogin: "1",
         });
         // Obtengo el id para devolver:
         const userCreated = await Company.findOne({

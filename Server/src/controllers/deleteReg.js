@@ -15,13 +15,21 @@ const deleteReg = async (dataInc) => {
         if (!id) { throw Error("Faltan datos"); }
         let regDelete;
         let regToDelete;
+        let count = 0;
         if (tableNameText !== "Company") {
             regToDelete = await tableName.findByPk(id);
             if (!regToDelete) { throw Error("Registro no encontrado"); }
+            if (await tableName.count() < 2) { throw Error("No se permite eliminar el último registro"); }
         }
         switch (tableNameText) {
             case "Company":
                 // la empresa se elimina de la tabla Company y también se borra la base de datos asignada.
+                count = await Company.count({
+                    where: {
+                        nameCompany: id
+                    }
+                });
+                if (count === 0) { throw Error("Registro no encontrado"); }
                 reg = await Company.findOne({
                     attributes: [
                         "dbName",
