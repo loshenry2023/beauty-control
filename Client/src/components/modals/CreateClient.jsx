@@ -156,13 +156,13 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                 <div>
                     <div className="w-4/5 mx-auto bg-white shadow rounded-lg p-6 md:w-full dark:bg-darkBackground">
                         <div className='flex justify-between'>
-                            <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">Agregar nuevo cliente</h1>
+                            <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">Agregar nuevo cliente</h1>
                             <IoClose onClick={closeWithX} className='cursor-pointer mt-2 w-5 h-5 hover:scale-125 dark:text-darkText' />
                         </div>
                         <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                             <div>
-                                <label className='pl-1 text-sm font-bold dark:text-darkText'>Nombre</label>
+                                <label className='pl-1  font-bold dark:text-darkText'>Nombre</label>
                                 <input
                                     onChange={handleChange}
                                     type="text"
@@ -171,10 +171,10 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                     placeholder="Nombre"
                                     className={`border border-black p-2 rounded w-full ${errors.name !== undefined && "border-2 border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                 />  
-                                {errors.name !== "" && <p className="text-xs text-red-500">{errors.name}</p>}
+                                {errors.name !== "" && <p className=" text-red-500">{errors.name}</p>}
                             </div>  
                             <div>
-                                <label className='pl-1 text-sm font-bold dark:text-darkText'>Apellido</label>
+                                <label className='pl-1  font-bold dark:text-darkText'>Apellido</label>
                                 <input
                                     onChange={handleChange}
                                     type="text"
@@ -183,12 +183,12 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                     placeholder="Apellido"
                                     className={`border border-black p-2 rounded w-full ${errors.lastName !== undefined && "border-2 border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                 />
-                                {errors.lastName !== "" && <p className="text-xs text-red-500">{errors.lastName}</p>}
+                                {errors.lastName !== "" && <p className=" text-red-500">{errors.lastName}</p>}
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                             <div>
-                            <label className="mb-2 text-sm font-bold text-gray-900 dark:text-darkText">Email cliente</label>
+                            <label className="mb-2  font-bold text-gray-900 dark:text-darkText">Email cliente</label>
                                 <input
                                     onChange={handleChange}
                                     type="email"
@@ -197,10 +197,10 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                     placeholder="Email cliente"
                                     className={`border text-gray-500 border-black p-2 rounded w-full ${errors.email !== undefined && "border-2 border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                 />
-                                {errors.email !== "" && <p className="text-xs text-red-500">{errors.email}</p>}
+                                {errors.email !== "" && <p className=" text-red-500">{errors.email}</p>}
                             </div>
                             <div>
-                                <label className='mb-2 text-sm font-bold text-gray-900 dark:text-darkText'>ID de persona</label>
+                                <label className='mb-2  font-bold text-gray-900 dark:text-darkText'>ID de persona</label>
                                 <input
                                     placeholder="ID"
                                     className={`border border-black p-2 rounded w-full ${errors.id_pers !== undefined && "border-2 border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
@@ -209,12 +209,12 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                     name="id_pers"
                                     value={client.id_pers}
                                 />
-                                {errors.id_pers !== "" && <p className="text-xs text-red-500">{errors.id_pers}</p>}
+                                {errors.id_pers !== "" && <p className=" text-red-500">{errors.id_pers}</p>}
                          </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                             <div>
-                                <label className='pl-1 text-sm font-bold dark:text-darkText'>Telefono</label>
+                                <label className='pl-1  font-bold dark:text-darkText'>Telefono</label>
                                 <input
                                     placeholder="Telefono 1"
                                     className={`border border-black p-2 rounded w-full ${errors.phoneNumber1 !== undefined && "border-2 border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
@@ -223,10 +223,10 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                     name="phoneNumber1"
                                     value={client.phoneNumber1}
                                 />
-                                {errors.phoneNumber1 !== "" && <p className="text-xs text-red-500">{errors.phoneNumber1}</p>}
+                                {errors.phoneNumber1 !== "" && <p className=" text-red-500">{errors.phoneNumber1}</p>}
                             </div>
                             <div>
-                                <label className='pl-1 text-sm font-bold dark:text-darkText'>Telefono alternativo</label>
+                                <label className='pl-1  font-bold dark:text-darkText'>Telefono alternativo</label>
                                 <input
                                     onChange={handleChange}
                                     type="text"
@@ -235,11 +235,11 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                     placeholder="Telefono 2"
                                     className={`border border-black p-2 rounded w-full ${errors.phoneNumber2 !== undefined && "border-2 border-red-500"} dark:text-darkText dark:bg-darkPrimary`}
                                 />
-                                {errors.phoneNumber2 !== "" && <p className="text-xs text-red-500">{errors.phoneNumber2}</p>}
+                                {errors.phoneNumber2 !== "" && <p className=" text-red-500">{errors.phoneNumber2}</p>}
                             </div>
                         </div>
                         <div className="first-letter:grid grid-cols-1 mb-2">
-                            <label className='pl-1 text-sm font-bold dark:text-darkText'>Fecha de nacimiento</label>
+                            <label className='pl-1  font-bold dark:text-darkText'>Fecha de nacimiento</label>
                             <input
                                 placeholder="Fecha de nacimiento"
                                 className={`border border-black p-2 rounded w-full ${errors.birthday !== undefined && "border-2 border-red-500"} dark:text-darkText dark:bg-darkPrimary dark:[color-scheme:dark]`}
@@ -248,7 +248,7 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                 name="birthday"
                                 value={client.birthday}
                             />
-                            {errors.birthday && <p className="text-xs text-red-500">{errors.birthday}</p>}
+                            {errors.birthday && <p className=" text-red-500">{errors.birthday}</p>}
                         </div>
                         <div>
                         <div className="mt-2 grid grid-cols-1 place-items-center">

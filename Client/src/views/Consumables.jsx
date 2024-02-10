@@ -107,7 +107,7 @@ function Consumables() {
                 <Loader />
               ) : (
                 <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
-                  <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+                  <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
                     Control de insumos
                   </h1>
 
@@ -143,7 +143,7 @@ function Consumables() {
                         }}
                         type="text"
                         placeholder="Buscar por nombre..."
-                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1  md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
                       />
                       <input
                         value={description}
@@ -153,7 +153,7 @@ function Consumables() {
                         }}
                         type="text"
                         placeholder="Buscar por descripción..."
-                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+                        className="w-full text-center border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1  md:text-left dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
                       />
                     </div>
                   </section>

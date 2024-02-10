@@ -16,7 +16,7 @@ const TablaDatos = ({ users, count }) => {
       <>
         {count ? (
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="border border-secondaryColor w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige">
+            <table className="border border-secondaryColor w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige">
               <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-gre">
                 <tr>
                   <th scope="col" className="px-2 py-3">
@@ -51,7 +51,7 @@ const TablaDatos = ({ users, count }) => {
                  props={fila}
                  key={index}
                  onClick={() => navigate(`${USERDETAILBASE}/${fila.id}`)}
-                 className="text-xs border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 cursor-pointer dark:hover:bg-gray-200 dark:hover:text-black"
+                 className="border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 cursor-pointer dark:hover:bg-gray-200 dark:hover:text-black"
                >
       
                   <td className="px-2 py-4">{fila.createdAt.split(" ")[0]}</td>

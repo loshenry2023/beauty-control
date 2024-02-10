@@ -40,7 +40,7 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
                 onChange={handlerDateFrom}
                 type="date"
                 defaultValue=""
-                className="w-full text-center border rounded-md border-black px-2 text-sm sm:w-fit dark:invert"
+                className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
               />
             </div>
             <div className="flex gap-2">
@@ -52,7 +52,7 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
                 onChange={handlerDateTo}
                 type="date"
                 defaultValue=""
-                className="w-full text-center border rounded-md border-black px-2 text-sm sm:w-fit dark:invert"
+                className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
               />
             </div> </>): null }
         </div>
@@ -67,14 +67,14 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
             }}
             type="text"
             placeholder="Buscar por nombre..."
-            className="font-medium w-full border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+            className="font-medium w-full border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1  dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
           />
           <select
             onChange={(e) => {
               setOrder(e.target.value);
               setPage(0);
             }}
-            className="font-medium py-0.5 w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+            className="font-medium py-0.5 w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
           >
             <option value="asc"> -- Ordenar por -- </option>
             <option value="asc">A-Z</option>
@@ -87,7 +87,7 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
               setAttribute(e.target.value);
               setPage(0);
             }}
-            className="font-medium py-0.5 w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+            className="font-medium py-0.5 w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
           >
             <option value="lastName"> -- Ordenar por -- </option>
             <option value="name">Nombre</option>
@@ -100,7 +100,7 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
               setBirthdaysMonth(e.target.value);
               setPage(0);
             }}
-            className="font-medium py-0.5 w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+            className="font-medium py-0.5 w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
           >
             <option value=""> -- Mes de cumpleaños -- </option>
             <option value="01" >Enero</option>

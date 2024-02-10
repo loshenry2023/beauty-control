@@ -79,7 +79,7 @@ const orderedBranches = user.branches.sort((a, b) => {
       <div className="relative flex flex-col items-center justify-center gap-5 rounded-xl w-fit p-10 mx-auto h-fit bg-white border shadow-xl shadow-black border-black">
       <IoClose onClick={() => navigate(-1)} className="absolute top-3 right-3 h-5 w-5 cursor-pointer hover:scale-110"/>
       <div className="text-center mb-2">
-        <h1 className="text-2xl font-bold mb-2">¡Hola {user.name}! ¿Cómo estás?</h1>
+        <h1 className="text-3xl font-bold mb-2">¡Hola {user.name}! ¿Cómo estás?</h1>
         <h2 className="text-xl">Haz clic en la sede en la que trabajarás hoy 👇</h2>
       </div>
       <div className= "w-fit flex flex-row gap-5 flex-wrap justify-center">
@@ -98,7 +98,7 @@ const orderedBranches = user.branches.sort((a, b) => {
         )})}
       </div>
       <div>
-        <button className={isButtonDisabled ? "font-medium cursor-not-allowed rounded shadow-sm py-2 px-4 my-2 shadow-black bg-primaryPink hover:bg-blue-600" : "cursor-pointer font-medium  rounded shadow-sm py-2 px-4 my-2 shadow-black bg-primaryPink hover:bg-blue-600"} onClick={handleBranch} disabled={isButtonDisabled}> Ingresar </button>
+        <button className={isButtonDisabled ? "font-medium cursor-not-allowed rounded shadow-sm py-2 px-4 my-2 shadow-black" : "cursor-pointer font-medium  rounded shadow-sm py-2 px-4 my-2 shadow-black hover:bg-secondaryColor transition-color duration-700 ease-in-out"} onClick={handleBranch} disabled={isButtonDisabled}> Ingresar </button>
       </div>
     </div>}
     <ToasterConfig />

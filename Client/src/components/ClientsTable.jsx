@@ -15,7 +15,7 @@ const ClientsTable = ({clients, count, setChosenClient, setShowClientListModal})
         <>
           {count > 0 ? (
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-              <table className="border border-secondaryColor w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige">
+              <table className="border border-secondaryColor w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige">
                 <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                 {location.pathname !== "/agenda" ?
                   <tr>
@@ -78,7 +78,7 @@ const ClientsTable = ({clients, count, setChosenClient, setShowClientListModal})
                           navigate(`${CLIENTDETAILBASE}/${fila.id}`);
                         }
                       }}
-                      className="text-xs border border-secondaryColor hover:bg-gray-200 cursor-pointer transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
+                      className=" border border-secondaryColor hover:bg-gray-200 cursor-pointer transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
                     >
                        {location.pathname !== "/agenda" ? (
                         <>

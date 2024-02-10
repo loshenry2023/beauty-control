@@ -74,9 +74,9 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
     <div className="flex flex-col rounded m-5 p-3 gap-3 w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto border border-white bg-white dark:bg-darkBackground">
       <div className="flex flex-row justify-between">
         <>
-          <IoPersonAddOutline onClick={showCreateModal} className='h-6 w-6 mt-0.5 cursor-pointer dark:text-darkText' />
+          <IoPersonAddOutline onClick={showCreateModal} className='h-7 w-7 mt-0.5 cursor-pointer dark:text-darkText' />
         </>
-        <h2 className="text-xl dark:text-darkText">Elige un cliente</h2>
+        <h1 className="text-2xl dark:text-darkText">Elige un cliente</h1>
         <>
           <IoClose className='h-6 w-6 mt-0.5 cursor-pointer hover:scale-125 dark:text-darkText' onClick={() => setShowClientListModal(false)} />
         </>

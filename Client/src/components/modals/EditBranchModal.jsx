@@ -140,7 +140,7 @@ const EditBranchModal = ({
         <div>
           <div className="w-4/5 mx-auto bg-white shadow rounded-lg p-6 md:w-full dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Editar Sede
               </h1>
               <IoClose
@@ -150,7 +150,7 @@ const EditBranchModal = ({
             </div>
             <form onSubmit={handleSubmit}>
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Nombre de la Sede
                 </label>
                 <input
@@ -164,11 +164,11 @@ const EditBranchModal = ({
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
                 {errors.name !== "" && (
-                  <p className="text-xs text-red-500 p-1">{errors.name}</p>
+                  <p className=" text-red-500 p-1">{errors.name}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Dirección
                 </label>
                 <input
@@ -182,12 +182,12 @@ const EditBranchModal = ({
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
                 {errors.address !== "" && (
-                  <p className="text-xs text-red-500 p-1">{errors.address}</p>
+                  <p className=" text-red-500 p-1">{errors.address}</p>
                 )}
               </div>
 
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Teléfono
                 </label>
                 <input
@@ -201,11 +201,11 @@ const EditBranchModal = ({
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
                 {errors.phone !== "" && (
-                  <p className="text-xs text-red-500 p-1">{errors.phone}</p>
+                  <p className=" text-red-500 p-1">{errors.phone}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Coordenadas Google Maps
                 </label>
                 <input
@@ -220,7 +220,7 @@ const EditBranchModal = ({
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
                 {errors.coordinates !== "" && (
-                  <p className="text-xs text-red-500 p-1">
+                  <p className=" text-red-500 p-1">
                     {errors.coordinates}
                   </p>
                 )}

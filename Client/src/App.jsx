@@ -43,7 +43,7 @@ const {
 
 const App = () => {
   return (
-    <div>
+    <div className="font-fontBody text-md">
       <Routes>
         <Route path={ROOT} element={<Landing />} />
         <Route path={LOGIN} element={<LogIn />} />

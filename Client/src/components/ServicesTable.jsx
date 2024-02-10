@@ -85,7 +85,7 @@ const ServicesTable = () => {
       <>
         <div>
           <div className=" overflow-auto max-h-[700px] relative overflow-x-auto shadow-md sm:rounded-lg ">
-            <table className="w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige dark:border">
+            <table className="w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige dark:border">
               <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                 <tr>
                   <th scope="col" className="px-4 py-3">
@@ -120,7 +120,7 @@ const ServicesTable = () => {
                   .map((fila, index) => (
                     <tr
                       key={index}
-                      className="text-xs border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
+                      className=" border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
                     >
                       <td className="px-4 py-4">{fila.serviceName}</td>
                       <td className="px-4 py-4">{fila.Specialties[0]?.specialtyName || '-'}</td>
@@ -175,19 +175,19 @@ const ServicesTable = () => {
                 window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
               }`}
             >
-              <p className="mb-4 text-sm sm:text-base">
+              <p className="mb-4  sm:text-base">
                 ¿Estás seguro de que deseas eliminar esta cita?
               </p>
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={() => deleteConfirmed(true)}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
                 >
                   Aceptar
                 </button>
                 <button
                   onClick={() => deleteConfirmed(false)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
                 >
                   Cancelar
                 </button>

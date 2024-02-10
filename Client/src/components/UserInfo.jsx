@@ -90,50 +90,50 @@ const UserInfo = () => {
               <div className="flex gap-2">
                 <IoMdArrowRoundBack
                   onClick={handleGoBack}
-                  className="h-5 w-5 mt-1 cursor-pointer dark:text-darkText"
+                  className="h-5 w-5 mt-1.5 cursor-pointer dark:text-darkText"
                 />
-                <h2 className="underline font-semibold text-xl leading-tight dark:text-darkText">
+                <h1 className="underline font-semibold text-2xl leading-tight dark:text-darkText">
                   {userID?.name} {userID?.lastName}
-                </h2>
+                </h1>
               </div>
-              <h3 className="text-lg font-medium leading-tight dark:text-darkText">
+              <h3 className="text-lg font-bold leading-tight dark:text-darkText">
                 Usuario:{" "}
-                <span className="text-md tracking-wide font-light text-black">
+                <span className="text-md tracking-wide font-medium text-black">
                   {userID?.userName}
                 </span>
               </h3>
-              <h3 className="flex text-lg font-medium leading-tight dark:text-darkText">
+              <h3 className="flex text-lg font-bold leading-tight dark:text-darkText">
                 Rol:{" "}
-                <span className="pl-1 text-md tracking-wide font-light ">
+                <span className="pl-1 text-md tracking-wide ">
                   {" "}
                   {userID?.role === "superAdmin" ? "Admin General" : `${userID.role .charAt(0).toUpperCase()}${userID.role .slice(1)}`}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium  dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Teléfono:{" "}
-                <span className="text-md tracking-wide font-light dark:text-darkText">
+                <span className="text-md tracking-wide font-medium dark:text-darkText">
                   {userID?.phone1}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Email:{" "}
-                <span className="text-md tracking-wide font-light dark:text-darkText">
+                <span className="text-md tracking-wide font-medium dark:text-darkText">
                   {" "}
                   {userID?.notificationEmail}{" "}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Comisión:{" "}
-                <span className="text-md tracking-wide font-light ">
+                <span className="text-md tracking-wide font-medium ">
                   {userID?.comission}%
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium sm:text-base lg:text-lg dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold sm:text-base lg:text-lg dark:text-darkText">
                 Especialidades:
                 {especialidades &&
                   especialidades.map((specialt, index) => (
                     <span
-                      className="text-md tracking-wide font-light"
+                      className="text-md tracking-wide font-medium"
                       key={index}
                     >
                       {" "}
@@ -141,13 +141,13 @@ const UserInfo = () => {
                     </span>
                   ))}
               </h3>
-              <h3 className="text-lg leading-tight font-medium first-line: dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold first-line: dark:text-darkText">
                 Sede:{" "}
-                <span className="text-md tracking-wide font-light dark:text-darkText">
+                <span className="text-md tracking-wide font-medium dark:text-darkText">
                   {sedes &&
                     sedes.map((sede, index) => (
                       <span
-                        className="text-md tracking-wide font-light"
+                        className="text-md tracking-wide font-medium"
                         key={index}
                       >
                         {" "}
@@ -156,9 +156,9 @@ const UserInfo = () => {
                     ))}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Fecha de creación:{" "}
-                <span className="text-md tracking-wide font-light ">
+                <span className="text-md tracking-wide font-medium ">
                   {createdAtInBogotaTimezone.split(",")[0]}
                 </span>
               </h3>
@@ -195,19 +195,19 @@ const UserInfo = () => {
                 window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
               }`}
             >
-              <p className="mb-4 text-sm sm:text-base">
+              <p className="mb-4  sm:text-base">
                 ¿Estás seguro de que deseas eliminar este usuario?
               </p>
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={() => deleteConfirmed(true)}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
                 >
                   Aceptar
                 </button>
                 <button
                   onClick={() => deleteConfirmed(false)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
                 >
                   Cancelar
                 </button>

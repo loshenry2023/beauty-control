@@ -36,12 +36,12 @@ const HistoryServices = ({ history }) => {
     >
       <div className="mx-auto mt-2 border-primaryPink flex flex-col gap-1 flex-wrap p-4 h-fit rounded overflow-hidden dark:border-zinc-800 dark:bg-darkBackground">
         {historySorted.length >= 1 ? (
-          <h2 className="font-medium text-center text-xl dark:text-darkText ">
+          <h2 className="font-medium text-center text-2xl dark:text-darkText ">
             {" "}
             Procedimientos anteriores{" "}
           </h2>
         ) : (
-          <h2 className="font-medium text-center dark:text-darkText ">
+          <h2 className="font-medium text-center text-2xl dark:text-darkText ">
             {" "}
             Sin procedimientos registrados{" "}
           </h2>
@@ -53,33 +53,33 @@ const HistoryServices = ({ history }) => {
               className="flex flex-row flex-wrap justify-between shadow-sm shadow-black p-2 dark:bg-darkPrimary dark:hover:bg-zinc-800"
             >
               <div className="flex flex-col justify-between">
-                <p className="text-md tracking-wide font-light dark:text-darkText">
+                <p className="text-md tracking-wide font-medium dark:text-darkText">
                   {" "}
-                  <span className="font-medium dark:text-darkText">
+                  <span className="font-bold dark:text-darkText">
                     {" "}
                     Fecha de procedimiento:{" "}
                   </span>{" "}
                   {converterGMT(service.date).split(" ")[0]}{" "}
                 </p>
-                <p className="text-md tracking-wide font-light dark:text-darkText">
+                <p className="text-md tracking-wide font-medium dark:text-darkText">
                   {" "}
-                  <span className="font-medium dark:text-darkText">
+                  <span className="font-bold dark:text-darkText">
                     {" "}
                     Sede:{" "}
                   </span>{" "}
                   {service.branchName}
                 </p>
-                <p className="text-md tracking-wide font-light dark:text-darkText">
+                <p className="text-md tracking-wide font-medium dark:text-darkText">
                   {" "}
-                  <span className="font-medium dark:text-darkText">
+                  <span className="font-bold dark:text-darkText">
                     {" "}
                     Especialista:{" "}
                   </span>{" "}
                   {service.attendedBy}
                 </p>
-                <p className="text-md tracking-wide font-light dark:text-darkText">
+                <p className="text-md tracking-wide font-medium dark:text-darkText">
                   {" "}
-                  <span className="font-medium dark:text-darkText">
+                  <span className="font-bold dark:text-darkText">
                     {" "}
                     Servicio:{" "}
                   </span>{" "}

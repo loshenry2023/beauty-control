@@ -225,7 +225,7 @@ const DateDetail = () => {
   };
 
   const Checkbox = () => (
-    <div className="flex items-center text-sm mt-[-20px]">
+    <div className="flex items-center  mt-[-20px]">
       <input
         type="checkbox"
         checked={isConsentVisible}
@@ -249,9 +249,9 @@ const DateDetail = () => {
       <div className="flex flex-row">
         <IoMdArrowRoundBack
           onClick={handleGoBack}
-          className="w-6 h-6 mt-1 mr-2 hover:scale-110 cursor-pointer dark:text-darkText"
+          className="w-6 h-6 mt-3 mr-2 hover:scale-110 cursor-pointer dark:text-darkText"
         />
-        <h1 className="mb-4 text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+        <h1 className="mb-4 text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
           {" "}
           Información de cita
         </h1>
@@ -268,36 +268,36 @@ const DateDetail = () => {
                 alt="client-photo"
               />
               <div className="m-4 col-span-2 ml-10 mt-0 space-y-2 dark:text-darkText">
-                <p className="font-medium mt-5 text-center xl:text-left xl:mt-0">
-                  Nombre: <span className="font-light">{clientInfo.name}</span>
+                <p className="font-bold mt-5 text-center xl:text-left xl:mt-0">
+                  Nombre: <span className="font-medium">{clientInfo.name}</span>
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   Apellido:{" "}
-                  <span className="font-light">{clientInfo.lastName}</span>
+                  <span className="font-medium">{clientInfo.lastName}</span>
                 </p>
-                <p className="font-medium text-center xl:text-left">
-                  Email: <span className="font-light">{clientInfo.email}</span>
+                <p className="font-bold text-center xl:text-left">
+                  Email: <span className="font-medium">{clientInfo.email}</span>
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   ID:{" "}
                   {clientInfo.id_pers ? (
-                    <span className="font-light">{clientInfo.id_pers} </span>
+                    <span className="font-medium">{clientInfo.id_pers} </span>
                   ) : (
-                    <span className="font-light"> - </span>
+                    <span className="font-medium"> - </span>
                   )}
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   Teléfono:{" "}
-                  <span className="font-light">{clientInfo.phoneNumber1}</span>{" "}
+                  <span className="font-medium">{clientInfo.phoneNumber1}</span>{" "}
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   Teléfono secundario:{" "}
                   {clientInfo.phoneNumber2 ? (
-                    <span className="font-light">
+                    <span className="font-medium">
                       {clientInfo.phoneNumber2}{" "}
                     </span>
                   ) : (
-                    <span className="font-light"> - </span>
+                    <span className="font-medium"> - </span>
                   )}
                 </p>
               </div>
@@ -385,7 +385,7 @@ const DateDetail = () => {
                     <p className="text-xl font-medium text-black dark:text-darkText">
                       Procedimiento
                     </p>
-                    <p className="text-sm text-left 2xl:text-center dark:text-darkText">
+                    <p className=" text-left 2xl:text-center dark:text-darkText">
                       {appointment.Service.serviceName}
                     </p>
                   </div>
@@ -393,7 +393,7 @@ const DateDetail = () => {
                     <label className="text-xl font-medium text-black dark:text-darkText">
                       Observaciones
                     </label>
-                    <p className="text-sm text-left 2xl:text-center dark:text-darkText">
+                    <p className=" text-left 2xl:text-center dark:text-darkText">
                       {appointment.obs !== " " ? appointment.obs : " - "}{" "}
                     </p>
                   </div>
@@ -402,7 +402,7 @@ const DateDetail = () => {
                       {" "}
                       Precio final
                     </p>
-                    <p className="text-sm m-auto text-left 2xl:text-center dark:text-darkText">
+                    <p className=" m-auto text-left 2xl:text-center dark:text-darkText">
                       ${appointment.Service.price}
                     </p>
                   </div>
@@ -518,19 +518,19 @@ const DateDetail = () => {
               window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
             }`}
           >
-            <p className="mb-4 text-sm sm:text-base">
+            <p className="mb-4  sm:text-base">
               ¿Estás seguro de que deseas finalizar esta cita?
             </p>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => finishConfirmed(true)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
               >
                 Aceptar
               </button>
               <button
                 onClick={() => finishConfirmed(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
               >
                 Cancelar
               </button>
@@ -545,19 +545,19 @@ const DateDetail = () => {
               window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
             }`}
           >
-            <p className="mb-4 text-sm sm:text-base">
+            <p className="mb-4  sm:text-base">
               El importe a pagar es diferente al precio final ¿Deseas continuar?
             </p>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => priceConfirmed(true)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
               >
                 Aceptar
               </button>
               <button
                 onClick={() => priceConfirmed(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
               >
                 Cancelar
               </button>

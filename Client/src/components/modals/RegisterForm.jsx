@@ -193,7 +193,7 @@ function RegisterForm({
       >
         <div className="w-5/5 my-10 bg-white shadow rounded-lg p-4 pt-2 pb-2 md:w-3/4 2xl:w-1/3 scale-90 dark:bg-darkBackground">
           <div className="flex justify-between">
-            <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+            <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
               Agregar nuevo usuario
             </h1>
             <IoClose
@@ -203,7 +203,7 @@ function RegisterForm({
           </div>
           <form onSubmit={handleSubmit}>
             <div className="first-letter:grid grid-cols-1 mb-1">
-              <label className="pl-1 text-sm font-bold dark:text-darkText">
+              <label className="pl-1  font-bold dark:text-darkText">
                 Cuenta de usuario (Email)
               </label>
               <input
@@ -215,13 +215,13 @@ function RegisterForm({
                 value={userData.userName}
               />
               {errors.userName !== "" && (
-                <p className="text-xs text-red-500">{errors.userName}</p>
+                <p className=" text-red-500">{errors.userName}</p>
               )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-1">
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Nombre
                 </label>
                 <input
@@ -233,11 +233,11 @@ function RegisterForm({
                   className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                 />
                 {errors.name !== "" && (
-                  <p className="text-xs text-red-500">{errors.name}</p>
+                  <p className=" text-red-500">{errors.name}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Apellido
                 </label>
                 <input
@@ -249,11 +249,11 @@ function RegisterForm({
                   value={userData.lastName}
                 />
                 {errors.lastName !== "" && (
-                  <p className="text-xs text-red-500">{errors.lastName}</p>
+                  <p className=" text-red-500">{errors.lastName}</p>
                 )}
               </div>
             </div>
-            <label className="pl-1 text-sm font-bold dark:text-darkText">
+            <label className="pl-1  font-bold dark:text-darkText">
               Email para notificaciones
             </label>
             <div className="first-letter:grid grid-cols-1 gap-4 mb-1">
@@ -266,7 +266,7 @@ function RegisterForm({
                 value={userData.notificationEmail}
               />
               {errors.notificationEmail !== "" && (
-                <p className="text-xs text-red-500">
+                <p className=" text-red-500">
                   {errors.notificationEmail}
                 </p>
               )}
@@ -274,7 +274,7 @@ function RegisterForm({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-1">
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Telefono
                 </label>
                 <input
@@ -286,11 +286,11 @@ function RegisterForm({
                   value={userData.phoneNumber1}
                 />
                 {errors.phoneNumber1 !== "" && (
-                  <p className="text-xs text-red-500">{errors.phoneNumber1}</p>
+                  <p className=" text-red-500">{errors.phoneNumber1}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Telefono alternativo
                 </label>
                 <input
@@ -302,13 +302,13 @@ function RegisterForm({
                   className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                 />
                 {errors.phoneNumber2 !== "" && (
-                  <p className="text-xs text-red-500">{errors.phoneNumber2}</p>
+                  <p className=" text-red-500">{errors.phoneNumber2}</p>
                 )}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 mb-1">
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   % de Comisión
                 </label>
                 <input
@@ -320,18 +320,18 @@ function RegisterForm({
                   className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                 />
                 {errors.commission !== "" && (
-                  <p className="text-xs text-red-500 ">{errors.commission}</p>
+                  <p className=" text-red-500 ">{errors.commission}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Rol
                 </label>
                 <select
                   onChange={handleChange}
                   name="rol"
                   value={userData.rol}
-                  className={`bg-gray-50 border border-black text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:text-darkText dark:bg-darkPrimary`}
+                  className={`bg-gray-50 border border-black text-black sm: rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:text-darkText dark:bg-darkPrimary`}
                 >
                   <option value="" disabled hidden>
                     Selecciona un rol
@@ -343,13 +343,13 @@ function RegisterForm({
                   ))}
                 </select>
                 {errors.rol !== "" && (
-                  <p className="text-xs text-red-500">{errors.rol}</p>
+                  <p className=" text-red-500">{errors.rol}</p>
                 )}
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
               <div className="mb-1">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Especialidad
                 </label>
                 {specialties.map((specialty, index) => (
@@ -365,18 +365,18 @@ function RegisterForm({
                     />
                     <label
                       htmlFor={specialty}
-                      className="text-sm text-gray-900 dark:text-darkText"
+                      className=" text-gray-900 dark:text-darkText"
                     >
                       {specialty.specialtyName}
                     </label>
                   </div>
                 ))}
                 {errors.specialtyName !== "" && (
-                  <p className="text-xs text-red-500">{errors.specialtyName}</p>
+                  <p className=" text-red-500">{errors.specialtyName}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Sede
                 </label>
                 {branches.map((branch, index) => (
@@ -392,14 +392,14 @@ function RegisterForm({
                     />
                     <label
                       htmlFor={branch}
-                      className="text-xs text-gray-900 dark:text-darkText"
+                      className=" text-gray-900 dark:text-darkText"
                     >
                       {branch.branchName}
                     </label>
                   </div>
                 ))}
                 {errors.branch !== "" && (
-                  <span className="text-xs text-red-500">{errors.branch}</span>
+                  <span className=" text-red-500">{errors.branch}</span>
                 )}
               </div>
             </div>

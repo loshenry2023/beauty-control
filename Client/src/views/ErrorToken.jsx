@@ -22,7 +22,7 @@ const ErrorToken = (props) => {
   return (
     <div className="min-h-screen flex flex-grow items-center justify-center bg-gray-50">
       <div className="rounded-lg bg-white p-8 text-center shadow-xl">
-        <h1 className=" text-4xl font-bold">{error}</h1>
+        <h1 className=" text-3xl font-bold">{error}</h1>
         <div className="mt-4">
           <p className="text-gray-600">
             {error === 401 ? "Sin permiso" : "La sesión expiró por inactividad."}

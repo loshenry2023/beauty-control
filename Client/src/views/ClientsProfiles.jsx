@@ -83,12 +83,12 @@ const ClientsProfiles = () => {
           ) : (
             <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
               <div className="flex flex-row gap-2">
-                <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+                <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
                   {" "}
                   Clientes{" "}
                 </h1>
                 {user.role !== "especialista" ?
-                  <IoPersonAddOutline className='h-6 w-6 mt-1.5 cursor-pointer dark:text-darkText' onClick={handleClientFormModal} /> : null
+                  <IoPersonAddOutline className='h-6 w-6 mt-2.5 cursor-pointer dark:text-darkText' onClick={handleClientFormModal} /> : null
                 }
               </div>
               <ClientFilters setNameOrLastName={setNameOrLastName} nameOrLastName={nameOrLastName} setAttribute={setAttribute} setOrder={setOrder} setPage={setPage} setSize={setSize} setBirthdaysMonth={setBirthdaysMonth} setCreateDateStart={setCreateDateStart} setCreateDateEnd={setCreateDateEnd} createDateStart={createDateStart} createDateEnd={createDateEnd} />

@@ -32,7 +32,7 @@ const ConsumablesTable = ({ products, user, onClose }) => {
     return (
       <>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="border border-black w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige">
+          <table className="border border-black w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige">
             <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-gre">
               <tr>
                 <th scope="col" className="px-6 py-3">
@@ -66,7 +66,7 @@ const ConsumablesTable = ({ products, user, onClose }) => {
                 <tr
                   props={fila}
                   key={index}
-                  className="text-xs hover:bg-gray-200 cursor-pointer dark:hover:bg-gray-200 dark:hover:text-black"
+                  className=" hover:bg-gray-200 cursor-pointer dark:hover:bg-gray-200 dark:hover:text-black"
                 >
                   <td className="px-6 py-4">{fila.productCode}</td>
                   <td className="px-6 py-4">{fila.productName}</td>

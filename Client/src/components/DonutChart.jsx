@@ -66,7 +66,7 @@ function DonutChart({ data, title }) {
                 y="50%"
                 fontWeight="bold"
                 fill="#000"
-                className=" text-center text-sm"
+                className=" text-center "
               >
                 {" "}
                 {`Total: ${totalValue}`}
@@ -87,7 +87,7 @@ function DonutChart({ data, title }) {
           <ul className="mt-2">
             {data.map((entry) => (
               <div
-                className="text-xs"
+                className=""
                 key={`legend-${entry.name}`} // probe entry.name como clave
                 style={{ marginBottom: "10px" }}
               >

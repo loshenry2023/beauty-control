@@ -114,7 +114,7 @@ function UserProfiles() {
                 <Loader />
               ) : (
                 <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
-                  <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+                  <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
                     Plantilla de empleados
                   </h1>
                   <section className="flex flex-col gap-2 sm:flex sm:flex-row sm:gap-5 sm:w-full">
@@ -128,7 +128,7 @@ function UserProfiles() {
                           onChange={handlerDateFrom}
                           type="date"
                           defaultValue={""}
-                          className="w-full text-center border rounded-md border-black px-2 text-sm sm:w-fit dark:invert"
+                          className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
                         />
                       </div>
                       <div className="flex gap-2">
@@ -140,7 +140,7 @@ function UserProfiles() {
                           onChange={handlerDateTo}
                           type="date"
                           defaultValue={""}
-                          className="w-full text-center border rounded-md border-black px-2 text-sm sm:w-fit dark:invert"
+                          className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
                         />
                       </div>
                     </div>
@@ -155,14 +155,14 @@ function UserProfiles() {
                         }}
                         type="text"
                         placeholder="Buscar por nombre..."
-                        className="w-full border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1 text-sm dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+                        className="w-full border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1  dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
                       />
                       <select
                         onChange={(e) => {
                           setOrder(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value="asc"> -- Ordenar por -- </option>
                         <option value="asc">A-Z</option>
@@ -173,7 +173,7 @@ function UserProfiles() {
                           setAttribute(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value="createdAt"> -- Ordenar por -- </option>
                         <option value="name">Nombre</option>
@@ -185,7 +185,7 @@ function UserProfiles() {
                           setBranch(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value=""> -- Seleccionar Sede -- </option>
                         {branches &&
@@ -200,7 +200,7 @@ function UserProfiles() {
                           setSpecialty(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value="">
                           {" "}
@@ -218,7 +218,7 @@ function UserProfiles() {
                           setRole(e.target.value);
                           setPage(0);
                         }}
-                        className=" w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className=" w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value=""> -- Seleccionar Rol --</option>
                         <option value="superAdmin">Super Admin</option>

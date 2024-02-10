@@ -182,7 +182,7 @@ const EditClient = ({
         <div>
           <div className="w-4/5 mx-auto bg-white shadow rounded-lg p-6 md:w-full dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Modificar cliente
               </h1>
               <IoClose
@@ -193,7 +193,7 @@ const EditClient = ({
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 <div>
-                  <label className="pl-1 text-sm font-bold dark:text-darkText">
+                  <label className="pl-1  font-bold dark:text-darkText">
                     Nombre
                   </label>
                   <input
@@ -206,11 +206,11 @@ const EditClient = ({
                     disabled
                   />
                   {errors.name !== "" && (
-                    <p className="text-xs text-red-500">{errors.name}</p>
+                    <p className=" text-red-500">{errors.name}</p>
                   )}
                 </div>
                 <div>
-                  <label className="pl-1 text-sm font-bold dark:text-darkText">
+                  <label className="pl-1  font-bold dark:text-darkText">
                     Apellido
                   </label>
                   <input
@@ -223,13 +223,13 @@ const EditClient = ({
                     disabled
                   />
                   {errors.lastName !== "" && (
-                    <p className="text-xs text-red-500">{errors.lastName}</p>
+                    <p className=" text-red-500">{errors.lastName}</p>
                   )}
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 <div>
-                  <label className="mb-2 text-sm font-bold text-gray-900 dark:text-darkText">
+                  <label className="mb-2  font-bold text-gray-900 dark:text-darkText">
                     Email cliente
                   </label>
                   <input
@@ -242,11 +242,11 @@ const EditClient = ({
                     disabled
                   />
                   {errors.email !== "" && (
-                    <p className="text-xs text-red-500">{errors.email}</p>
+                    <p className=" text-red-500">{errors.email}</p>
                   )}
                 </div>
                 <div>
-                  <label className="mb-2 text-sm font-bold text-gray-900 dark:text-darkText">
+                  <label className="mb-2  font-bold text-gray-900 dark:text-darkText">
                     ID de persona
                   </label>
                   <input
@@ -260,13 +260,13 @@ const EditClient = ({
                     value={client.id_pers}
                   />
                   {errors.id_pers !== "" && (
-                    <p className="text-xs text-red-500">{errors.id_pers}</p>
+                    <p className=" text-red-500">{errors.id_pers}</p>
                   )}
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 <div>
-                  <label className="pl-1 text-sm font-bold dark:text-darkText">
+                  <label className="pl-1  font-bold dark:text-darkText">
                     Telefono
                   </label>
                   <input
@@ -281,13 +281,13 @@ const EditClient = ({
                     value={client.phoneNumber1}
                   />
                   {errors.phoneNumber1 !== "" && (
-                    <p className="text-xs text-red-500">
+                    <p className=" text-red-500">
                       {errors.phoneNumber1}
                     </p>
                   )}
                 </div>
                 <div>
-                  <label className="pl-1 text-sm font-bold dark:text-darkText">
+                  <label className="pl-1  font-bold dark:text-darkText">
                     Telefono alternativo
                   </label>
                   <input
@@ -302,14 +302,14 @@ const EditClient = ({
                     } dark:text-darkText dark:bg-darkPrimary`}
                   />
                   {errors.phoneNumber2 !== "" && (
-                    <p className="text-xs text-red-500">
+                    <p className=" text-red-500">
                       {errors.phoneNumber2}
                     </p>
                   )}
                 </div>
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Fecha de nacimiento
                 </label>
                 <input
@@ -323,7 +323,7 @@ const EditClient = ({
                   value={client.birthday}
                 />
                 {errors.birthday && (
-                  <p className="text-xs text-red-500">{errors.birthday}</p>
+                  <p className=" text-red-500">{errors.birthday}</p>
                 )}
               </div>
               <div>

@@ -198,13 +198,13 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
             <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-black" style={{ background: "rgba(0, 0, 0, 0.70)" }}>
                     <div className="w-full bg-white shadow rounded-lg p-6 md:mx-auto md:w-1/2 2xl:w-1/3 dark:bg-darkBackground">
                         <div className='flex justify-between'>
-                            <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">Agregar Cita</h1>
+                            <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">Agregar Cita</h1>
                             <IoClose onClick={closeModal} className='cursor-pointer hover:scale-125 mt-2 w-5 h-5 dark:text-darkText' />
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                 <div>
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Nombre de cliente</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Nombre de cliente</label>
                                     <input
                                         placeholder="Nombre de cliente"
                                         className="border border-black p-2 rounded w-full bg-gray-200 dark:text-darkText dark:bg-darkPrimary"
@@ -216,7 +216,7 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
                                     />
                                 </div>
                                 <div>
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Apellido del cliente</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Apellido del cliente</label>
                                     <input
                                         placeholder="Nombre de cliente"
                                         className="border border-black p-2 rounded w-full bg-gray-200 dark:text-darkText dark:bg-darkPrimary"
@@ -233,7 +233,7 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
 
                                 <div className="first-letter:grid grid-cols-1 mb-2">
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Sede</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Sede</label>
                                     <input
                                         placeholder="Sede"
                                         className="border border-black p-2 rounded w-full bg-gray-200 dark:text-darkText dark:bg-darkPrimary"
@@ -246,10 +246,10 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
 
                                 </div>
                                 <div className="first-letter:grid grid-cols-1 mb-2">
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Procedimiento</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Procedimiento</label>
                                     <input
                                         placeholder="Procedimiento"
-                                        className="w-full border border-black rounded-md text-sm dark:text-darkText dark:bg-darkPrimary p-2.5"
+                                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary p-2.5"
                                         onChange={handleChange}
                                         type="text"
                                         name="service"
@@ -261,7 +261,7 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                 <div className="first-letter:grid grid-cols-1 mb-2">
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Fecha</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Fecha</label>
                                     <input
                                         placeholder="Fecha"
                                         className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
@@ -274,10 +274,10 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
 
                                 </div>
                                 <div className="first-letter:grid grid-cols-1 mb-2">
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Especialista</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Especialista</label>
                                     <input
                                         placeholder="Especialista"
-                                        className="w-full border border-black rounded-md text-sm dark:text-darkText dark:bg-darkPrimary p-2.5"
+                                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary p-2.5"
                                         onChange={handleChange}
                                         type="text"
                                         name="specialist"
@@ -289,7 +289,7 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                 <div className="first-letter:grid grid-cols-1 mb-2">
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Hora de inicio</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Hora de inicio</label>
                                     <input
                                         placeholder="Hora de inicio"
                                         className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary dark:[color-scheme:dark]"
@@ -299,12 +299,12 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
                                         value={AppointmentInfo.date_from}
                                     />
                                     {validationErrors.date_from && (
-                                        <div className="text-red-500 text-sm">{validationErrors.date_from}</div>
+                                        <div className="text-red-500 ">{validationErrors.date_from}</div>
                                     )}
 
                                 </div>
                                 <div className="first-letter:grid grid-cols-1 mb-2">
-                                    <label className='pl-1 text-sm font-bold dark:text-darkText'>Hora de finalización</label>
+                                    <label className='pl-1  font-bold dark:text-darkText'>Hora de finalización</label>
                                     <input
                                         placeholder="Hora de finalización"
                                         className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary dark:[color-scheme:dark]"
@@ -314,13 +314,13 @@ const CreateAppointment = ({ setShowAppointmentModal, setChosenClient, dateInfo,
                                         value={AppointmentInfo.date_to}
                                     />
                                     {validationErrors.date_to && (
-                                        <div className="text-red-500 text-sm">{validationErrors.date_to}</div>
+                                        <div className="text-red-500 ">{validationErrors.date_to}</div>
                                     )}
 
                                 </div>
                             </div>
                             <div className="first-letter:grid grid-cols-1 mb-2">
-                                <label className='pl-1 text-sm font-bold dark:text-darkText'>Observaciones</label>
+                                <label className='pl-1  font-bold dark:text-darkText'>Observaciones</label>
                                 <textarea
                                     placeholder="Observaciones"
                                     className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
