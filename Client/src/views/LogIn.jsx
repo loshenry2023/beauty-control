@@ -34,7 +34,6 @@ const LogIn = () => {
 
   useEffect(() => {
     if (role === "superAdmin" || role === "admin" || role === "especialista") {
-      
       if (branches.length == 1) {
         dispatch(setBranch({ ...branches[0] }));
         if (role === "superAdmin") {
@@ -47,7 +46,6 @@ const LogIn = () => {
         navigate(BRANCH)
       }
     } else if (role === "superSuperAdmin") {
-      console.log("entrando al hola")
       navigate(SSADMIN)
     
     }

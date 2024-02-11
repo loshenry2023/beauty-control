@@ -22,10 +22,10 @@ const Home = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    dispatch(getPayMethods({ token }))
+    const respuesta = dispatch(getPayMethods({ token }))
     dispatch(getspecialists(branchWorking.branchName, { token: token }))
-    dispatch((getServices({token})))
-    .then(setLoading(false))
+    // dispatch(getServices({token}))
+    // .then(setLoading(false))
   }, [tokenError]);
 
   if (tokenError === 401 || tokenError === 403) {
@@ -41,8 +41,8 @@ const Home = () => {
           {loading ? (
             <Loader />
           ) : (
-         user.role === "superAdmin" ?
-            <Balance specialists={specialists} services={services} payMethods={payMethods}/> :  <Restricted />
+         user.role === "superAdmin" ? <p>hola</p> : <p>tres</p>
+            // <Balance specialists={specialists} services={services} payMethods={payMethods}/> :  <Restricted />
           )}
         </div>
       </>

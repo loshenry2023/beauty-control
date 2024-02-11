@@ -670,7 +670,9 @@ export const updateProductPrice = (productId, newPrice) => {
 export const getPayMethods = (token) => {
   return async function (dispatch) {
     try {
+      console.log(`ENTRO ${API_URL_BASE}/v1/payments`)
       const response = await axios.post(API_URL_BASE + "/v1/payments", token);
+
       return dispatch({
         type: GET_PAY_METHODS,
         payload: response.data,

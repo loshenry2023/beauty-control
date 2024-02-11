@@ -53,6 +53,7 @@ const Balance = ({ specialists, services, payMethods }) => {
     const fetchData = async () => {
       try {
         const response = await dispatch(getBalance(fetchDataBalance));
+        console.log(response)
         setLoading(false);
 
         // Procesar datos
@@ -124,7 +125,6 @@ const Balance = ({ specialists, services, payMethods }) => {
 
     fetchData();
   }, [
-    dispatch,
     fetchDataBalance,
     specialists,
     services,
@@ -298,7 +298,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                   name="idUser"
                 >
                   <option value=""> -- Especialista -- </option>
-                  {specialists.map((especialist, index) => (
+                  {specialists.length === 0 ? <option value=""> Todavía no hay especialistas </option> : specialists.map((especialist, index) => (
                     <option name="idUser" key={index} value={especialist.id}>
                       {especialist.name} {especialist.lastName}
                     </option>
