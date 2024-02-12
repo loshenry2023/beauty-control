@@ -39,7 +39,7 @@ const getCalendarCount = async (req, res) => {
 async function calendarPromises(branchId, currentDateWithoutTime, idUser, dbName) {
     // Obtengo la cantidad de citas para la sede actual, para la fecha actual:
     const { conn, User, Branch, Calendar } = await connectDB(dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     const result = await Calendar.findAndCountAll({
         attributes: ["id"],
         where: {

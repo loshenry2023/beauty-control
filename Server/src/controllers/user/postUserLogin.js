@@ -55,7 +55,7 @@ const postUserLogin = async (req, res) => {
         }
         // Una vez que ya tengo el nombre de la base de datos de trabajo, obtengo los datos del usuario a partir de la base de datos de la empresa:
         const { conn, User, Specialty, Branch } = await connectDB(existingUserCompany.dbName);
-        await conn.sync({ alter: true });
+        await conn.sync();
         const existingUser = await User.findByPk(existingUserCompany.id, {
             include: [
                 {

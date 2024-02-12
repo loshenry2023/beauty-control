@@ -24,7 +24,7 @@ const putCalendarHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, Calendar, User, Service, Client, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     const data = {
       tableName: Calendar,
       tableNameText: "Calendar",

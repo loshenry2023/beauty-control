@@ -20,7 +20,7 @@ const getAllClientHandler = async (req, res) => {
     }
 
     const { conn, Client } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Client,

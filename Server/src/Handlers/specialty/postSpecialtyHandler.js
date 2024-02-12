@@ -20,7 +20,7 @@ const postSpecialtyHandler = async (req, res) => {
     }
 
     const { conn, Specialty } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
 
     const data = {

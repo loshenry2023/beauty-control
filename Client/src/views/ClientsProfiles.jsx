@@ -41,6 +41,7 @@ const ClientsProfiles = () => {
   };
 
   useEffect(() => {
+    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
     dispatch(
       getClients(
         nameOrLastName,

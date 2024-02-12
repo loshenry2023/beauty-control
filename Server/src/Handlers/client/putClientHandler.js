@@ -23,7 +23,7 @@ const putClientHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, Client } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Client,

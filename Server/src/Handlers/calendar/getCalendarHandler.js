@@ -20,7 +20,7 @@ const getCalendarHandler = async (req, res) => {
     }
 
     const { conn, Calendar, User, Service, Client, Branch, Specialty } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Calendar,

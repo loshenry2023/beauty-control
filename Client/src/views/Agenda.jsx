@@ -100,6 +100,7 @@ const Agenda = () => {
   };
 
   useEffect(() => {
+    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
     dispatch(getToken(tokenID));
     dispatch(getBranches({ token: tokenID }));
     dispatch(getServices({ token: tokenID }));
@@ -306,19 +307,19 @@ const Agenda = () => {
                       </select>
                     )}
                     {user.role === "especialista" ? null : (
-                  <button
-                    onClick={handleAppointmentModal}
-                    disabled={!isFormCompleted}
-                    className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-white cursor-pointer" : "bg-white cursor-not-allowed"
-                      } shadow shadow-black text-black ${isFormCompleted ? "hover:scale-[1.02]" : "cursor-not-allowed"
-                      } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
-                        ? "dark:hover:bg-secondaryColor"
-                        : "dark:cursor-not-allowed"
-                      }`}
-                  >
-                    Agregar Cita
-                  </button>
-                )}
+                      <button
+                        onClick={handleAppointmentModal}
+                        disabled={!isFormCompleted}
+                        className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-white cursor-pointer" : "bg-white cursor-not-allowed"
+                          } shadow shadow-black text-black ${isFormCompleted ? "hover:scale-[1.02]" : "cursor-not-allowed"
+                          } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
+                            ? "dark:hover:bg-secondaryColor"
+                            : "dark:cursor-not-allowed"
+                          }`}
+                      >
+                        Agregar Cita
+                      </button>
+                    )}
                   </div>
                 </section>
               )}

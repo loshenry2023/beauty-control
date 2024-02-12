@@ -61,6 +61,7 @@ const putCatHandler = require("../Handlers/catGastos/putCatHandler");
 const deleteCatHandler = require("../Handlers/catGastos/deleteCatHandler");
 const getCatHandler = require("../Handlers/catGastos/getCatHandler");
 //! inventario
+const getAllProductsHandler = require("../Handlers/insumos/getAllProductsHandler");
 // const productHandlers = require("../Handlers/products/productHandlers");
 //! Balance y comisiones:
 const getBalance = require("../Handlers/balance/getBalance");
@@ -127,9 +128,9 @@ router.put("/v1/catgastos/:id", putCatHandler); // edita una categoría
 router.post("/v1/deletecatgastos/:id", deleteCatHandler); //  elimina una categoría
 router.post("/v1/catgastos", getCatHandler); // obtiene y devuelve todas las categorías
 //! Inventario:
-// router.post("/v1/products", productHandlers.getAllProductsHandler);
-// router.get("/v1/product-prices", productHandlers.getProductPrices);
+router.post("/v1/products", getAllProductsHandler); // obtiene y devuelve todos los productos del inventario
 // router.post("/v1/productsCreate", productHandlers.createProduct);
+// router.get("/v1/product-prices", productHandlers.getProductPrices);
 // router.put("/v1/products/:id", productHandlers.editProduct);
 // router.put("/v1/products/:id/price", productHandlers.updateProductPrice);
 // router.get("/v1/products/:productId/prices-history", productHandlers.getProductPricesHistory);

@@ -21,7 +21,7 @@ const deleteUserHandler = async (req, res) => {
     }
 
     const { conn, User } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: User,

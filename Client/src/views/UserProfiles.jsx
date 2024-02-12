@@ -47,20 +47,21 @@ function UserProfiles() {
   const tokenID = token.token;
 
   const handlerDateFrom = (e) => {
-    if(createDateEnd !== "" && `${e.target.value} 00:00:00` > createDateEnd){
+    if (createDateEnd !== "" && `${e.target.value} 00:00:00` > createDateEnd) {
       toast.error("La fecha inicial no puede ser mayor a la fecha final");
     }
     setCreateDateStart(`${e.target.value} 00:00:00`)
   };
 
   const handlerDateTo = (e) => {
-    if(createDateStart !== "" && `${e.target.value} 23:59:59`< createDateStart){
+    if (createDateStart !== "" && `${e.target.value} 23:59:59` < createDateStart) {
       toast.error("La fecha final no puede ser menor a la fecha inicial");
     }
     setCreateDateEnd(`${e.target.value} 23:59:59`)
   };
 
   useEffect(() => {
+    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
     dispatch(
       getUsers(
         nameOrLastName,

@@ -23,7 +23,7 @@ const getHistoricByClientHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, HistoryService, Incoming, Client } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: HistoryService,

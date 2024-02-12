@@ -20,7 +20,7 @@ const getSpecialistsHandler = async (req, res) => {
     }
 
     const { conn, User, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     const data = {
       tableName: User,
       tableNameText: "Specialists",

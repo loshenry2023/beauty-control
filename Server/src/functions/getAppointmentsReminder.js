@@ -9,7 +9,7 @@ const { Op } = require('sequelize');
 async function getAppointmentsReminder(dbName) {
     showLog(`getAppointmentsReminder`);
     const { conn, Service, Branch, Calendar, Client, User } = await connectDB(dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     try {
         // Establezco la fecha de mañana:

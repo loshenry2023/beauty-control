@@ -21,7 +21,7 @@ const getCatHandler = async (req, res) => {
 
 
     const { conn, CatGastos } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: CatGastos,

@@ -37,7 +37,7 @@ const getUserData = async (req, res) => {
         if (existingUserCompany.dbName !== DB_NAME) {
             // Obtengo el resto de los datos:
             const { conn, User, Branch, Specialty } = await connectDB(existingUserCompany.dbName);
-            await conn.sync({ alter: true });
+            await conn.sync();
             const existingUser = await User.findByPk(id, {
                 include: [
                     {
