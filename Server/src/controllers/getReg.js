@@ -18,6 +18,72 @@ const getReg = async (dataInc) => {
   try {
     let reg;
     switch (tableNameText) {
+      case "Insumos":
+        const {
+          productName,
+          description,
+          code,
+          amount,
+          order: ord,
+          page: pg,
+          size: sze,
+          branch: brnch,
+          productCode,
+          supplier,
+          attribute: attr,
+        } = tableName4;
+
+        const { count, rows } = await tableName.findAndCountAll({ // Product
+          include: [
+            {
+              model: tableName2, //Branch
+              where: { branchName: { [Op.iLike]: `%${brnch}%` } },
+              attributes: ["id", "branchName"],
+            },
+            {
+              model: tableName3, //PriceHistory
+              order: [["date_modification", "DESC"]],
+              attributes: ["price"],
+              limit: 1,
+            },
+          ],
+          attributes: [
+            "code",
+            "productName",
+            "description",
+            "supplier",
+            "amount",
+            "productCode",
+          ],
+          distinct: true,
+          where: {
+            [Op.and]: [
+              // Filtro por nombre de producto
+              { productName: { [Op.iLike]: `%${productName}%` } },
+              // Filtro por proveedor
+              { supplier: { [Op.iLike]: `%${supplier}%` } },
+              // Filtro por cantidad
+              amount !== null ? { amount: amount } : {},
+              // Filtro por código
+              code !== null ? { code: code } : {},
+              // Filtro por código de producto
+              productCode !== ""
+                ? { productCode: { [Op.iLike]: `%${productCode}%` } }
+                : {},
+              // Filtro por descripción
+              description !== ""
+                ? { description: { [Op.iLike]: `%${description}%` } }
+                : {},
+            ].filter(Boolean), // Elimina los filtros nulos o vacíos
+          },
+          order: [["code", ord]],
+          limit: sze,
+          offset: sze * pg,
+        });
+        return {
+          count,
+          rows,
+        };
       case "Company":
         reg = await tableName.findAndCountAll({ //Company
           attributes: [

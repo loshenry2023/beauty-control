@@ -21,7 +21,7 @@ const deleteCalendarHandler = async (req, res) => {
     }
 
     const { conn, Calendar } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Calendar,

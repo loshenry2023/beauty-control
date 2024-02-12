@@ -22,7 +22,7 @@ const putServiceHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, Service } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Service,

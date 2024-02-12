@@ -20,7 +20,7 @@ const postPaymentHandler = async (req, res) => {
     }
 
     const { conn, Payment } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       userLogged: checked.userName,

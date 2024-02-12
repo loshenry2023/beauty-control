@@ -20,7 +20,7 @@ const postHistoricProcHandler = async (req, res) => {
     }
 
     const { conn, HistoryService, Client, Incoming, User } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       userLogged: checked.userName,

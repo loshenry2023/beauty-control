@@ -133,27 +133,6 @@ export const getSpecialties = (token) => {
   };
 };
 
-export const getServices = (token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(API_URL_BASE + "/v1/getservices", token);
-      return dispatch({
-        type: GET_SERVICES,
-        payload: response.data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
-};
 
 export const getClients = (
   nameOrLastName,
@@ -273,32 +252,6 @@ export const getUsers = (
   };
 };
 
-export const getspecialists = (branchWorking, token) => {
-  const endPoint = API_URL_BASE + "/v1/specialists?";
-  return async function (dispatch) {
-    try {
-      const { data } = await axios.post(
-        `${endPoint}branchWorking=${branchWorking}`,
-        token
-      );
-
-      return dispatch({
-        type: GET_SPECIALISTS,
-        payload: data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
-};
 
 export const getCalendar = (branch, dateFrom, dateTo, userId, token) => {
   const endPoint = API_URL_BASE + "/v1/getcalendar?";
@@ -443,11 +396,11 @@ export const getToken = (token) => ({
 });
 
 export const clearDataInicio = () =>
-  // Sólo limpia el storage al inicio del programa, donde aún no existe el token:
-  ({
-    type: USER_LOGOUT,
-    payload: {},
-  });
+// Sólo limpia el storage al inicio del programa, donde aún no existe el token:
+({
+  type: USER_LOGOUT,
+  payload: {},
+});
 // ACTIONS PARA EL INVENTARIO
 export const getProductsRequest = () => ({
   type: GET_PRODUCTS_REQUEST,
@@ -666,29 +619,91 @@ export const updateProductPrice = (productId, newPrice) => {
     }
   };
 };
+//baba
+export const getPayMethods = (response) => ({
+  type: GET_PAY_METHODS,
+  payload: response,
+});
+// export const getPayMethods = (token) => {
+//   return async function (dispatch) {
+//     try {
+//       console.log(`ENTRO ${API_URL_BASE}/v1/payments`)
+//       const response = await axios.post(API_URL_BASE + "/v1/payments", token);
 
-export const getPayMethods = (token) => {
-  return async function (dispatch) {
-    try {
-      console.log(`ENTRO ${API_URL_BASE}/v1/payments`)
-      const response = await axios.post(API_URL_BASE + "/v1/payments", token);
+//       return dispatch({
+//         type: GET_PAY_METHODS,
+//         payload: response.data,
+//       });
+//     } catch (error) {
+//       if (error.request.status === 401 || error.request.status === 403) {
+//         return dispatch({
+//           type: SET_TOKEN_ERROR,
+//           payload: error.request.status,
+//         });
+//       } else {
+//         throw Error(error.message);
+//       }
+//     }
+//   };
+// };
 
-      return dispatch({
-        type: GET_PAY_METHODS,
-        payload: response.data,
-      });
-    } catch (error) {
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
-};
+export const getspecialists = (response) => ({
+  type: GET_SPECIALISTS,
+  payload: response,
+});
+// export const getspecialists = (branchWorking, token) => {
+//   const endPoint = API_URL_BASE + "/v1/specialists?";
+//   return async function (dispatch) {
+//     try {
+//       const { data } = await axios.post(
+//         `${endPoint}branchWorking=${branchWorking}`,
+//         token
+//       );
+
+//       return dispatch({
+//         type: GET_SPECIALISTS,
+//         payload: data,
+//       });
+//     } catch (error) {
+//       // Errores 401 y 403 son para quitar al usuario de la sesión:
+//       if (error.request.status === 401 || error.request.status === 403) {
+//         return dispatch({
+//           type: SET_TOKEN_ERROR,
+//           payload: error.request.status,
+//         });
+//       } else {
+//         throw Error(error.message);
+//       }
+//     }
+//   };
+// };
+
+export const getServices = (response) => ({
+  type: GET_SERVICES,
+  payload: response,
+});
+// export const getServices = (token) => {
+//   return async function (dispatch) {
+//     try {
+//       const response = await axios.post(API_URL_BASE + "/v1/getservices", token);
+//       return dispatch({
+//         type: GET_SERVICES,
+//         payload: response.data,
+//       });
+//     } catch (error) {
+//       // Errores 401 y 403 son para quitar al usuario de la sesión:
+//       if (error.request.status === 401 || error.request.status === 403) {
+//         return dispatch({
+//           type: SET_TOKEN_ERROR,
+//           payload: error.request.status,
+//         });
+//       } else {
+//         throw Error(error.message);
+//       }
+//     }
+//   };
+// };
+
 
 export const setTokenError = (error) => ({
   type: SET_TOKEN_ERROR,

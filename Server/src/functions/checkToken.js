@@ -4,16 +4,19 @@ const { connectDB } = require("../DB_connection_General"); // conexión a la bas
 const { DB_NAME } = require("../functions/paramsEnv");
 const showLog = require("../functions/showLog");
 const isCompanyCurrent = require("../functions/isCompanyCurrent");
-//const { Op } = require('sequelize');
 
 async function checkToken(tokenRec, clearToken = false) {
+  let pos = 0;
+  let nombr;
   try {
     const existingUsrCompany = await Company.findOne({
       where: { token: tokenRec },
     });
     if (existingUsrCompany) {
+      pos = 1;
       // Además de encontrarlo se pide que lo elimine. Se aplica para logout:
       if (clearToken) {
+        pos = 2;
         existingUsrCompany.token = "";
         existingUsrCompany.lastUse = "1900-01-01";
         await existingUsrCompany.save();
@@ -26,10 +29,13 @@ async function checkToken(tokenRec, clearToken = false) {
           nameCompany: existingUsrCompany.nameCompany
         };
       } else {
+        pos = 3;
+
         // Verifico si el plan de la empresa sigue vigente:
         if (!await isCompanyCurrent(existingUsrCompany.expireAt)) {
           return { exist: false, mensaje: "La suscripción expiró", code: 402 };
         }
+        pos = 4;
         // Verifico si el token sigue siendo vigente, comparando por tiempo transcurrido desde su último uso:
         const currentTime = new Date();
         const lastUseTime = existingUsrCompany.lastUse;
@@ -44,22 +50,29 @@ async function checkToken(tokenRec, clearToken = false) {
         // Actualizo la fecha y hora del último uso:
         existingUsrCompany.lastUse = currentTime;
         await existingUsrCompany.save();
+        pos = 5;
         let existingUser;
         let roleFound;
+        nombr = existingUsrCompany.dbName;
         if (existingUsrCompany.dbName !== DB_NAME) {
+          pos = 6;
           // Obtengo los datos relacionados desde la tabla de usuarios de la base de la empresa:
           const { conn, User } = await connectDB(existingUsrCompany.dbName);
-          await conn.sync({ alter: true });
+          pos = 6.5;
+          await conn.sync();
+          pos = 7;
           existingUser = await User.findByPk(existingUsrCompany.id);
           if (!existingUser) {
+            pos = 8;
             await conn.close();
             return { exist: false, mensaje: "No encontrado", code: 401 };
           } else {
+            pos = 9;
             roleFound = existingUser.role;
           }
           await conn.close();
         }
-
+        pos = 10;
         return {
           exist: true,
           id: existingUsrCompany.id,
@@ -77,7 +90,7 @@ async function checkToken(tokenRec, clearToken = false) {
       return { exist: false, mensaje: "Sin permiso", code: 401 };
     }
   } catch (error) {
-    showLog(`Error validating token: ${error}`);
+    showLog(`Error validating token: ${error} ${pos} ${nombr}`);
     throw Error("Error validando token: " + error);
   }
 }

@@ -9,7 +9,7 @@ const getRegBalance = async (dataQuery, dbName) => {
   showLog(`getRegBalance`);
 
   const { conn, User, HistoryService, Incoming, Service, Payment } = await connectDB(dbName);
-  await conn.sync({ alter: true });
+  await conn.sync();
 
   let dFrom = "";
   let dTo = "";

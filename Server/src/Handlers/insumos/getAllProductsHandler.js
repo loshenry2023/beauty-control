@@ -3,10 +3,24 @@ const getReg = require("../../controllers/getReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
 
-const getServicesHandler = async (req, res) => {
+const getAllProductsHandler = async (req, res) => {
   try {
-    const { token } = req.body;
-    showLog(`getServicesHandler`);
+    const {
+      productName = "",
+      description = "",
+      code = null,
+      amount = null,
+      order = "asc",
+      page = 0,
+      size = 10,
+      branch = "",
+      productCode = "",
+      token,
+      supplier = "",
+      attribute = "",
+    } = req.body;
+
+    showLog(`getAllProductsHandler`);
     // Verifico token:
     if (!token) { throw Error("Se requiere token"); }
     const checked = await checkToken(token);
@@ -19,16 +33,29 @@ const getServicesHandler = async (req, res) => {
       return res.status(401).send(`Sin permiso.`);
     }
 
-
-    const { conn, Service, Specialty } = await connectDB(checked.dbName);
+    const { conn, Product, Branch, PriceHistory } = await connectDB(checked.dbName);
     await conn.sync();
 
+    const dataAdded = {
+      productName,
+      description,
+      code,
+      amount,
+      order,
+      page,
+      size,
+      branch,
+      productCode,
+      supplier,
+      attribute,
+    }
+
     const data = {
-      tableName: Service,
-      tableNameText: "Service",
-      tableName2: Specialty,
-      tableName3: "",
-      tableName4: "",
+      tableName: Product,
+      tableNameText: "Insumos",
+      tableName2: Branch,
+      tableName3: PriceHistory,
+      tableName4: dataAdded,
       tableName5: "",
       id: "",
       dataQuery: "",
@@ -39,17 +66,16 @@ const getServicesHandler = async (req, res) => {
     await conn.close(); // cierro la conexión
 
     if (resp) {
-      showLog(`getServicesHandler OK`);
+      showLog(`getAllProductsHandler OK`);
       return res.status(200).json(resp);
     } else {
-      showLog(`getServicesHandler ERROR-> Not found`);
+      showLog(`getAllProductsHandler ERROR-> Not found`);
       return res.status(404).json({ message: "Not found" });
     }
   } catch (err) {
-    showLog(`getServicesHandler ERROR-> ${err.message}`);
+    showLog(`getAllProductsHandler ERROR-> ${err.message}`);
     return res.status(500).send(err.message);
   }
 };
 
-module.exports = getServicesHandler;
-
+module.exports = getAllProductsHandler;

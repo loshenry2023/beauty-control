@@ -20,7 +20,7 @@ const postBranchHandler = async (req, res) => {
     }
 
     const { conn, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       userLogged: checked.userName,

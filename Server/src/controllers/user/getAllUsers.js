@@ -17,7 +17,7 @@ const getAllUsers = async (
   dbName
 ) => {
   const { conn, User, Specialty, Branch } = await connectDB(dbName);
-  await conn.sync({ alter: true });
+  await conn.sync();
   try {
     const { count, rows } = await User.findAndCountAll({
       include: [

@@ -21,7 +21,7 @@ const deleteServiceHandler = async (req, res) => {
     }
 
     const { conn, Service } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Service,

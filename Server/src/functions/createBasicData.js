@@ -4,7 +4,7 @@ const showLog = require("../functions/showLog");
 
 async function createBasicData(dbName, nameCompany, userName, idUser) {
     const { conn, Branch, Payment, Service, Specialty, User, CatGastos } = await connectDB(dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     try {
         // TODO Creo las sedes:
         const firstBranchName = `${nameCompany}, sede 1 (¡ponle un nombre!)`;
