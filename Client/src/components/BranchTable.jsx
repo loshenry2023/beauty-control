@@ -23,15 +23,22 @@ const BranchTable = ({ branches }) => {
   const specialties = useSelector((state) => state?.specialties);
   const token = useSelector((state) => state?.token);
   const [aux, setAux] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
 
+  let requestMade = false
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getBranches({ token }));
-    setIsLoading(false);
-  }, [aux]);
+    if(!requestMade){
+      requestMade = true
+      axios.post(API_URL_BASE + `/v1/branches`, {token})
+      .then(respuesta => {
+        dispatch(getBranches(respuesta.data));
+        requestMade = false
+        setIsLoading(false)
+      })
+    }}, [aux]);
+   
 
   const handleDelete = async () => {
     try {
@@ -188,7 +195,11 @@ const BranchTable = ({ branches }) => {
       </>
     );
   } else {
-    <Loader />;
+    return (
+      <div className="mt-20">
+        <Loader />;
+      </div>
+    );
   }
 };
 

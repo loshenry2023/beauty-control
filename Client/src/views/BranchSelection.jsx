@@ -12,7 +12,6 @@ import { IoClose } from 'react-icons/io5';
 
 // Variables de entorno:
 import getParamsEnv from "../functions/getParamsEnv";
-
 const { HOME, AGENDA, API_URL_BASE } = getParamsEnv();
 
 const BranchSelection = () => {
@@ -21,27 +20,21 @@ const BranchSelection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const fetchData = async () => {
-        const userData = {
-          nameUser: user.userName,
-          idUser: user.token,
-        };
+      const userData = {
+        nameUser: user.userName,
+        idUser: user.token,
+      };
 
-        const retrieveUser = await axios.post(
-          API_URL_BASE + "/v1/userdata",
-          userData
-        );
-
-        const userInfo = retrieveUser.data
-        //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
+      axios.post(API_URL_BASE + "/v1/userdata",userData)
+      .then(respuesta => {
+        let userInfo = respuesta.data
         dispatch(getUser(userInfo))
-      }
-      fetchData()
-      setLoading(false)
-    } catch (error) {
-      toast.error(error.message)
-    }
+        setLoading(false)
+      })
+      .catch(error => {
+        console.error(error.message)
+        toast.error(error)
+      });
   }, [])
 
   const user = useSelector((state) => state?.user);

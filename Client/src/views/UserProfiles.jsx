@@ -9,6 +9,9 @@ import ProfilesTable from "../components/ProfilesTable";
 import Loader from "../components/Loader";
 import ErrorToken from "./ErrorToken";
 import "./loading.css";
+import axios from "axios";
+import getParamsEnv from "../functions/getParamsEnv";
+const { API_URL_BASE } = getParamsEnv();
 
 //icons
 import { IoPersonAddOutline } from "react-icons/io5";
@@ -60,28 +63,45 @@ function UserProfiles() {
     setCreateDateEnd(`${e.target.value} 23:59:59`)
   };
 
+  let requestMade = false;
   useEffect(() => {
     //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
-    dispatch(
-      getUsers(
-        nameOrLastName,
-        attribute,
-        order,
-        page,
-        size,
-        branch,
-        specialty,
-        role,
-        createDateEnd,
-        createDateStart,
-        token
-      )
-    )
-      .then(dispatch(getBranches(token)))
-      .then(dispatch(getSpecialties(token)))
-      .then(() => {
-        setLoading(false);
-      });
+        // dispatch(
+    //   getUsers(
+    //     nameOrLastName,
+    //     attribute,
+    //     order,
+    //     page,
+    //     size,
+    //     branch,
+    //     specialty,
+    //     role,
+    //     createDateEnd,
+    //     createDateStart,
+    //     token
+    //   )
+    // )
+    //   .then(dispatch(getBranches(token)))
+    //   .then(dispatch(getSpecialties(token)))
+    //   .then(() => {
+    //     setLoading(false);
+    //   });
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+    requestMade = true;
+    axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`, token)
+    .then(respuesta => {
+      dispatch(getUsers(respuesta.data))
+      return axios.post(API_URL_BASE + `/v1/specialties`, token)
+    })
+    .then(respuesta2 => {
+      dispatch(getSpecialties(respuesta2.data))
+      return axios.post(API_URL_BASE + `/v1/branches`, token)
+      })
+    .then(respuesta3 => {
+      dispatch(getBranches(respuesta3.data))
+      setLoading(false)
+    })
+    }
   }, [
     nameOrLastName,
     attribute,

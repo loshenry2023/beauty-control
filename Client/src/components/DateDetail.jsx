@@ -68,11 +68,14 @@ const DateDetail = () => {
       );
       if (findAppointment) {
         setAppointment(findAppointment);
+        axios.post(API_URL_BASE + `/v1/getclient/${findAppointment.Client.id}`,{token})
+        .then(respuesta => {
+          dispatch(getClientId(respuesta.data));
+        })
+        
         setIsLoading(true);
-        dispatch(getClientId(findAppointment.Client.id, { token }));
       }
     }
-    dispatch(getPayMethods({ token }));
   }, [dispatch, token, appointmentId, clientId]);
 
   const handlePriceChange = (e, priceType) => {
@@ -190,7 +193,7 @@ const DateDetail = () => {
     try {
       const dateData = {
         idUser: appointment.User.id,
-        idclient: appointment.Client.id,
+        idClient: appointment.Client.id,
         imageServiceDone: photo,
         date: appointment.date_from,
         conformity: consentURL || "",
@@ -212,6 +215,7 @@ const DateDetail = () => {
         `${API_URL_BASE}/v1/newhistoricproc`,
         dateData
       );
+
       if (response.data.created === "ok") {
         toast.success("Cita Finalizada exitosamente");
         updateDateState();

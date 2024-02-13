@@ -108,11 +108,9 @@ const EditClient = ({
       };
       // Check if any field has been modified
       const isModified = Object.keys(client).some((key) => {
-        // console.log(key, client[key], checkClient[key]);
         return client[key] !== checkClient[key];
       });
 
-      //console.log('isModified:', isModified);
 
       if (!isModified) {
         // Display toast if no fields have been modified
@@ -137,7 +135,7 @@ const EditClient = ({
         };
 
         const response = await axios.put(
-          `${API_URL_BASE}/vi/client/${detailId}`,
+          `${API_URL_BASE}/v1/client/${detailId}`,
           data
         );
 

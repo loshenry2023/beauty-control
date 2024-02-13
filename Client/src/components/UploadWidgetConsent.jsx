@@ -37,7 +37,6 @@ export const UploadWidgetConsent = ({
     );
   }, [setConsent]);
 
-  console.log(isConsentVisible)
   return (
     <button
       disabled={!isConsentVisible}

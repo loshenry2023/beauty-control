@@ -10,6 +10,11 @@ import ClientFilters from "../ClientFilters";
 import ClientsTable from "../ClientsTable";
 import Pagination from "../Pagination";
 
+import axios from "axios";
+import getParamsEnv from "../../functions/getParamsEnv";
+const { API_URL_BASE } = getParamsEnv();
+
+
 
 const ListClients = ({ setShowClientListModal, setChosenClient }) => {
 
@@ -34,20 +39,28 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
     setShowClientFormModal(true)
   }
 
+  let requestMade = false;
   useEffect(() => {
-    dispatch(
-      getClients(
-        nameOrLastName,
-        attribute,
-        order,
-        page,
-        size,
-        createDateEnd,
-        createDateStart,
-        birthdaysMonth,
-        { token }
-      )
-    )
+    // dispatch(
+    //   getClients(
+    //     nameOrLastName,
+    //     attribute,
+    //     order,
+    //     page,
+    //     size,
+    //     createDateEnd,
+    //     createDateStart,
+    //     birthdaysMonth,
+    //     { token }
+    //   )
+    // )
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true
+      axios.post(API_URL_BASE + `/v1/getclients?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}&birthdaysMonth=${birthdaysMonth}`, {token})
+      .then(respuesta => {
+        dispatch(getClients(respuesta.data))
+      })
+    }
     const close = (e) => {
       if(e.keyCode === 27){
         if(showClientFormModal === false) {setShowClientListModal(false)}
