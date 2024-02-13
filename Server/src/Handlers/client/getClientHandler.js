@@ -38,8 +38,7 @@ const getClientHandler = async (req, res) => {
       tableName6: ""
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
-
+    await conn.close();
     if (resp) {
       showLog(`getClientHandler OK`);
       return res.status(200).json(resp);

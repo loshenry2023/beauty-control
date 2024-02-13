@@ -18,37 +18,32 @@ const getReg = async (dataInc) => {
   try {
     let reg;
     switch (tableNameText) {
+      case "PriceHistory":
+        const { branchId, productCode: prodID } = dataQuery;
+        reg = await tableName.findAndCountAll({ //PriceHistory
+          attributes: [
+            ["createdAt", "date"],
+            "price",
+          ],
+          where: { prodId: prodID, branchId: branchId },
+          order: [["createdAt", "DESC"]],
+        });
+        break;
       case "Insumos":
         const {
           productName,
           description,
-          code,
           amount,
           order: ord,
           page: pg,
           size: sze,
-          branch: brnch,
+          branchId: brnchId,
           productCode,
           supplier,
           attribute: attr,
         } = tableName4;
-
-        const { count, rows } = await tableName.findAndCountAll({ // Product
-          include: [
-            {
-              model: tableName2, //Branch
-              where: { branchName: { [Op.iLike]: `%${brnch}%` } },
-              attributes: ["id", "branchName"],
-            },
-            {
-              model: tableName3, //PriceHistory
-              order: [["date_modification", "DESC"]],
-              attributes: ["price"],
-              limit: 1,
-            },
-          ],
+        const { count, rows: products } = await tableName.findAndCountAll({ // Product
           attributes: [
-            "code",
             "productName",
             "description",
             "supplier",
@@ -58,32 +53,41 @@ const getReg = async (dataInc) => {
           distinct: true,
           where: {
             [Op.and]: [
-              // Filtro por nombre de producto
+              // Filtro por sede:
+              { branchId: brnchId },
+              // Filtro por nombre de producto:
               { productName: { [Op.iLike]: `%${productName}%` } },
-              // Filtro por proveedor
+              // Filtro por proveedor:
               { supplier: { [Op.iLike]: `%${supplier}%` } },
-              // Filtro por cantidad
+              // Filtro por cantidad:
               amount !== null ? { amount: amount } : {},
-              // Filtro por código
-              code !== null ? { code: code } : {},
-              // Filtro por código de producto
-              productCode !== ""
-                ? { productCode: { [Op.iLike]: `%${productCode}%` } }
-                : {},
-              // Filtro por descripción
-              description !== ""
-                ? { description: { [Op.iLike]: `%${description}%` } }
-                : {},
-            ].filter(Boolean), // Elimina los filtros nulos o vacíos
+              // Filtro por código de producto:
+              productCode !== "" ? { productCode: { [Op.iLike]: `%${productCode}%` } } : {},
+              // Filtro por descripción:
+              description !== "" ? { description: { [Op.iLike]: `%${description}%` } } : {},
+            ].filter(Boolean), // elimina los filtros nulos o vacíos
           },
           order: [["code", ord]],
           limit: sze,
           offset: sze * pg,
         });
-        return {
-          count,
-          rows,
-        };
+        // Agrego el precio al objeto de producto:
+        let prodOut = [];
+        for (const product of products) {
+          const latestPriceHistory = await tableName3.findOne({  // PriceHistory
+            where: { prodId: product.productCode, branchId: brnchId },
+            order: [["createdAt", "DESC"]],
+          });
+          dataOut = {
+            price: latestPriceHistory ? latestPriceHistory.price : null,
+            productCode: product.productCode,
+            productName: product.productName,
+            description: product.description,
+            supplier: product.supplier,
+          };
+          prodOut.push(dataOut);
+        }
+        return { count, products: prodOut };
       case "Company":
         reg = await tableName.findAndCountAll({ //Company
           attributes: [

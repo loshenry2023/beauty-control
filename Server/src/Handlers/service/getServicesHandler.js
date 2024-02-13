@@ -19,7 +19,6 @@ const getServicesHandler = async (req, res) => {
       return res.status(401).send(`Sin permiso.`);
     }
 
-
     const { conn, Service, Specialty } = await connectDB(checked.dbName);
     await conn.sync();
 
@@ -36,8 +35,7 @@ const getServicesHandler = async (req, res) => {
       tableName6: ""
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
-
+    await conn.close();
     if (resp) {
       showLog(`getServicesHandler OK`);
       return res.status(200).json(resp);

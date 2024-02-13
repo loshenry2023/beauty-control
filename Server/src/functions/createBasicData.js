@@ -161,7 +161,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
             serviceCreated1.addSpecialty(spec);
         }
 
-        //)arte 4:
+        // Parte 4:
         serviceList = [
             "Procedimiento 7",
             "Procedimiento 8",

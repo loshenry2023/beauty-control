@@ -8,12 +8,11 @@ const getAllProductsHandler = async (req, res) => {
     const {
       productName = "",
       description = "",
-      code = null,
       amount = null,
       order = "asc",
       page = 0,
       size = 10,
-      branch = "",
+      branchId,
       productCode = "",
       token,
       supplier = "",
@@ -28,10 +27,12 @@ const getAllProductsHandler = async (req, res) => {
       showLog(checked.mensaje);
       return res.status(checked.code).send(checked.mensaje);
     }
-    if (checked.role === "superSuperAdmin") {
+    if (checked.role === "especialista" || checked.role === "superSuperAdmin") {
       showLog(`Wrong role.`);
       return res.status(401).send(`Sin permiso.`);
     }
+
+    if (!branchId) { throw Error("Faltan datos"); }
 
     const { conn, Product, Branch, PriceHistory } = await connectDB(checked.dbName);
     await conn.sync();
@@ -39,12 +40,11 @@ const getAllProductsHandler = async (req, res) => {
     const dataAdded = {
       productName,
       description,
-      code,
       amount,
       order,
       page,
       size,
-      branch,
+      branchId,
       productCode,
       supplier,
       attribute,
@@ -59,11 +59,11 @@ const getAllProductsHandler = async (req, res) => {
       tableName5: "",
       id: "",
       dataQuery: "",
-      conn: "",
+      conn: conn,
       tableName6: ""
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp) {
       showLog(`getAllProductsHandler OK`);

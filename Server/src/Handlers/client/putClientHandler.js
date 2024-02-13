@@ -41,8 +41,7 @@ const putClientHandler = async (req, res) => {
 
     }
     const resp = await putReg(data);
-    await conn.close(); // cierro la conexión
-
+    await conn.close();
     if (resp.created === 'ok') {
       showLog(`putClientHandler OK`);
       return res.status(200).json({ "updated": "ok" });

@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   sequelize.define("Client", {
     id: {
-      type: DataTypes.UUID, // clave impredecible, versión 4
+      type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
@@ -25,11 +25,11 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     phoneNumber1: {
-      type: DataTypes.TEXT, //validar!
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     phoneNumber2: {
-      type: DataTypes.TEXT, //validar!
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     image: {
@@ -53,6 +53,6 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
   }, {
-    paranoid: true, // Habilita eliminación suave
+    paranoid: true,
   });
 };

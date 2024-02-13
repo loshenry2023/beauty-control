@@ -9,22 +9,18 @@ module.exports = (sequelize) => {
         primaryKey: true,
         allowNull: false,
       },
-      product_code: {
-        type: DataTypes.INTEGER,
+      branchId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      prodId: {
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
-      date_modification: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false,
-      },
-    },
-    {
-      timestamps: false,
     },
   );
 };

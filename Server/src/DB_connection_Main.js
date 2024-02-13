@@ -1,3 +1,4 @@
+// ! Configuración de modelos de la conexión principal.
 require("pg"); // requerido por Vercel para el deploy
 const { Sequelize } = require("sequelize");
 const generateStringConnectionDb = require("./functions/generateStringConnectionDb");

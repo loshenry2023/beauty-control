@@ -3,9 +3,7 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   sequelize.define("User", {
     id: {
-      type: DataTypes.UUID, // clave impredecible, versión 4
-      //type: text, // clave impredecible, versión 4
-      //defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
     },
@@ -52,6 +50,6 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
   }, {
-    paranoid: true, // Habilita eliminación suave
+    paranoid: true,
   });
 };

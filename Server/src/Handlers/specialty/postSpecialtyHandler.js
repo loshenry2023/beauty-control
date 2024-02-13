@@ -37,7 +37,7 @@ const postSpecialtyHandler = async (req, res) => {
       nameCompany: checked.nameCompany,
     }
     const resp = await postReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`postSpecialtyHandler OK`);

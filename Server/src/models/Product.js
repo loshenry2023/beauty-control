@@ -18,6 +18,10 @@ module.exports = (sequelize) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      branchId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
       description: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -30,10 +34,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-    },
-    {
-      timestamps: false,
-      paranoid: true, // Habilita eliminación suave
-    }
-  );
+    }, {
+    paranoid: true,
+  });
 };

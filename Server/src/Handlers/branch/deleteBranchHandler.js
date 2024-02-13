@@ -32,9 +32,7 @@ const deleteBranchHandler = async (req, res) => {
       nameCompany: checked.nameCompany,
     }
     const resp = await deleteReg(data);
-
-    //    const resp = await deleteReg(Branch, id, "Branch");
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.deleted === 'ok') {
       showLog(`deleteBranchHandler OK`);

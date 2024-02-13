@@ -1,4 +1,4 @@
-// ! Modifica un registro en tabla.
+// ! Modifica registros en tabla.
 const showLog = require("../functions/showLog");
 const logData = require("../functions/logData");
 const { DB_NAME, } = require("../functions/paramsEnv");
@@ -11,40 +11,41 @@ const putReg = async (dataInc) => {
         dbName: dbName,
         userName: userLogged
     }
-
-    //showLog(dataLog)
     try {
         let resp;
         switch (tableNameText) {
             case "Branch":
-                resp = await editRegBranch(tableName, data, id, dataLog);
+                resp = await editRegBranch({ Branch: tableName, data: data, id: id, dataLog: dataLog });
                 break;
             case "Payment":
-                resp = await editRegPayment(tableName, data, id, dataLog);
+                resp = await editRegPayment({ Payment: tableName, data: data, id: id, dataLog: dataLog });
                 break;
             case "Specialty":
-                resp = await editRegSpecialty(tableName, data, id, dataLog);
+                resp = await editRegSpecialty({ Specialty: tableName, data: data, id: id, dataLog: dataLog });
                 break;
             case "CatGastos":
-                resp = await editRegCatGastos(tableName, data, id, dataLog);
+                resp = await editRegCatGastos({ CatGastos: tableName, data: data, id: id, dataLog: dataLog });
                 break;
             case "Service":
-                resp = await editRegService(tableName, data, id, conn, dataLog);
+                resp = await editRegService({ Service: tableName, data: data, id: id, conn: conn, dataLog: dataLog });
                 break;
             case "User":
-                resp = await editRegUser(tableName, data, id, conn, dataLog);
+                resp = await editRegUser({ User: tableName, data: data, id: id, conn: conn, dataLog: dataLog });
                 break;
             case "Client":
-                resp = await editRegClient(tableName, data, id, conn, dataLog);
+                resp = await editRegClient({ Client: tableName, data: data, id: id, conn: conn, dataLog: dataLog });
                 break;
             case "Calendar":
-                resp = await editRegCalendar(tableName, data, id, conn, tableName2, tableName3, tableName4, tableName5, dataLog);
+                resp = await editRegCalendar({ Calendar: tableName, data: data, id: id, conn: conn, User: tableName2, Service: tableName3, Client: tableName4, Branch: tableName5, dataLog: dataLog });
                 break;
             case "Company":
-                resp = await editRegCompany(tableName, data, dataLog);
+                resp = await editRegCompany({ Company: tableName, data: data, dataLog: dataLog });
                 break;
             case "Companys":
-                resp = await editRegCompanys(tableName, data);
+                resp = await editRegCompanys({ Company: tableName, data: data });
+                break;
+            case "Product":
+                resp = await editRegProduct({ Product: tableName, data: data, id: id, conn: conn, Branch: tableName2, PriceHistory: tableName3, dataLog: dataLog });
                 break;
             default:
                 throw new Error("Tabla no válida");
@@ -55,7 +56,59 @@ const putReg = async (dataInc) => {
     }
 }
 
-async function editRegCompanys(Company, data) {
+async function editRegProduct(dataMain) {
+    const { Product, data, id, conn, Branch, PriceHistory, dataLog } = dataMain;
+    const { price, branchId: brnchId, productName, description, supplier, amount } = data;
+    let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
+    try {
+        if (!price || !brnchId || !productName || !description || !supplier || !amount) { throw Error("Faltan datos"); }
+        // Verifico que la sede exista:
+        const productBranch = await Branch.findByPk(brnchId);
+        if (!productBranch) {
+            throw Error("Sede no encontrada");
+        }
+        const existingProd = await Product.findOne({
+            where: { productCode: id, branchId: brnchId },
+        });
+        if (!existingProd) {
+            throw Error("Insumo no encontrado");
+        }
+        // Inicio la transacción:
+        transaction = await conn.transaction();
+        existingProd.productName = productName;
+        existingProd.description = description;
+        existingProd.supplier = supplier;
+        existingProd.amount = amount;
+        await existingProd.save();
+        // Obtengo el último precio registrado para ese producto:
+        const existingPrice = await PriceHistory.findOne({
+            where: { prodId: id, branchId: brnchId },
+            order: [["createdAt", "DESC"]],
+        });
+        let doAnexHist = true;
+        if (existingPrice) {
+            // Comparo el valor actual con el último registrado:
+            if (Number(existingPrice.price) === Number(price)) {
+                doAnexHist = false;
+            }
+        }
+        if (doAnexHist) {
+            // Lo agrego al historial de precios:
+            const newProduct = await PriceHistory.create({
+                branchId: brnchId, prodId: id, price
+            }, { transaction });
+        }
+        await transaction.commit();
+        logData({ op: "U", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Product ${id} ${productName}, stock ${amount}, price ${price} was modified` });
+        return;
+    } catch (error) {
+        if (transaction) await transaction.rollback();
+        throw Error(`${error}`);
+    }
+}
+
+async function editRegCompanys(dataMain) {
+    const { Company, data } = dataMain;
     const { nMode } = data;
     try {
         if (!nMode) { throw Error("Faltan datos"); }
@@ -67,7 +120,6 @@ async function editRegCompanys(Company, data) {
                     [Op.ne]: DB_NAME
                 }
             }
-
         });
         logData({ op: "U", nameCompany: ".", dbName: ".", userName: ".", desc: `Exp was applied -> ${nMode}` });
         return;
@@ -76,8 +128,8 @@ async function editRegCompanys(Company, data) {
     }
 }
 
-
-async function editRegCompany(Company, data, dataLog) {
+async function editRegCompany(dataMain) {
+    const { Company, data, dataLog } = dataMain
     const { nameCompany: nCompany, subscribedPlan, expireAt, imgCompany } = data;
     try {
         if (!nCompany || !subscribedPlan || !expireAt) { throw Error("Faltan datos"); }
@@ -97,7 +149,8 @@ async function editRegCompany(Company, data, dataLog) {
     }
 }
 
-async function editRegUser(User, data, id, conn, dataLog) {
+async function editRegUser(dataMain) {
+    const { User, data, id, conn, dataLog } = dataMain;
     const { name, lastName, role, notificationEmail, phone1, phone2, image, comission, branch, specialty } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -132,7 +185,8 @@ async function editRegUser(User, data, id, conn, dataLog) {
     }
 }
 
-async function editRegCalendar(Calendar, data, id, conn, User, Service, Client, Branch, dataLog) {
+async function editRegCalendar(dataMain) {
+    const { Calendar, data, id, conn, User, Service, Client, Branch, dataLog } = dataMain;
     const { idUser, idService, idClient, idBranch, date_from, date_to, obs, current } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -187,7 +241,8 @@ async function editRegCalendar(Calendar, data, id, conn, User, Service, Client, 
     }
 }
 
-async function editRegClient(Client, data, id, conn, dataLog) {
+async function editRegClient(dataMain) {
+    const { Client, data, id, conn, dataLog } = dataMain;
     const { email, name, lastName, id_pers, phone1, phone2, image, birthday } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -218,7 +273,8 @@ async function editRegClient(Client, data, id, conn, dataLog) {
     }
 }
 
-async function editRegService(Service, data, id, conn, dataLog) {
+async function editRegService(dataMain) {
+    const { Service, data, id, conn, dataLog } = dataMain;
     const { serviceName, duration, price, ImageService, specialty } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -245,7 +301,8 @@ async function editRegService(Service, data, id, conn, dataLog) {
     }
 }
 
-async function editRegBranch(Branch, data, id, dataLog) {
+async function editRegBranch(dataMain) {
+    const { Branch, data, id, dataLog } = dataMain;
     const { branchName, coordinates, address, phoneNumber, openningHours, clossingHours, workingDays, linkFb = "", linkIg = "", linkTk = "" } = data;
     try {
         if (!branchName || !phoneNumber || !address) { throw Error("Faltan datos"); }
@@ -271,7 +328,8 @@ async function editRegBranch(Branch, data, id, dataLog) {
     }
 }
 
-async function editRegPayment(Payment, data, id, dataLog) {
+async function editRegPayment(dataMain) {
+    const { Payment, data, id, dataLog } = dataMain;
     const { paymentMethodName } = data;
     try {
         if (!paymentMethodName) { throw Error("Faltan datos"); }
@@ -288,7 +346,8 @@ async function editRegPayment(Payment, data, id, dataLog) {
     }
 }
 
-async function editRegSpecialty(Specialty, data, id, dataLog) {
+async function editRegSpecialty(dataMain) {
+    const { Specialty, data, id, dataLog } = dataMain;
     const { specialtyName } = data;
     try {
         if (!specialtyName) { throw Error("Faltan datos"); }
@@ -305,7 +364,8 @@ async function editRegSpecialty(Specialty, data, id, dataLog) {
     }
 }
 
-async function editRegCatGastos(CatGastos, data, id, dataLog) {
+async function editRegCatGastos(dataMain) {
+    const { CatGastos, data, id, dataLog } = dataMain;
     const { catName } = data;
     try {
         if (!catName) { throw Error("Faltan datos"); }
