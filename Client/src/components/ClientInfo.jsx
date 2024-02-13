@@ -41,10 +41,28 @@ const ClientInfo = () => {
   const user = useSelector(state => state?.user)
   const [clientRender, setClientRender] = useState(false)
 
-
+  let requestMade = false
   useEffect(() => {
-    dispatch(getClientId(detailId, { token: token }))
-      .then(() => { setLoading(false) })
+    // dispatch(getClientId(detailId, { token: token }))
+    //   .then(() => { setLoading(false) })
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true;
+      axios.post(API_URL_BASE + `/v1/getclient/${detailId}`,{token})
+      .then(respuesta => {
+        dispatch(getClientId(respuesta.data))
+        setLoading(false)
+      })
+      .catch(error => {
+        // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
+        let msg = '';
+        if (!error.response) {
+          msg = error.message;
+        } else {
+          msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+        }
+        console.log("ERROR!!! " + msg);
+      });
+    }
   }, [detailId, clientRender]);
 
   const handleGoBack = () => {

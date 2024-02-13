@@ -11,6 +11,7 @@ import ToasterConfig from "./Toaster";
 import { IoIosAddCircle } from "react-icons/io";
 import CreateSpecialtyModal from "./modals/CreateSpecialtyModal";
 import { getSpecialties } from "../redux/actions";
+import Loader from "./Loader";
 
 const { API_URL_BASE } = getParamsEnv();
 
@@ -23,16 +24,23 @@ const SpecialtiesTable = ({ branches }) => {
   const [specialtyId, setSpecialtyId] = useState(null);
   const specialties = useSelector((state) => state?.specialties);
   const token = useSelector((state) => state?.token);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [aux, setAux] = useState();
 
   const dispatch = useDispatch();
 
+  let requestMade = false;
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getSpecialties({ token }));
-    setIsLoading(false);
-  }, [aux]);
+    if(!requestMade){
+      requestMade = true
+      axios.post(API_URL_BASE + `/v1/specialties`, {token})
+      .then(respuesta => {
+        dispatch(getSpecialties(respuesta.data))
+        requestMade = false;
+        setIsLoading(false);
+      })
+    }}, [aux]);
+
 
   const handleDelete = async () => {
     try {
@@ -80,7 +88,8 @@ const SpecialtiesTable = ({ branches }) => {
     setFilaSpecialty(filaSpecialty);
   };
 
-  return (
+  if (!isLoading) {
+    return (
     <>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -178,8 +187,13 @@ const SpecialtiesTable = ({ branches }) => {
         </div>
       )}
       <ToasterConfig />
-    </>
-  );
+    </>)} else {
+    return (
+      <div className="mt-20">
+        <Loader />
+      </div>
+    )
+  }
 };
 
 export default SpecialtiesTable;

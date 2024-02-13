@@ -21,16 +21,21 @@ const PayMethodsTable = ({ methods }) => {
   const [ShowEditPayMethodModal, setShowEditPayMethodModal] = useState(false);
   const [filaPayMethod, setFilaPayMethod] = useState(null);
   const [methodId, setMethodId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const token = useSelector((state) => state?.token);
   const [aux, setAux] = useState();
-
   const dispatch = useDispatch();
 
+  let requestMade = false;
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getPayMethods({ token }));
-    setIsLoading(false);
+    if (!requestMade) {
+      requestMade = true;
+      axios.post(API_URL_BASE + "/v1/payments", { token }).then((respuesta) => {
+        dispatch(getPayMethods(respuesta.data));
+        requestMade = false;
+        setIsLoading(false);
+      });
+    }
   }, [aux]);
 
   const handleDelete = async () => {
@@ -42,7 +47,6 @@ const PayMethodsTable = ({ methods }) => {
       if (response.data.deleted === "ok") {
         setAux(!aux);
         toast.success("Procedimiento eliminado exitosamente");
-
         setMethodId(null);
       } else {
         toast.error("Hubo un problema al eliminar procedimiento");
@@ -85,7 +89,7 @@ const PayMethodsTable = ({ methods }) => {
     return (
       <>
         <div>
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg"> 
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige dark:border">
               <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                 <tr>
@@ -103,9 +107,11 @@ const PayMethodsTable = ({ methods }) => {
                 </tr>
               </thead>
               <tbody>
-              {methods
+                {methods
                   .slice()
-                  .sort((a, b) => a.paymentMethodName.localeCompare(b.paymentMethodName))
+                  .sort((a, b) =>
+                    a.paymentMethodName.localeCompare(b.paymentMethodName)
+                  )
                   .map((fila, index) => (
                     <tr
                       key={index}
@@ -117,13 +123,19 @@ const PayMethodsTable = ({ methods }) => {
                           className="hover:bg-blue-700 text-black px-2 py-1 rounded mr-2"
                           onClick={() => handleEditModal(fila)}
                         >
-                          <MdEdit size={25} className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"/>
+                          <MdEdit
+                            size={25}
+                            className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"
+                          />
                         </button>
                         <button
                           className="hover:bg-red-700 text-black px-2 py-1 rounded"
                           onClick={() => handleDeleteModal(fila.id)}
                         >
-                          <MdDeleteForever size={25} className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"/>
+                          <MdDeleteForever
+                            size={25}
+                            className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"
+                          />
                         </button>
                       </td>
                     </tr>
@@ -180,7 +192,11 @@ const PayMethodsTable = ({ methods }) => {
       </>
     );
   } else {
-    <Loader />;
+    return (
+      <div className="mt-20">
+        <Loader />
+      </div>
+    );
   }
 };
 

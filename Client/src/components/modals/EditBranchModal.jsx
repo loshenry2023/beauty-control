@@ -88,7 +88,7 @@ const EditBranchModal = ({
       };
 
       const response = await axios.put(
-        `${API_URL_BASE}/branch/${filaBranch.id}`,
+        `${API_URL_BASE}/v1/branch/${filaBranch.id}`,
         data
       );
 

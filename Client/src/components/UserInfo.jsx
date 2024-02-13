@@ -1,12 +1,14 @@
 // hooks, routers, reducers:
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { clearUserId, deleteUser, getUserId } from "../redux/actions";
+import { clearUserId, deleteUser, getUser, getUserId } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
+import axios from "axios";
 import EditModal from "./modals/EditModal.jsx";
 import Loader from "./Loader.jsx";
 import "./loading.css";
+import ToasterConfig from "./Toaster.jsx";
 
 //icons
 import { MdEdit } from "react-icons/md";
@@ -15,8 +17,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 
 //variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
-import ToasterConfig from "./Toaster.jsx";
-const { USERPROFILES } = getParamsEnv();
+const { USERPROFILES, API_URL_BASE } = getParamsEnv()
 
 const UserInfo = () => {
   const params = useParams();
@@ -30,19 +31,39 @@ const UserInfo = () => {
 
   const specialties = useSelector((state) => state?.specialties);
   const branches = useSelector((state) => state?.branches);
-  const userID = useSelector((state) => state?.userID);
+  const userID = useSelector((state) => state?.userDataId);
   const user = useSelector((state) => state?.user);
 
   const token = { token: user.token };
   const tokenID = user.token;
 
+  let requestMade = false;
   useEffect(() => {
-    dispatch(getUserId(detailId, token))
-    .then(() => {setLoading(false)})
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true;
+      axios.post(API_URL_BASE + `/v1/userdetails/${detailId}`, token)
+      .then(respuesta => {
+        dispatch(getUserId(respuesta.data))
+        requestMade = false;
+        setLoading(false)
+      })
+      .catch(error => {
+        // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
+        let msg = '';
+        if (!error.response) {
+          msg = error.message;
+        } else {
+          msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+        }
+        console.log("ERROR!!! " + msg);
+      });
+    // dispatch(getUserId(detailId, token))
+    // .then(() => {setLoading(false)})
+    }
   }, [detailId]);
 
   const confirmDelete = (detailId) => {
-    if (userID?.userName === "loshenry2023@gmail.com") {
+    if (userID?.userName === user.userName) {
       toast.error("Este usuario no puede ser eliminado");
     } else {
       setShowDeleteConfirmation(true);
@@ -106,7 +127,7 @@ const UserInfo = () => {
                 Rol:{" "}
                 <span className="pl-1 text-md tracking-wide ">
                   {" "}
-                  {userID?.role === "superAdmin" ? "Admin General" : `${userID.role .charAt(0).toUpperCase()}${userID.role .slice(1)}`}
+                  {userID?.role === "superAdmin" ? "Admin General" : `${userID?.role .charAt(0).toUpperCase()}${userID?.role .slice(1)}`}
                 </span>
               </h3>
               <h3 className="text-lg leading-tight font-bold dark:text-darkText">

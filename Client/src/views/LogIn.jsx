@@ -139,7 +139,6 @@ const LogIn = () => {
       setBranches(branches);
       setRole(role);
       dispatch(getToken(accessToken));
-      console.log(userData, "userdata")
     } catch (error) {
       if (error.message.includes("404")) {
         toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)

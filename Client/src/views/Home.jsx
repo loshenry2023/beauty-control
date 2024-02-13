@@ -73,8 +73,8 @@ const Home = () => {
           {loading ? (
             <Loader />
           ) : (
-            user.role === "superAdmin" ? <p>hola</p> : <p>tres</p>
-            // <Balance specialists={specialists} services={services} payMethods={payMethods}/> :  <Restricted />
+            user.role === "superAdmin" ? 
+            <Balance specialists={specialists} services={services} payMethods={payMethods}/> :  <Restricted />
           )}
         </div>
       </>

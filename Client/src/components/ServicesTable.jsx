@@ -1,17 +1,25 @@
+//components y hooks
 import React, { useState, useEffect } from "react";
-import { MdDeleteForever } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
 import CreateServiceModal from "./modals/CreateServiceModal";
 import EditServiceModal from "./modals/EditServiceModal";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import getParamsEnv from "../functions/getParamsEnv";
 import ToasterConfig from "./Toaster";
-import { IoIosAddCircle } from "react-icons/io";
 import { getServices, getSpecialties } from "../redux/actions";
+import Loader from "./Loader";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
+//icons
+import { MdDeleteForever } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import { IoIosAddCircle } from "react-icons/io";
+
+
+//variables de entorno y functiones
+import getParamsEnv from "../functions/getParamsEnv";
 const { API_URL_BASE } = getParamsEnv();
+
+
 
 const ServicesTable = () => {
   const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
@@ -23,13 +31,22 @@ const ServicesTable = () => {
   const token = useSelector((state) => state?.token);
   const dispatch = useDispatch();
   const [aux, setAux] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const services = useSelector((state) => state?.services);
 
+  let requestMade = false;
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getServices({ token }));
-    setIsLoading(false);
+    if (!requestMade) {
+    requestMade = true;
+    axios.post(API_URL_BASE + "/v1/getservices", { token })
+    .then((respuesta) => {
+        dispatch(getServices(respuesta.data))
+        setIsLoading(false);
+        requestMade = false;
+      })
+    .catch(error => {
+      toast.error(error)
+    })}
   }, [token, aux]);
 
   const handleDelete = async () => {
@@ -41,7 +58,6 @@ const ServicesTable = () => {
       if (response.data.deleted === "ok") {
         setAux(!aux);
         toast.success("Procedimiento eliminado exitosamente");
-
         setServiceId(null);
       } else {
         toast.error("Hubo un problema al eliminar procedimiento");
@@ -114,7 +130,7 @@ const ServicesTable = () => {
                 </tr>
               </thead>
               <tbody>
-              {services
+                {services
                   .slice()
                   .sort((a, b) => a.serviceName.localeCompare(b.serviceName))
                   .map((fila, index) => (
@@ -123,24 +139,36 @@ const ServicesTable = () => {
                       className=" border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
                     >
                       <td className="px-4 py-4">{fila.serviceName}</td>
-                      <td className="px-4 py-4">{fila.Specialties[0]?.specialtyName || '-'}</td>
+                      <td className="px-4 py-4">
+                        {fila.Specialties[0]?.specialtyName || "-"}
+                      </td>
                       <td className="px-4 py-4">{fila.duration} Mins</td>
                       <td className="px-4 py-4">${fila.price}</td>
                       <td className="px-4 py-4">
-                        <img className='h-8 w-8' src={fila.ImageService} alt={fila.serviceName} />
+                        <img
+                          className="h-8 w-8"
+                          src={fila.ImageService}
+                          alt={fila.serviceName}
+                        />
                       </td>
                       <td className="px-4 py-4">
                         <button
                           className=" hover:bg-blue-700 text-black px-2 py-1 rounded mr-2"
                           onClick={() => handleEditServiceModal(fila)}
                         >
-                          <MdEdit size={25} className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"/>
+                          <MdEdit
+                            size={25}
+                            className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"
+                          />
                         </button>
                         <button
                           className=" hover:bg-red-700 text-black px-2 py-1 rounded"
                           onClick={() => handleDeleteModal(fila.id)}
                         >
-                          <MdDeleteForever size={25} className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"/>
+                          <MdDeleteForever
+                            size={25}
+                            className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"
+                          />
                         </button>
                       </td>
                     </tr>
@@ -199,7 +227,11 @@ const ServicesTable = () => {
       </>
     );
   } else {
-    return <p>cargando</p>;
+    return (
+      <div className="mt-20">
+        <Loader />
+      </div>
+    );
   }
 };
 
