@@ -32,7 +32,7 @@ const deleteSpecialtyHandler = async (req, res) => {
       nameCompany: checked.nameCompany,
     }
     const resp = await deleteReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.deleted === 'ok') {
       showLog(`deleteSpecialtyHandler OK`);

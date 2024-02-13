@@ -39,7 +39,7 @@ const putBranchHandler = async (req, res) => {
       nameCompany: checked.nameCompany
     }
     const resp = await putReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`putBranchHandler OK`);

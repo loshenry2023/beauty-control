@@ -3,10 +3,10 @@ const postReg = require("../../controllers/postReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
 
-const postServiceHandler = async (req, res) => {
+const postProductHandler = async (req, res) => {
   try {
     const { token } = req.body;
-    showLog(`postServiceHandler`);
+    showLog(`postProductHandler`);
     // Verifico token. Sólo un superAdmin puede agregar:
     if (!token) { throw Error("Se requiere token"); }
     const checked = await checkToken(token);
@@ -19,37 +19,37 @@ const postServiceHandler = async (req, res) => {
       return res.status(401).send(`Sin permiso.`);
     }
 
-    const { conn, Service } = await connectDB(checked.dbName);
+    const { conn, Product, Branch, PriceHistory } = await connectDB(checked.dbName);
     await conn.sync();
-
     const data = {
       userLogged: checked.userName,
-      tableName: Service,
-      tableNameText: "Service",
+      tableName: Product,
+      tableNameText: "Product",
       data: req.body,
       conn: conn,
-      tableName2: "",
-      tableName3: "",
+      tableName2: Branch,
+      tableName3: PriceHistory,
       tableName4: "",
       tableName5: "",
       dbName: checked.dbName,
       nameCompany: checked.nameCompany,
     }
+
     const resp = await postReg(data);
     await conn.close();
 
     if (resp.created === 'ok') {
-      showLog(`postServiceHandler OK`);
+      showLog(`postProductHandler OK`);
       return res.status(200).json({ "created": "ok", "id": resp.id });
     } else {
-      showLog(`postServiceHandler ERROR-> ${resp.message}`);
+      showLog(`postProductHandler ERROR-> ${resp.message}`);
       return res.status(500).send(resp.message);
     }
   } catch (err) {
-    showLog(`postServiceHandler ERROR-> ${err.message}`);
+    showLog(`postProductHandler ERROR-> ${err.message}`);
     return res.status(500).send(err.message);
   }
 };
 
-module.exports = postServiceHandler;
+module.exports = postProductHandler;
 

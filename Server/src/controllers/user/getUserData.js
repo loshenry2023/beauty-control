@@ -4,7 +4,6 @@ const { connectDB } = require("../../DB_connection_General"); // conexión a la 
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
 const { DB_NAME } = require("../../functions/paramsEnv");
-//const { Op } = require('sequelize');
 
 const getUserData = async (req, res) => {
     const { id } = req.params;

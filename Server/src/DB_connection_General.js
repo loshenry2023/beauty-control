@@ -1,4 +1,4 @@
-// ! Obtiene las tablas para la bases de datos indicada.
+// ! Configuración de modelos de las bases de datos de cada empresa. Obtiene las tablas para la bases de datos indicada por parámetro.
 require("pg"); // requerido por Vercel para el deploy
 const { Sequelize } = require("sequelize");
 const generateStringConnectionDb = require("./functions/generateStringConnectionDb");
@@ -50,28 +50,17 @@ async function connectDB(databaseName) {
     } = database.models;
 
     // Relaciones:
-    // belongsTo: establece una relación de pertenencia entre dos modelos, donde un modelo "pertenece a" otro.
-    // hasOne: establece una relación uno a uno entre dos modelos.
-    // hasMany: establece una relación uno a muchos entre dos modelos.
-    // belongsToMany: establece una relación muchos a muchos entre dos modelos.
-
     Client.hasMany(Calendar); //un cliente puede tener muchas citas agendadas
     Client.hasMany(HistoryService); //un cliente puede tener muchos procedimientos hechos
     User.belongsToMany(Specialty, { through: "user_specialty" }); // muchos usuarios pertenecen a muchas epecialidades
     User.belongsToMany(Branch, { through: "user_branch" }); // muchos usuarios pertenecen a muchas sedes
     Service.belongsToMany(Specialty, { through: "service_specialty" }); // muchos services pertenecen a muchas especialidades
-    Calendar.belongsTo(Service); // Un Calendar pertenece a un único service
-    Calendar.belongsTo(User); // Un Calendar pertenece a un único usuario
-    Calendar.belongsTo(Client); // Un Calendar pertenece a un único cliente
-    Calendar.belongsTo(Branch); // Un Calendar pertenece a una única sede
+    Calendar.belongsTo(Service); // un Calendar pertenece a un único service
+    Calendar.belongsTo(User); // un Calendar pertenece a un único usuario
+    Calendar.belongsTo(Client); // un Calendar pertenece a un único cliente
+    Calendar.belongsTo(Branch); // un Calendar pertenece a una única sede
     Incoming.belongsToMany(Payment, { through: "incoming_payment" }); // muchos ingresos pertenecen a muchos medios de pago
     HistoryService.hasMany(Incoming); //un registro histórico puede tener muchos pagos hechos
-    //Relación 1 a muchos esto es para el inventario:
-    Product.belongsTo(Branch, { foreignKey: "branchId" });
-    Product.hasMany(PriceHistory, {
-        foreignKey: "product_code", // Claveen la tabla PriceHistory
-        sourceKey: "code", // Clave en la tabla Product
-    });
 
     return { conn: database, Branch, Client, HistoryService, Payment, Service, Specialty, User, Calendar, Incoming, CatGastos, Product, PriceHistory };
 }
