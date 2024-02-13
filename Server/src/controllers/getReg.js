@@ -2,6 +2,7 @@
 const { Op } = require("sequelize");
 const showLog = require("../functions/showLog");
 const { DB_NAME } = require("../functions/paramsEnv");
+const { connectDB } = require("../DB_connection_General"); // conexión a la base de datos de trabajo
 
 const getReg = async (dataInc) => {
   const {
@@ -89,12 +90,15 @@ const getReg = async (dataInc) => {
         }
         return { count, products: prodOut };
       case "Company":
-        reg = await tableName.findAndCountAll({ //Company
+        //reg = await tableName.findAndCountAll({ //Company
+        const { countTot, rows: companies } = await tableName.findAndCountAll({ //Company
           attributes: [
             [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
             "subscribedPlan",
             "expireAt",
             "imgCompany",
+            "id",
+            "dbName",
           ],
           where: {
             dbName: {
@@ -103,6 +107,39 @@ const getReg = async (dataInc) => {
           },
           order: [["nameCompany", "asc"]],
         });
+        // Agrego el usuario principal al objeto de empresas:
+        let compOut = [];
+        let firstUsr = "";
+        for (const company of companies) {
+          // Obtengo la base de datos en donde buscar el usuario:
+          const { conn, User } = await connectDB(company.dbName);
+          await conn.sync();
+          const userFound = await User.findOne({  // User
+            attributes: [
+              "first",
+              "userName",
+            ],
+            where: { first: '1' },
+          });
+          if (userFound) {
+            firstUsr = userFound.userName;
+          } else {
+            firstUsr = "{no encontrado}";
+          }
+          await conn.close();
+          dataOut = {
+            nameCompany: company.nameCompany,
+            subscribedPlan: company.subscribedPlan,
+            expireAt: company.expireAt,
+            imgCompany: company.imgCompany,
+            firstUser: firstUsr,
+          };
+          compOut.push(dataOut);
+        }
+        return { count: countTot, rows: compOut };
+
+
+
         break;
       case "Specialists":
         const { branchWorking } = dataQuery;
