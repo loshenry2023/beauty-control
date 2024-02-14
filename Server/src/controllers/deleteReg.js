@@ -36,13 +36,17 @@ const deleteReg = async (dataInc) => {
                     ],
                     where: { nameCompany: id },
                 });
-                await deleteDB(reg.dbName);
-                const companies = await Company.destroy({
-                    where: {
-                        nameCompany: id
-                    }
-                });
-                logData({ op: "D", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Company ${id} was deleted` });
+                const res = await deleteDB(reg.dbName);
+                if (res.deleted === true) {
+                    const companies = await Company.destroy({
+                        where: {
+                            nameCompany: id
+                        }
+                    });
+                    logData({ op: "D", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Company ${id} was deleted` });
+                } else {
+                    throw Error(`No se pudo eliminar: ${res.error}`);
+                }
                 break;
             case "Branch":
                 regDelete = regToDelete.branchName;

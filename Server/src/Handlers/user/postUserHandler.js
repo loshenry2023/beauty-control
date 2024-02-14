@@ -1,6 +1,5 @@
 const { Company } = require("../../DB_connection_Main"); // conexión a la base de datos principal
 const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
-
 const postReg = require("../../controllers/postReg");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
@@ -23,7 +22,7 @@ const postUserHandler = async (req, res) => {
     }
 
     const { conn, User } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       userLogged: checked.userName,
@@ -39,7 +38,7 @@ const postUserHandler = async (req, res) => {
       nameCompany: checked.nameCompany,
     }
     const resp = await postReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`postUserHandler OK`);

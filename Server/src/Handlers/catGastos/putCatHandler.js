@@ -22,7 +22,7 @@ const putCatHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, CatGastos } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: CatGastos,
@@ -40,7 +40,7 @@ const putCatHandler = async (req, res) => {
 
     }
     const resp = await putReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`putCatHandler OK`);

@@ -32,7 +32,9 @@ const Calendar = ({
   user,
   dateInfo,
   setShowEditAppointment,
-  showEditAppointment
+  showEditAppointment,
+  setLoadingToProps,
+  loadingToProps
 }) => {
   const dispatch = useDispatch();
 
@@ -54,7 +56,6 @@ const Calendar = ({
     user.role === "especialista" ? user.id : ""
   );
   const [branch, setBranch] = useState(workingBranchID);
-  const [loading, setLoading] = useState(true);
   const dateNow = new Date();
   const day =
     dateNow.getDate() < 10 ? `0${dateNow.getDate()}` : dateNow.getDate();
@@ -114,18 +115,46 @@ const Calendar = ({
     }
   };
 
+  let requestMade = false;
   useEffect(() => {
-    dispatch(getspecialists(branchWorking, { token: token }));
-    setEffectControl(true);
-    dispatch(getCalendar(branch, dateFrom, dateTo, userId, { token: token }));
-    setLoading(false);
-    if (showEditAppointment) {
-      setSpecialty(date.User.Specialties[0].specialtyName);
-    }else {
-    setSpecialty(dateInfo.service.specialtyName);
-    }
-    setEffectControl(false);
-  }, [
+    // dispatch(getspecialists(branchWorking, { token: token }));
+    // setEffectControl(true);
+    // dispatch(getCalendar(branch, dateFrom, dateTo, userId, { token: token }));
+    // setLoading(false);
+    // if (showEditAppointment) {
+    //   setSpecialty(date.User.Specialties[0].specialtyName);
+    // }else {
+    // setSpecialty(dateInfo.service.specialtyName);
+    // }
+    // setEffectControl(false);
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true;
+      axios.post(API_URL_BASE + "/v1/specialists?branchWorking=" + branchWorking.branchName, { token })
+        .then(respuesta => {
+          dispatch(getspecialists(respuesta.data)); 
+          return axios.post(API_URL_BASE + `/v1/getcalendar?branch=${branch}&dateFrom=${dateFrom}&dateTo=${dateTo}&userId=${userId}`, { token });
+        })
+        .then(respuesta2 => {
+          dispatch(getCalendar(respuesta2.data));
+          setLoadingToProps(false);
+          if (showEditAppointment) {
+            setSpecialty(date.User.Specialties[0].specialtyName);
+          }else {
+          setSpecialty(dateInfo.service.specialtyName);
+          }
+          setEffectControl(false);
+        })
+        .catch(error => {
+          // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
+          let msg = '';
+          if (!error.response) {
+            msg = error.message;
+          } else {
+            msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+          }
+          console.log("ERROR!!! " + msg);
+        });
+  }}, [
     workingBranch.id,
     dateFrom,
     dateTo,
@@ -163,7 +192,7 @@ const Calendar = ({
 
   return (
     <div >
-      {loading ? (
+      {loadingToProps ? (
         <Loader />
       ) : (
         <div className="mt-10  flex flex-col gap-10 justify-center items-center w-full sm:w-full xl:flex-row">

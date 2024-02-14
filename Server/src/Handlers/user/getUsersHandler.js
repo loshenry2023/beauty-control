@@ -19,7 +19,6 @@ const getUsersHandler = async (req, res) => {
     const { token } = req.body;
 
     showLog(`getUsersHandler - Handler`);
-
     // Verifico token:
     if (!token) { throw Error("Se requiere token"); }
     const checked = await checkToken(token);

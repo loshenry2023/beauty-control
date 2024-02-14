@@ -20,7 +20,7 @@ const postBranchHandler = async (req, res) => {
     }
 
     const { conn, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       userLogged: checked.userName,
@@ -37,7 +37,7 @@ const postBranchHandler = async (req, res) => {
     }
     const resp = await postReg(data);
 
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`postBranchHandler OK`);

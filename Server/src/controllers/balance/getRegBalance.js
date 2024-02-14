@@ -9,7 +9,7 @@ const getRegBalance = async (dataQuery, dbName) => {
   showLog(`getRegBalance`);
 
   const { conn, User, HistoryService, Incoming, Service, Payment } = await connectDB(dbName);
-  await conn.sync({ alter: true });
+  await conn.sync();
 
   let dFrom = "";
   let dTo = "";
@@ -177,7 +177,6 @@ const getRegBalance = async (dataQuery, dbName) => {
         const idSvc = match ? match.id : null;
         serviceOut = {
           date: service.date,
-          // serviceID: idSvc,
           serviceName: service.serviceName,
         };
         servicesOut.push(serviceOut);
@@ -193,7 +192,6 @@ const getRegBalance = async (dataQuery, dbName) => {
             const idMthd = matchInc ? matchInc.id : null;
             paymentOut = {
               date: incoming.DateIncoming,
-              // MethodID: idMthd,
               Method: incoming.paymentMethodName,
               Amount: incoming.amount,
             };

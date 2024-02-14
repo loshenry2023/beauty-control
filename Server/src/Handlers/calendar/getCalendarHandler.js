@@ -20,7 +20,7 @@ const getCalendarHandler = async (req, res) => {
     }
 
     const { conn, Calendar, User, Service, Client, Branch, Specialty } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Calendar,
@@ -35,7 +35,7 @@ const getCalendarHandler = async (req, res) => {
       tableName6: Specialty
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp) {
       showLog(`getCalendarHandler OK`);

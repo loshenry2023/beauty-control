@@ -7,11 +7,17 @@ import { getClients } from "../redux/actions";
 import ClientsTable from "../components/ClientsTable";
 import ErrorToken from "./ErrorToken";
 
+import axios from "axios";
+import getParamsEnv from "../functions/getParamsEnv";
+const { API_URL_BASE } = getParamsEnv();
+
 //icons
 import { IoPersonAddOutline } from "react-icons/io5";
 import CreateClient from '../components/modals/CreateClient';
 import ClientFilters from "../components/ClientFilters";
 import Pagination from "../components/Pagination";
+
+
 
 const ClientsProfiles = () => {
 
@@ -40,20 +46,30 @@ const ClientsProfiles = () => {
     setShowClientCreateModal(true);
   };
 
+  let requestMade = false;
   useEffect(() => {
-    dispatch(
-      getClients(
-        nameOrLastName,
-        attribute,
-        order,
-        page,
-        size,
-        createDateEnd,
-        createDateStart,
-        birthdaysMonth,
-        { token }
-      )
-    ).then(() => setLoading(false));
+    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
+    // dispatch(
+    //   getClients(
+    //     nameOrLastName,
+    //     attribute,
+    //     order,
+    //     page,
+    //     size,
+    //     createDateEnd,
+    //     createDateStart,
+    //     birthdaysMonth,
+    //     { token }
+    //   )
+    // ).then(() => setLoading(false));
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true
+      axios.post(API_URL_BASE + `/v1/getclients?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}&birthdaysMonth=${birthdaysMonth}`, {token})
+      .then(respuesta => {
+        dispatch(getClients(respuesta.data))
+        setLoading(false)
+      })
+    }
   }, [
     nameOrLastName,
     attribute,

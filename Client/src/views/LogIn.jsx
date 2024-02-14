@@ -34,7 +34,6 @@ const LogIn = () => {
 
   useEffect(() => {
     if (role === "superAdmin" || role === "admin" || role === "especialista") {
-      
       if (branches.length == 1) {
         dispatch(setBranch({ ...branches[0] }));
         if (role === "superAdmin") {
@@ -47,7 +46,6 @@ const LogIn = () => {
         navigate(BRANCH)
       }
     } else if (role === "superSuperAdmin") {
-      console.log("entrando al hola")
       navigate(SSADMIN)
     
     }
@@ -141,7 +139,6 @@ const LogIn = () => {
       setBranches(branches);
       setRole(role);
       dispatch(getToken(accessToken));
-      console.log(userData, "userdata")
     } catch (error) {
       if (error.message.includes("404")) {
         toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)

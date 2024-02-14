@@ -12,7 +12,7 @@ async function createMainUser(databaseName) {
       "nameCompany": ".",
       "subscribedPlan": "none",
       "expireAt": "2080-12-31",
-      "imgCompany": "",
+      "imgCompany": "https://res.cloudinary.com/dvptbowso/image/upload/v1707602963/beuatycontrol-logo_fullv_knombo.png",
     }
     const data = {
       userLogged: ".",

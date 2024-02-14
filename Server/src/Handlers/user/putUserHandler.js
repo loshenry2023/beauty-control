@@ -22,7 +22,7 @@ const putUserHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, User } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: User,
@@ -39,7 +39,7 @@ const putUserHandler = async (req, res) => {
       nameCompany: checked.nameCompany
     }
     const resp = await putReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`putUserHandler OK`);

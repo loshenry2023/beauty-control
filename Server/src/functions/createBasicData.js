@@ -4,7 +4,7 @@ const showLog = require("../functions/showLog");
 
 async function createBasicData(dbName, nameCompany, userName, idUser) {
     const { conn, Branch, Payment, Service, Specialty, User, CatGastos } = await connectDB(dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     try {
         // TODO Creo las sedes:
         const firstBranchName = `${nameCompany}, sede 1 (¡ponle un nombre!)`;
@@ -104,11 +104,6 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
         serviceList = [
             "Procedimiento 1",
             "Procedimiento 2",
-            "Procedimiento 3",
-            "Procedimiento 4",
-            "Procedimiento 5",
-            "Procedimiento 6",
-            "Procedimiento 7",
         ];
         for (let i = 0; i < serviceList.length; i++) {
             const [serviceCreated1, created] = await Service.findOrCreate({
@@ -127,14 +122,8 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
         }
         // Parte 2:
         serviceList = [
-            "Procedimiento 8",
-            "Procedimiento 9",
-            "Procedimiento 10",
-            "Procedimiento 11",
-            "Procedimiento 12",
-            "Procedimiento 13",
-            "Procedimiento 14",
-            "Procedimiento 15",
+            "Procedimiento 3",
+            "Procedimiento 4",
         ];
         for (let i = 0; i < serviceList.length; i++) {
             const [serviceCreated1, created] = await Service.findOrCreate({
@@ -147,15 +136,14 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                 },
             });
             spec = await Specialty.findAll({
-                where: { specialtyName: "Procedimiento 2" },
+                where: { specialtyName: "Especialidad 2" },
             });
             await serviceCreated1.addSpecialty(spec);
         }
         // Parte 3:
         serviceList = [
-            "Procedimiento 16",
-            "Procedimiento 17",
-            "Procedimiento 18",
+            "Procedimiento 5",
+            "Procedimiento 6",
         ];
         for (let i = 0; i < serviceList.length; i++) {
             const [serviceCreated1, created] = await Service.findOrCreate({
@@ -168,7 +156,48 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                 },
             });
             spec = await Specialty.findAll({
-                where: { specialtyName: "Procedimiento 3" },
+                where: { specialtyName: "Especialidad 3" },
+            });
+            serviceCreated1.addSpecialty(spec);
+        }
+
+        // Parte 4:
+        serviceList = [
+            "Procedimiento 7",
+            "Procedimiento 8",
+        ];
+        for (let i = 0; i < serviceList.length; i++) {
+            const [serviceCreated1, created] = await Service.findOrCreate({
+                where: {
+                    serviceName: serviceList[i],
+                    duration: 30,
+                    price: 0,
+                    ImageService:
+                        "https://res.cloudinary.com/ddlwjsfml/image/upload/v1702984891/labios_ib7eet.jpg",
+                },
+            });
+            spec = await Specialty.findAll({
+                where: { specialtyName: "Especialidad 4" },
+            });
+            serviceCreated1.addSpecialty(spec);
+        }
+
+        serviceList = [
+            "Procedimiento 9",
+            "Procedimiento 10",
+        ];
+        for (let i = 0; i < serviceList.length; i++) {
+            const [serviceCreated1, created] = await Service.findOrCreate({
+                where: {
+                    serviceName: serviceList[i],
+                    duration: 30,
+                    price: 0,
+                    ImageService:
+                        "https://res.cloudinary.com/ddlwjsfml/image/upload/v1702984891/labios_ib7eet.jpg",
+                },
+            });
+            spec = await Specialty.findAll({
+                where: { specialtyName: "Especialidad 5" },
             });
             serviceCreated1.addSpecialty(spec);
         }

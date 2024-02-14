@@ -4,10 +4,9 @@ const { connectDB } = require("../DB_connection_General"); // conexión a la bas
 const { DB_NAME } = require("../functions/paramsEnv");
 const showLog = require("../functions/showLog");
 const isCompanyCurrent = require("../functions/isCompanyCurrent");
-//const { Op } = require('sequelize');
 
 async function checkToken(tokenRec, clearToken = false) {
-  console.log(tokenRec, "token en validation")
+  let nombr;
   try {
     const existingUsrCompany = await Company.findOne({
       where: { token: tokenRec },
@@ -47,10 +46,11 @@ async function checkToken(tokenRec, clearToken = false) {
         await existingUsrCompany.save();
         let existingUser;
         let roleFound;
+        nombr = existingUsrCompany.dbName;
         if (existingUsrCompany.dbName !== DB_NAME) {
           // Obtengo los datos relacionados desde la tabla de usuarios de la base de la empresa:
           const { conn, User } = await connectDB(existingUsrCompany.dbName);
-          await conn.sync({ alter: true });
+          await conn.sync();
           existingUser = await User.findByPk(existingUsrCompany.id);
           if (!existingUser) {
             await conn.close();
@@ -60,7 +60,6 @@ async function checkToken(tokenRec, clearToken = false) {
           }
           await conn.close();
         }
-
         return {
           exist: true,
           id: existingUsrCompany.id,

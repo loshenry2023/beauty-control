@@ -16,6 +16,9 @@ import {
   getUsers,
 } from "../redux/actions";
 import { FaPlusCircle } from "react-icons/fa";
+import axios from "axios";
+import getParamsEnv from "../functions/getParamsEnv";
+const { API_URL_BASE } = getParamsEnv();
 
 const Agenda = () => {
   const [loading, setLoading] = useState(true);
@@ -79,7 +82,6 @@ const Agenda = () => {
     dateTime: formattedDate,
   });
 
-  //console.log(dateInfo)
 
   const [isFormCompleted, setIsFormCompleted] = useState(false);
 
@@ -99,26 +101,59 @@ const Agenda = () => {
     setShowAppointmentModal(true);
   };
 
+  let requestMade = false
   useEffect(() => {
-    dispatch(getToken(tokenID));
-    dispatch(getBranches({ token: tokenID }));
-    dispatch(getServices({ token: tokenID }));
-    dispatch(
-      getUsers(
-        nameOrLastName,
-        attribute,
-        order,
-        page,
-        size,
-        branch,
-        specialty,
-        role,
-        createDateEnd,
-        createDateStart,
+    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
+    // dispatch(getToken(tokenID));
+    // dispatch(getBranches({ token: tokenID }));
+    // dispatch(getServices({ token: tokenID }));
+    // dispatch(
+    //   getUsers(
+    //     nameOrLastName,
+    //     attribute,
+    //     order,
+    //     page,
+    //     size,
+    //     branch,
+    //     specialty,
+    //     role,
+    //     createDateEnd,
+    //     createDateStart,
+    //     { token: tokenID }
+    //   )
+    // );
+    // setLoading(false);
+
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true;
+      dispatch(getToken(tokenID))
+      axios.post(API_URL_BASE + "/v1/branches", { token: tokenID })
+      .then(respuesta => {
+        dispatch(getBranches( respuesta.data ))
+        return axios.post(API_URL_BASE + "/v1/getservices", { token: tokenID });
+      })
+      .then(respuesta2 => {
+        dispatch(getServices(respuesta2.data))
+        return axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`,
         { token: tokenID }
-      )
-    );
-    setLoading(false);
+        );
+      })
+      .then(respuesta3 => {
+        dispatch(getUsers(respuesta3.data))
+        setLoading(false);
+        requestMade = false;
+      })
+      .catch(error => {
+        // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
+        let msg = '';
+        if (!error.response) {
+          msg = error.message;
+        } else {
+          msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+        }
+        console.log("ERROR!!! " + msg);
+      });
+    }
   }, [specialty, tokenError]);
 
   const handleChange = (e) => {
@@ -306,23 +341,25 @@ const Agenda = () => {
                       </select>
                     )}
                     {user.role === "especialista" ? null : (
-                  <button
-                    onClick={handleAppointmentModal}
-                    disabled={!isFormCompleted}
-                    className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-white cursor-pointer" : "bg-white cursor-not-allowed"
-                      } shadow shadow-black text-black ${isFormCompleted ? "hover:scale-[1.02]" : "cursor-not-allowed"
-                      } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
-                        ? "dark:hover:bg-secondaryColor"
-                        : "dark:cursor-not-allowed"
-                      }`}
-                  >
-                    Agregar Cita
-                  </button>
-                )}
+                      <button
+                        onClick={handleAppointmentModal}
+                        disabled={!isFormCompleted}
+                        className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-white cursor-pointer" : "bg-white cursor-not-allowed"
+                          } shadow shadow-black text-black ${isFormCompleted ? "hover:scale-[1.02]" : "cursor-not-allowed"
+                          } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
+                            ? "dark:hover:bg-secondaryColor"
+                            : "dark:cursor-not-allowed"
+                          }`}
+                      >
+                        Agregar Cita
+                      </button>
+                    )}
                   </div>
                 </section>
               )}
               <Calendar
+                setLoadingToProps = {setLoading}
+                loadingToProps = {loading}
                 setDateInfo={setDateInfo}
                 branches={branches}
                 services={services}
@@ -337,7 +374,6 @@ const Agenda = () => {
                 showEditAppointment={showEditAppointment}
                 dateInfo={dateInfo}
               />
-
             </div>
           )}
           {showClientListModal ? (

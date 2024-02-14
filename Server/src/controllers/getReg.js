@@ -2,6 +2,7 @@
 const { Op } = require("sequelize");
 const showLog = require("../functions/showLog");
 const { DB_NAME } = require("../functions/paramsEnv");
+const { connectDB } = require("../DB_connection_General"); // conexión a la base de datos de trabajo
 
 const getReg = async (dataInc) => {
   const {
@@ -18,13 +19,86 @@ const getReg = async (dataInc) => {
   try {
     let reg;
     switch (tableNameText) {
+      case "PriceHistory":
+        const { branchId, productCode: prodID } = dataQuery;
+        reg = await tableName.findAndCountAll({ //PriceHistory
+          attributes: [
+            ["createdAt", "date"],
+            "price",
+          ],
+          where: { prodId: prodID, branchId: branchId },
+          order: [["createdAt", "DESC"]],
+        });
+        break;
+      case "Insumos":
+        const {
+          productName,
+          description,
+          amount,
+          order: ord,
+          page: pg,
+          size: sze,
+          branchId: brnchId,
+          productCode,
+          supplier,
+          attribute: attr,
+        } = tableName4;
+        const { count, rows: products } = await tableName.findAndCountAll({ // Product
+          attributes: [
+            "productName",
+            "description",
+            "supplier",
+            "amount",
+            "productCode",
+          ],
+          distinct: true,
+          where: {
+            [Op.and]: [
+              // Filtro por sede:
+              { branchId: brnchId },
+              // Filtro por nombre de producto:
+              { productName: { [Op.iLike]: `%${productName}%` } },
+              // Filtro por proveedor:
+              { supplier: { [Op.iLike]: `%${supplier}%` } },
+              // Filtro por cantidad:
+              amount !== null ? { amount: amount } : {},
+              // Filtro por código de producto:
+              productCode !== "" ? { productCode: { [Op.iLike]: `%${productCode}%` } } : {},
+              // Filtro por descripción:
+              description !== "" ? { description: { [Op.iLike]: `%${description}%` } } : {},
+            ].filter(Boolean), // elimina los filtros nulos o vacíos
+          },
+          order: [["code", ord]],
+          limit: sze,
+          offset: sze * pg,
+        });
+        // Agrego el precio al objeto de producto:
+        let prodOut = [];
+        for (const product of products) {
+          const latestPriceHistory = await tableName3.findOne({  // PriceHistory
+            where: { prodId: product.productCode, branchId: brnchId },
+            order: [["createdAt", "DESC"]],
+          });
+          dataOut = {
+            price: latestPriceHistory ? latestPriceHistory.price : null,
+            productCode: product.productCode,
+            productName: product.productName,
+            description: product.description,
+            supplier: product.supplier,
+          };
+          prodOut.push(dataOut);
+        }
+        return { count, products: prodOut };
       case "Company":
-        reg = await tableName.findAndCountAll({ //Company
+        //reg = await tableName.findAndCountAll({ //Company
+        const { countTot, rows: companies } = await tableName.findAndCountAll({ //Company
           attributes: [
             [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
             "subscribedPlan",
             "expireAt",
             "imgCompany",
+            "id",
+            "dbName",
           ],
           where: {
             dbName: {
@@ -33,6 +107,39 @@ const getReg = async (dataInc) => {
           },
           order: [["nameCompany", "asc"]],
         });
+        // Agrego el usuario principal al objeto de empresas:
+        let compOut = [];
+        let firstUsr = "";
+        for (const company of companies) {
+          // Obtengo la base de datos en donde buscar el usuario:
+          const { conn, User } = await connectDB(company.dbName);
+          await conn.sync();
+          const userFound = await User.findOne({  // User
+            attributes: [
+              "first",
+              "userName",
+            ],
+            where: { first: '1' },
+          });
+          if (userFound) {
+            firstUsr = userFound.userName;
+          } else {
+            firstUsr = "{no encontrado}";
+          }
+          await conn.close();
+          dataOut = {
+            nameCompany: company.nameCompany,
+            subscribedPlan: company.subscribedPlan,
+            expireAt: company.expireAt,
+            imgCompany: company.imgCompany,
+            firstUser: firstUsr,
+          };
+          compOut.push(dataOut);
+        }
+        return { count: countTot, rows: compOut };
+
+
+
         break;
       case "Specialists":
         const { branchWorking } = dataQuery;

@@ -53,6 +53,7 @@ function Consumables() {
   }, [user, tokenError]);
 
   useEffect(() => {
+    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
     if (selectedBranch) {
       dispatch(
         getProducts(token, productName, selectedBranch, page, size, description)

@@ -1,4 +1,4 @@
-//? Controllers
+// Todo Controllers
 const router = require("express").Router();
 // Únicamente para el deploy:
 const getMain = require("../controllers/getMain");
@@ -60,12 +60,15 @@ const postCatHandler = require("../Handlers/catGastos/postCatHandler");
 const putCatHandler = require("../Handlers/catGastos/putCatHandler");
 const deleteCatHandler = require("../Handlers/catGastos/deleteCatHandler");
 const getCatHandler = require("../Handlers/catGastos/getCatHandler");
-//! inventario
-// const productHandlers = require("../Handlers/products/productHandlers");
+//! Insumos:
+const getAllProductsHandler = require("../Handlers/insumos/getAllProductsHandler");
+const postProductHandler = require("../Handlers/insumos/postProductHandler");
+const putProductHandler = require("../Handlers/insumos/putProductHandler");
+const getProdHistoricPricesHandler = require("../Handlers/insumos/getProdHistoricPricesHandler");
 //! Balance y comisiones:
 const getBalance = require("../Handlers/balance/getBalance");
 
-//? Rutas
+// Todo Rutas
 //! Empresas:
 router.post("/v1/companyadmin", postCompanyHandler); // crea una nueva empresa
 router.put("/v1/companyadmin", putCompanyHandler); // edita una empresa
@@ -113,7 +116,6 @@ router.post("/v1/getclient/:id", getClientHandler); // obtiene y devuelve los de
 router.post("/v1/getclients", getAllClientHandler); // obtiene y devuelve los datos principales de todos los clientes
 //! Histórico de procedimientos:
 router.post("/v1/newhistoricproc", postHistoricProcHandler); //  crea un registro en el histórico de procedimientos
-//! registrar el id de cliente y llamar por params
 router.post("/v1/gethistoricbyclient/:id", getHistoricByClientHandler); // obtiene y devuelve el histórico de los procedimientos. Filtra por client id
 router.post("/v1/gethistoricbyuser/:id", getHistoricByUsertHandler); // obtiene y devuelve el histórico de los procedimientos. Filtra por usuario
 //! Calendario:
@@ -126,13 +128,11 @@ router.post("/v1/catgasto", postCatHandler); // crea una categoría
 router.put("/v1/catgastos/:id", putCatHandler); // edita una categoría
 router.post("/v1/deletecatgastos/:id", deleteCatHandler); //  elimina una categoría
 router.post("/v1/catgastos", getCatHandler); // obtiene y devuelve todas las categorías
-//! Inventario:
-// router.post("/v1/products", productHandlers.getAllProductsHandler);
-// router.get("/v1/product-prices", productHandlers.getProductPrices);
-// router.post("/v1/productsCreate", productHandlers.createProduct);
-// router.put("/v1/products/:id", productHandlers.editProduct);
-// router.put("/v1/products/:id/price", productHandlers.updateProductPrice);
-// router.get("/v1/products/:productId/prices-history", productHandlers.getProductPricesHistory);
+//! Insumos:
+router.post("/v1/products", getAllProductsHandler); // obtiene y devuelve todos los insumos del inventario
+router.post("/v1/productsCreate", postProductHandler); // crea un nuevo insumo
+router.put("/v1/products/:id", putProductHandler); // edita un insumo
+router.post("/v1/productsHist", getProdHistoricPricesHandler); // obtiene y devuelve el histórico de precios de un inusmo
 //! Balance y comisiones:
 router.post("/v1/getbalance", getBalance); // obtiene todos los usuarios para el balance y comisiones
 

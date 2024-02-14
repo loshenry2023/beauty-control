@@ -23,7 +23,7 @@ const getHistoricByUsertHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, HistoryService, Incoming, Client } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: HistoryService,
@@ -38,7 +38,7 @@ const getHistoricByUsertHandler = async (req, res) => {
       tableName6: ""
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp) {
       showLog(`getHistoricByUsertHandler OK`);

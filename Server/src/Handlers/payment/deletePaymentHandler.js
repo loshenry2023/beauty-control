@@ -21,7 +21,7 @@ const deletePaymentHandler = async (req, res) => {
     }
 
     const { conn, Payment } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Payment,
@@ -32,7 +32,7 @@ const deletePaymentHandler = async (req, res) => {
       nameCompany: checked.nameCompany,
     }
     const resp = await deleteReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.deleted === 'ok') {
       showLog(`deletePaymentHandler OK`);

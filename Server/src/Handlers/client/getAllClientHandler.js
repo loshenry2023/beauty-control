@@ -20,7 +20,7 @@ const getAllClientHandler = async (req, res) => {
     }
 
     const { conn, Client } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Client,
@@ -35,7 +35,7 @@ const getAllClientHandler = async (req, res) => {
       tableName6: ""
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     const { count, rows } = resp
     if (count >= 0) {

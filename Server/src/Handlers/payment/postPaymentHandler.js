@@ -20,7 +20,7 @@ const postPaymentHandler = async (req, res) => {
     }
 
     const { conn, Payment } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       userLogged: checked.userName,
@@ -36,7 +36,7 @@ const postPaymentHandler = async (req, res) => {
       nameCompany: checked.nameCompany,
     }
     const resp = await postReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`postPaymentHandler OK`);

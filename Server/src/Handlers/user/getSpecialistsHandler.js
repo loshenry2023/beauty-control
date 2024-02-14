@@ -20,7 +20,7 @@ const getSpecialistsHandler = async (req, res) => {
     }
 
     const { conn, User, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     const data = {
       tableName: User,
       tableNameText: "Specialists",
@@ -34,7 +34,7 @@ const getSpecialistsHandler = async (req, res) => {
       tableName6: ""
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp) {
       showLog(`getSpecialistsHandler OK`);

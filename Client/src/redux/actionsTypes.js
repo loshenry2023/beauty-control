@@ -1,7 +1,7 @@
 export const GET_USER = "GET_USER";
 export const SET_WORKING_BRANCH = "SET_WORKING_BRANCH";
 export const GET_USERS = "GET_USERS";
-export const GET_USER_ID = "GET_USER_ID";
+export const USER_DATA_ID = "USER_DATA_ID";
 export const GET_BRANCHES = "GET_BRANCHES";
 export const GET_SPECIALTIES = "GET_SPECIALTIES";
 export const GET_SPECIALISTS = "GET_SPECIALISTS";

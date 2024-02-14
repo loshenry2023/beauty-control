@@ -20,7 +20,7 @@ const postCalendarHandler = async (req, res) => {
     }
 
     const { conn, Calendar, User, Service, Client, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     const data = {
       userLogged: checked.userName,
       tableName: Calendar,
@@ -35,7 +35,7 @@ const postCalendarHandler = async (req, res) => {
       nameCompany: checked.nameCompany,
     }
     const resp = await postReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`postCalendarHandler OK`);

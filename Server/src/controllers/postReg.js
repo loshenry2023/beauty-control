@@ -1,4 +1,4 @@
-// ! Almacena un nuevo registro en tabla.
+// ! Almacena registros en tabla.
 const { Op } = require('sequelize');
 const showLog = require('../functions/showLog');
 const createDBname = require('../functions/createDBname');
@@ -19,37 +19,40 @@ const postReg = async (dataInc) => {
         let resp;
         switch (tableNameText) {
             case "Branch":
-                resp = await AddRegBranch(tableName, data, dataLog);
+                resp = await AddRegBranch({ Branch: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Payment":
-                resp = await AddRegPayment(tableName, data, dataLog);
+                resp = await AddRegPayment({ Payment: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Specialty":
-                resp = await AddRegSpecialty(tableName, data, dataLog);
+                resp = await AddRegSpecialty({ Specialty: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Service":
-                resp = await AddRegService(tableName, data, conn, dataLog);
+                resp = await AddRegService({ Service: tableName, data: data, conn: conn, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Client":
-                resp = await AddRegClient(tableName, data, conn, dataLog);
+                resp = await AddRegClient({ User: tableName, data: data, conn: conn, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "User":
-                resp = await AddRegUser(tableName, data, conn, tableName2, dbName, dataLog);
+                resp = await AddRegUser({ User: tableName, data: data, conn: conn, Company: tableName2, dbName: dbName, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Company":
-                resp = await AddRegCompany(tableName, data, userLogged, dataLog);
+                resp = await AddRegCompany({ Company: tableName, data: data, userLogged: userLogged, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "CompanyMain":
-                resp = await AddRegUserMain(tableName, data, dataLog);
+                resp = await AddRegUserMain({ Company: tableName, data: data });
                 return { "created": "ok", "id": resp };
             case "CatGastos":
-                resp = await AddRegCatGastos(tableName, data, dataLog);
+                resp = await AddRegCatGastos({ CatGastos: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "HistoryService":
-                resp = await AddRegHistoricProc(tableName, data, conn, tableName2, tableName3, tableName4, dataLog);
+                resp = await AddRegHistoricProc({ HistoryService: tableName, data: data, conn: conn, Client: tableName2, Incoming: tableName3, dataLog: dataLog });
                 return { "created": "ok" };
             case "Calendar":
-                resp = await AddRegCalendar(tableName, data, conn, tableName2, tableName3, tableName4, tableName5, dataLog);
+                resp = await AddRegCalendar({ Calendar: tableName, data: data, conn: conn, User: tableName2, Service: tableName3, Client: tableName4, Branch: tableName5, dataLog: dataLog });
+                return { "created": "ok" };
+            case "Product":
+                resp = await AddRegProduct({ Product: tableName, data: data, conn: conn, Branch: tableName2, PriceHistory: tableName3, dataLog: dataLog });
                 return { "created": "ok" };
             default:
                 throw new Error("Tabla no válida");
@@ -59,7 +62,55 @@ const postReg = async (dataInc) => {
     }
 }
 
-async function AddRegService(Service, data, conn, dataLog) {
+async function AddRegProduct(datamain) {
+    const { Product, data, conn, Branch, PriceHistory, dataLog } = datamain;
+    const { price, branchId: brnchId, productCode, productName, description, supplier, amount } = data;
+    let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
+    try {
+        if (!price || !brnchId || !productCode || !productName || !description || !supplier || !amount) { throw Error("Faltan datos"); }
+        const existingProduct = await Product.findOne({
+            where: { productCode, branchId: brnchId },
+        });
+        if (existingProduct) {
+            throw Error("El código de insumo ya existe");
+        }
+        const productBranch = await Branch.findByPk(brnchId);
+        if (!productBranch) {
+            throw Error("Sede no encontrada");
+        }
+        transaction = await conn.transaction();
+        const newProduct = await Product.create({
+            productCode, productName, description, supplier, amount, branchId: brnchId
+        }, { transaction });
+        // Obtengo el último precio registrado para ese producto:
+        const existingPrice = await PriceHistory.findOne({
+            where: { prodId: productCode, branchId: brnchId },
+            order: [["createdAt", "DESC"]],
+        });
+        let doAnex = true;
+        if (existingPrice) {
+            // Comparo el valor actual con el último registrado:
+            if (Number(existingPrice.price) === Number(price)) {
+                doAnex = false;
+            }
+        }
+        if (doAnex) {
+            // Lo agrego al historial de precios:
+            const newProduct = await PriceHistory.create({
+                branchId: brnchId, prodId: productCode, price
+            }, { transaction });
+        }
+        await transaction.commit();
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Product ${productCode}, sede ${productBranch.branchName} was created` });
+        return newProduct;
+    } catch (error) {
+        if (transaction) await transaction.rollback();
+        throw Error(`${error}`);
+    }
+}
+
+async function AddRegService(dataMain) {
+    const { Service, data, conn, dataLog } = dataMain;
     const { serviceName, duration, price, ImageService, specialty } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -93,7 +144,8 @@ async function AddRegService(Service, data, conn, dataLog) {
     }
 }
 
-async function AddRegUser(User, data, conn, Company, dbName, dataLog) {
+async function AddRegUser(dataMain) {
+    const { User, data, conn, Company, dbName, dataLog } = dataMain;
     const { userName, name, lastName, role, notificationEmail, phone1, phone2, image, comission, branch, specialty } = data;
     let wasCreated = false;
     let transaction;
@@ -158,7 +210,8 @@ async function AddRegUser(User, data, conn, Company, dbName, dataLog) {
     }
 }
 
-async function AddRegCompany(Company, data, userLogged, dataLog) {
+async function AddRegCompany(dataMain) {
+    const { Company, data, userLogged, dataLog } = dataMain;
     // Es un alta de empresa con su usuario inicial:
     console.log(data, "data company")
     const { userName, nameCompany, expireAt, subscribedPlan, imgCompany, origin } = data;
@@ -215,8 +268,9 @@ async function AddRegCompany(Company, data, userLogged, dataLog) {
     }
 }
 
-async function AddRegUserMain(Company, data, dataLog) {
+async function AddRegUserMain(dataMain) {
     // Es un alta de usuario superSuperAdmin:
+    const { Company, data } = dataMain;
     const { userName, dbName, nameCompany, expireAt, subscribedPlan, imgCompany } = data;
     let transaction;
     try {
@@ -242,7 +296,8 @@ async function AddRegUserMain(Company, data, dataLog) {
     }
 }
 
-async function AddRegCalendar(Calendar, data, conn, User, Service, Client, Branch, dataLog) {
+async function AddRegCalendar(dataMain) {
+    const { Calendar, data, conn, User, Service, Client, Branch, dataLog } = dataMain;
     const { idUser, idService, idClient, idBranch, date_from, date_to, obs } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -284,9 +339,8 @@ async function AddRegCalendar(Calendar, data, conn, User, Service, Client, Branc
     }
 }
 
-async function AddRegHistoricProc(HistoryService, data, conn, Client, Incoming, User, dataLog) {
-
-    //(tableName, data, conn, tableName2, tableName3, tableName4, dataLog);
+async function AddRegHistoricProc(dataMain) {
+    const { HistoryService, data, conn, Client, Incoming, dataLog } = dataMain;
     const { idUser, idClient, imageServiceDone, date, amount1, amount2, conformity, branchName, paymentMethodName1, paymentMethodName2, serviceName, attendedBy, email, name, lastName, id_pers } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -304,8 +358,6 @@ async function AddRegHistoricProc(HistoryService, data, conn, Client, Incoming, 
         // Relación: asocio el historial de servicio con el cliente:
         await client.addHistoryService(regCreated, { transaction });
         await transaction.commit();
-        //showLog(`dataLog ${dataLog}`)
-
         logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Historic proc usr ${idUser}, clnt ${idClient}, mnt1 ${amount1}, mnt2 ${amount2}, bnch ${branchName}, pay1 ${paymentMethodName1} pay2 ${paymentMethodName2} was created` });
         return;
     } catch (error) {
@@ -314,7 +366,8 @@ async function AddRegHistoricProc(HistoryService, data, conn, Client, Incoming, 
     }
 }
 
-async function AddRegClient(User, data, conn, dataLog) {
+async function AddRegClient(dataMain) {
+    const { User, data, conn, dataLog } = dataMain;
     const { email, name, lastName, id_pers, phone1, phone2, image, birthday } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -348,7 +401,8 @@ async function AddRegClient(User, data, conn, dataLog) {
     }
 }
 
-async function AddRegBranch(Branch, data, dataLog) {
+async function AddRegBranch(dataMain) {
+    const { Branch, data, dataLog } = dataMain;
     const { branchName, coordinates, address, phoneNumber, openningHours, clossingHours, workingDays, linkFb = "", linkIg = "", linkTk = "" } = data;
     try {
         if (!branchName || !phoneNumber || !address) { throw Error("Faltan datos"); }
@@ -373,7 +427,8 @@ async function AddRegBranch(Branch, data, dataLog) {
     }
 }
 
-async function AddRegPayment(Payment, data, dataLog) {
+async function AddRegPayment(dataMain) {
+    const { Payment, data, dataLog } = dataMain;
     const { paymentMethodName } = data;
     try {
         if (!paymentMethodName) { throw Error("Faltan datos"); }
@@ -398,7 +453,8 @@ async function AddRegPayment(Payment, data, dataLog) {
     }
 }
 
-async function AddRegSpecialty(Specialty, data, dataLog) {
+async function AddRegSpecialty(dataMain) {
+    const { Specialty, data, dataLog } = dataMain;
     const { specialtyName } = data;
     try {
         if (!specialtyName) { throw Error("Faltan datos"); }
@@ -423,7 +479,8 @@ async function AddRegSpecialty(Specialty, data, dataLog) {
     }
 }
 
-async function AddRegCatGastos(CatGastos, data, dataLog) {
+async function AddRegCatGastos(dataMain) {
+    const { CatGastos, data, dataLog } = dataMain;
     const { catName } = data;
     try {
         if (!catName) { throw Error("Faltan datos"); }

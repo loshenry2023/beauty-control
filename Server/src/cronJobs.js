@@ -1,5 +1,5 @@
 //! Ejecuta una vez por día. Esto no funciona en Vercel porque tiene su propio cron, configurado en vercel.json. Dos funciones:
-//! - Notifica por mail a los pacientes los próximos turnos. Esto no corre en Vercel porque tiene su propio cron, configurado en vercel.json.
+//! - Notifica por mail a los pacientes los próximos turnos.
 //! - Depura la tabla de logs.
 const cron = require('node-cron');
 const getAppointmentsReminder = require("../src/functions/getAppointmentsReminder");

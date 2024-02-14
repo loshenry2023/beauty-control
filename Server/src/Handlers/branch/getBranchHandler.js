@@ -20,7 +20,7 @@ const getBranchHandler = async (req, res) => {
     }
 
     const { conn, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
     const data = {
       tableName: Branch,
       tableNameText: "Branch",
@@ -34,7 +34,7 @@ const getBranchHandler = async (req, res) => {
       tableName6: ""
     }
     const resp = await getReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp) {
       showLog(`getBranchHandler OK`);

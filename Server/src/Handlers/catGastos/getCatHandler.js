@@ -19,9 +19,8 @@ const getCatHandler = async (req, res) => {
       return res.status(401).send(`Sin permiso.`);
     }
 
-
     const { conn, CatGastos } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: CatGastos,
@@ -37,7 +36,7 @@ const getCatHandler = async (req, res) => {
     }
     const resp = await getReg(data);
 
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp) {
       showLog(`getCatHandler OK`);

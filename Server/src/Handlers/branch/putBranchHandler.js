@@ -22,7 +22,7 @@ const putBranchHandler = async (req, res) => {
     if (!id) { throw Error("Faltan datos"); }
 
     const { conn, Branch } = await connectDB(checked.dbName);
-    await conn.sync({ alter: true });
+    await conn.sync();
 
     const data = {
       tableName: Branch,
@@ -39,7 +39,7 @@ const putBranchHandler = async (req, res) => {
       nameCompany: checked.nameCompany
     }
     const resp = await putReg(data);
-    await conn.close(); // cierro la conexión
+    await conn.close();
 
     if (resp.created === 'ok') {
       showLog(`putBranchHandler OK`);

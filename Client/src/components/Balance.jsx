@@ -5,6 +5,9 @@ import Loader from "./Loader";
 import DonutChart from "./DonutChart";
 import DonutChartPayMethods from "./DonutChartPayMethods";
 import ErrorToken from "../views/ErrorToken";
+import getParamsEnv from "../functions/getParamsEnv.js";
+import axios from "axios";
+const { API_URL_BASE } = getParamsEnv();
 
 //Toast
 import { toast } from "react-hot-toast";
@@ -49,88 +52,80 @@ const Balance = ({ specialists, services, payMethods }) => {
     return number.toLocaleString("es-CO");
   };
 
+  let requestMade = false;
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await dispatch(getBalance(fetchDataBalance));
-        setLoading(false);
+    if (!requestMade) {
+      requestMade = true;
+      axios.post(API_URL_BASE + "/v1/getbalance", fetchDataBalance)
+        .then((respuesta) => {
+          dispatch(getBalance(respuesta.data));
+          // Procesar datos
+          let totalIncomes = 0;
+          let specialistCounts = [];
+          let serviceCounts = [];
+          let paymentMethodIncomes = [];
 
-        // Procesar datos
-        let totalIncomes = 0;
-        let specialistCounts = [];
-        let serviceCounts = [];
-        let paymentMethodIncomes = [];
+          if (respuesta.data && respuesta.data.rows) {
+            respuesta.data.rows.forEach((user, index) => {
+              // calcular total ingresos
+              user.payments.forEach((payment) => {
+                totalIncomes += payment.Amount;
+              });
 
-        if (response.payload && response.payload.rows) {
-          response.payload.rows.forEach((user, index) => {
-            // calcular total ingresos
-            user.payments.forEach((payment) => {
-              totalIncomes += payment.Amount;
+              // datos gráfico de especialistas
+              specialistCounts.push({
+                id: `specialist-${index}`,
+                name: `${user.name} ${user.lastName}`,
+                value: user.services.length,
+              });
+
+              // datos gráfico de cantidad de servicios
+              services.forEach((service, serviceIndex) => {
+                const serviceCount = user.services.filter(
+                  (userService) =>
+                    userService.serviceName === service.serviceName
+                ).length;
+                const existingService = serviceCounts.find(
+                  (item) => item.id === `service-${serviceIndex}`
+                );
+
+                if (existingService) {
+                  existingService.value += serviceCount;
+                } else {
+                  serviceCounts.push({
+                    id: `service-${serviceIndex}`,
+                    name: service.serviceName,
+                    value: serviceCount,
+                  });
+                }
+              });
+
+              // ingresos reales por método de pago
+              paymentMethodIncomes = payMethods.map((payMethod) => {
+                const methodName = payMethod.paymentMethodName;
+                const methodData = paymentMethodIncomes.find(
+                  (item) => item.name === methodName
+                ) || { name: methodName, value: 0 };
+                methodData.value += user.payments
+                  .filter((payment) => payment.Method === methodName)
+                  .reduce((acc, payment) => acc + payment.Amount, 0);
+
+                return methodData;
+              });
             });
-
-            // datos gráfico de especialistas
-            specialistCounts.push({
-              id: `specialist-${index}`,
-              name: `${user.name} ${user.lastName}`,
-              value: user.services.length,
-            });
-
-            // datos gráfico de cantidad de servicios
-            services.forEach((service, serviceIndex) => {
-              const serviceCount = user.services.filter(
-                (userService) => userService.serviceName === service.serviceName
-              ).length;
-              const existingService = serviceCounts.find(
-                (item) => item.id === `service-${serviceIndex}`
-              );
-
-              if (existingService) {
-                existingService.value += serviceCount;
-              } else {
-                serviceCounts.push({
-                  id: `service-${serviceIndex}`,
-                  name: service.serviceName,
-                  value: serviceCount,
-                });
-              }
-            });
-
-            // ingresos reales por método de pago
-            paymentMethodIncomes = payMethods.map((payMethod) => {
-              const methodName = payMethod.paymentMethodName;
-              const methodData = paymentMethodIncomes.find(
-                (item) => item.name === methodName
-              ) || { name: methodName, value: 0 };
-              methodData.value += user.payments
-                .filter((payment) => payment.Method === methodName)
-                .reduce((acc, payment) => acc + payment.Amount, 0);
-
-              return methodData;
-            });
-          });
-        }
-
-        // actualizar gráficos y estado
-        setChartDataSpecialists([...specialistCounts]);
-
-        setChartDataServicesCount([...serviceCounts]);
-
-        setChartDataPaymentMethods([...paymentMethodIncomes]);
-      } catch (error) {
-        console.error("Error fetching balance data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [
-    dispatch,
-    fetchDataBalance,
-    specialists,
-    services,
-    payMethods,
-    tokenError,
-  ]);
+          }
+          setChartDataSpecialists([...specialistCounts]);
+          setChartDataServicesCount([...serviceCounts]);
+          setChartDataPaymentMethods([...paymentMethodIncomes]);
+          requestMade = false;
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching balance data:", error);
+          setLoading(false);
+        });
+    }
+  }, [fetchDataBalance, specialists, services, payMethods, tokenError]);
 
   const handleDate = (e) => {
     if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
@@ -298,11 +293,15 @@ const Balance = ({ specialists, services, payMethods }) => {
                   name="idUser"
                 >
                   <option value=""> -- Especialista -- </option>
-                  {specialists.map((especialist, index) => (
-                    <option name="idUser" key={index} value={especialist.id}>
-                      {especialist.name} {especialist.lastName}
-                    </option>
-                  ))}
+                  {specialists.length === 0 ? (
+                    <option value=""> Todavía no hay especialistas </option>
+                  ) : (
+                    specialists.map((especialist, index) => (
+                      <option name="idUser" key={index} value={especialist.id}>
+                        {especialist.name} {especialist.lastName}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
               <div className="flex gap-2 w-full xl:w-fit">

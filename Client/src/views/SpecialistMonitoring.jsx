@@ -21,7 +21,7 @@ const SpecialistMonitoring = () => {
   const testData = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 
   const dispatch = useDispatch();
-  const [specialistData, setSpecialsit] = useState({});
+  const [specialistData, setSpecialist] = useState({});
   const [loading, setLoading] = useState(true);
   const count = specialistData.count;
   const user = useSelector((state) => state?.user);
@@ -83,24 +83,51 @@ const SpecialistMonitoring = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${API_URL_BASE}/v1/getbalance`,
-          filterDate
-        );
-        setSpecialsit(response.data);
-        setLoading(false);
-      } catch (error) {
-        if (error.request.status === 403) {
-          dispatch(setTokenError(error.request.status));
+  function isEqual(obj1, obj2) {
+    // Obtener las claves de los objetos
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+      // Verificar si el número de claves es el mismo
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+      // Iterar sobre las claves y verificar si los valores son iguales
+    for (let key of keys1) {
+      // Si el valor de la clave en obj1 es un objeto, llamar a isEqual recursivamente
+      if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+        if (!isEqual(obj1[key], obj2[key])) {
+          return false;
         }
-        setLoading(false);
+      } else if (obj1[key] !== obj2[key]) { // Si los valores no son iguales, retornar falso
+        return false;
       }
-    };
-    fetchData();
-  }, [filterDate, tokenError]);
+    }
+      // Si todas las comparaciones pasan, los objetos son iguales
+    return true;
+  }
+
+  let requestMade = false;
+  useEffect(() => {
+        if(!requestMade){
+          requestMade = true
+          axios.post(`${API_URL_BASE}/v1/getbalance`,filterDate)
+          .then(respuesta => {
+            if (!isEqual(respuesta.data, specialistData)) {
+              setSpecialist(respuesta.data); 
+              setLoading(false);
+            }
+          })
+          .catch(error => {
+          // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
+          let msg = '';
+          if (!error.response) {
+            msg = error.message;
+          } else {
+            msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+          }
+          console.log("ERROR!!! " + msg);
+          })
+        }}), [tokenError];
 
   if (tokenError === 401 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
