@@ -7,6 +7,7 @@ const isCompanyCurrent = require("../functions/isCompanyCurrent");
 //const { Op } = require('sequelize');
 
 async function checkToken(tokenRec, clearToken = false) {
+  console.log(tokenRec, "token en validation")
   try {
     const existingUsrCompany = await Company.findOne({
       where: { token: tokenRec },

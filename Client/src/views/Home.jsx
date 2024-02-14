@@ -26,7 +26,7 @@ const Home = () => {
     dispatch(getspecialists(branchWorking.branchName, { token: token }))
     dispatch((getServices({token})))
     .then(setLoading(false))
-  }, [tokenError]);
+  }, []);
 
   if (tokenError === 401 || tokenError === 403) {
     return (
@@ -38,12 +38,12 @@ const Home = () => {
         <NavBar user={user}/>
         <div className="flex flex-row dark:bg-darkBackground">
           <SideBar />
-          {loading ? (
+          {/*{loading ? (
             <Loader />
           ) : (
          user.role === "superAdmin" ?
             <Balance specialists={specialists} services={services} payMethods={payMethods}/> :  <Restricted />
-          )}
+          )}*/}
         </div>
       </>
     );

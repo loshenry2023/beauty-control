@@ -160,6 +160,7 @@ async function AddRegUser(User, data, conn, Company, dbName, dataLog) {
 
 async function AddRegCompany(Company, data, userLogged, dataLog) {
     // Es un alta de empresa con su usuario inicial:
+    console.log(data, "data company")
     const { userName, nameCompany, expireAt, subscribedPlan, imgCompany, origin } = data;
     try {
         if (!userName || !nameCompany || !expireAt || !subscribedPlan || !imgCompany || !origin) { throw Error('Faltan datos'); }
