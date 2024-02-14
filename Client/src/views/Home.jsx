@@ -25,6 +25,12 @@ const Home = () => {
 
   let requestMade = false;
   useEffect(() => {
+  //dispatch(getPayMethods({ token }))
+  //dispatch(getspecialists(branchWorking.branchName, { token: token }))
+  //dispatch((getServices({token})))
+  //.then(setLoading(false))
+  //}, []);
+
     //! No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
     //const respuesta = dispatch(getPayMethods({ token }))
     //dispatch(getspecialists(branchWorking.branchName, { token: token }))
@@ -70,12 +76,12 @@ const Home = () => {
         <NavBar user={user} />
         <div className="flex flex-row dark:bg-darkBackground">
           <SideBar />
-          {loading ? (
+          {/*{loading ? (
             <Loader />
           ) : (
             user.role === "superAdmin" ? 
             <Balance specialists={specialists} services={services} payMethods={payMethods}/> :  <Restricted />
-          )}
+          )}*/}
         </div>
       </>
     );
