@@ -5,7 +5,7 @@ const checkToken = require('../../functions/checkToken');
 
 const getCompanyHandler = async (req, res) => {
   try {
-    const { token } = req.body;
+    const { token, dateCreateFrom, dateCreateTo, showExpired } = req.body;
     showLog(`getCompanyHandler`);
     // Verifico token:
     if (!token) { throw Error("Se requiere token"); }
@@ -19,6 +19,7 @@ const getCompanyHandler = async (req, res) => {
       return res.status(401).send(`Sin permiso.`);
     }
 
+    if (!dateCreateFrom || !dateCreateTo || !showExpired) { throw Error("Faltan datos"); }
     const data = {
       tableName: Company,
       tableNameText: "Company",
@@ -27,7 +28,7 @@ const getCompanyHandler = async (req, res) => {
       tableName4: "",
       tableName5: "",
       id: "",
-      dataQuery: "",
+      dataQuery: req.body,
       conn: connMain,
       tableName6: ""
     }

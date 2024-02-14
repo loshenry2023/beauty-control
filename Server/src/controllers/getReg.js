@@ -8,18 +8,22 @@ const getReg = async (dataInc) => {
   const {
     tableName,
     tableNameText,
-    tableName2 = "",
-    tableName3 = "",
-    tableName4 = "",
-    tableName5 = "",
-    id = "",
-    dataQuery = "",
+    tableName2,
+    tableName3,
+    tableName4,
+    tableName5,
+    id,
+    dataQuery,
     conn,
-    tableName6 = "" } = dataInc;
+    tableName6 } = dataInc;
   try {
     let reg;
     switch (tableNameText) {
       case "Company":
+        const { dateCreateFrom, dateCreateTo, showExpired } = dataQuery;
+        let dFrom = dateCreateFrom + " 00:00:00";
+        let dTo = dateCreateTo + " 23:59:59";
+        const dateNow = new Date();
         const result = await tableName.findAndCountAll({
           attributes: [
             [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
@@ -33,6 +37,13 @@ const getReg = async (dataInc) => {
             dbName: {
               [Op.ne]: DB_NAME
             },
+            createdAt: {
+              [Op.gte]: dFrom,
+              [Op.lte]: dTo,
+            },
+            expireAt: {
+              [Op.gte]: (showExpired === "0") ? dateNow : "1980-01-01 00:00:00",
+            },
           },
           order: [["nameCompany", "asc"]],
         });
@@ -42,7 +53,6 @@ const getReg = async (dataInc) => {
         let compOut = [];
         let firstUsr = "";
         for (const company of companies) {
-          // Obtengo la base de datos en donde buscar el usuario:
           const { conn, User } = await connectDB(company.dbName);
           await conn.sync();
           const userFound = await User.findOne({  // User
