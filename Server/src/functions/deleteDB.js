@@ -10,9 +10,9 @@ async function deleteDB(databaseName) {
     // Elimino la base de datos:
     await sequelize.query(`DROP DATABASE ${databaseName};`);
     showLog(`Database ${databaseName} was deleted`);
-    return true;
+    return { deleted: true };
   } catch (error) {
-    showLog(`Error deleting database ${databaseName}: ${error.message}`);
+    return { deleted: false, error: error.message };
   } finally {
     // Cierro la conexión:
     await sequelize.close();
