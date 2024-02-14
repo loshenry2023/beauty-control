@@ -1,4 +1,4 @@
-// Todo Controllers
+// Todo - Controllers
 const router = require("express").Router();
 // Únicamente para el deploy:
 const getMain = require("../controllers/getMain");
@@ -68,7 +68,7 @@ const getProdHistoricPricesHandler = require("../Handlers/insumos/getProdHistori
 //! Balance y comisiones:
 const getBalance = require("../Handlers/balance/getBalance");
 
-// Todo Rutas
+// Todo - Rutas
 //! Empresas:
 router.post("/v1/companyadmin", postCompanyHandler); // crea una nueva empresa
 router.put("/v1/companyadmin", putCompanyHandler); // edita una empresa

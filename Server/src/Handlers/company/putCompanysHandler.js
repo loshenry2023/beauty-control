@@ -1,7 +1,6 @@
 const { Company } = require("../../DB_connection_Main"); // conexión a la base de datos principal
 const putReg = require("../../controllers/putReg");
 const showLog = require("../../functions/showLog");
-const checkToken = require('../../functions/checkToken');
 
 const putCompanysHandler = async (req, res) => {
   try {
