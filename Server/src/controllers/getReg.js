@@ -19,6 +19,55 @@ const getReg = async (dataInc) => {
   try {
     let reg;
     switch (tableNameText) {
+      case "Company":
+        const result = await tableName.findAndCountAll({
+          attributes: [
+            [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
+            "subscribedPlan",
+            "expireAt",
+            "imgCompany",
+            "id",
+            "dbName",
+          ],
+          where: {
+            dbName: {
+              [Op.ne]: DB_NAME
+            },
+          },
+          order: [["nameCompany", "asc"]],
+        });
+        const countTot = result.count;
+        const companies = result.rows;
+        // Agrego el usuario principal al objeto de empresas:
+        let compOut = [];
+        let firstUsr = "";
+        for (const company of companies) {
+          // Obtengo la base de datos en donde buscar el usuario:
+          const { conn, User } = await connectDB(company.dbName);
+          await conn.sync();
+          const userFound = await User.findOne({  // User
+            attributes: [
+              "first",
+              "userName",
+            ],
+            where: { first: '1' },
+          });
+          if (userFound) {
+            firstUsr = userFound.userName;
+          } else {
+            firstUsr = "{no encontrado}";
+          }
+          await conn.close();
+          dataOut = {
+            nameCompany: company.nameCompany,
+            subscribedPlan: company.subscribedPlan,
+            expireAt: company.expireAt,
+            imgCompany: company.imgCompany,
+            firstUser: firstUsr,
+          };
+          compOut.push(dataOut);
+        }
+        return { count: countTot, rows: compOut };
       case "PriceHistory":
         const { branchId, productCode: prodID } = dataQuery;
         reg = await tableName.findAndCountAll({ //PriceHistory
@@ -89,58 +138,6 @@ const getReg = async (dataInc) => {
           prodOut.push(dataOut);
         }
         return { count, products: prodOut };
-      case "Company":
-        //reg = await tableName.findAndCountAll({ //Company
-        const { countTot, rows: companies } = await tableName.findAndCountAll({ //Company
-          attributes: [
-            [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
-            "subscribedPlan",
-            "expireAt",
-            "imgCompany",
-            "id",
-            "dbName",
-          ],
-          where: {
-            dbName: {
-              [Op.ne]: DB_NAME
-            },
-          },
-          order: [["nameCompany", "asc"]],
-        });
-        // Agrego el usuario principal al objeto de empresas:
-        let compOut = [];
-        let firstUsr = "";
-        for (const company of companies) {
-          // Obtengo la base de datos en donde buscar el usuario:
-          const { conn, User } = await connectDB(company.dbName);
-          await conn.sync();
-          const userFound = await User.findOne({  // User
-            attributes: [
-              "first",
-              "userName",
-            ],
-            where: { first: '1' },
-          });
-          if (userFound) {
-            firstUsr = userFound.userName;
-          } else {
-            firstUsr = "{no encontrado}";
-          }
-          await conn.close();
-          dataOut = {
-            nameCompany: company.nameCompany,
-            subscribedPlan: company.subscribedPlan,
-            expireAt: company.expireAt,
-            imgCompany: company.imgCompany,
-            firstUser: firstUsr,
-          };
-          compOut.push(dataOut);
-        }
-        return { count: countTot, rows: compOut };
-
-
-
-        break;
       case "Specialists":
         const { branchWorking } = dataQuery;
         reg = await tableName.findAll({
