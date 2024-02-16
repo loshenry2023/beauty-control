@@ -193,7 +193,7 @@ const EditBranchModal = ({
                 <input
                   onChange={handleChange}
                   type="text"
-                  name="phone"
+                  name="Teléfono"
                   value={newBranch.phone}
                   placeholder="Phone"
                   className={`border border-black p-2 rounded w-full ${
@@ -206,14 +206,14 @@ const EditBranchModal = ({
               </div>
               <div>
                 <label className="pl-1  font-bold dark:text-darkText">
-                  Coordenadas Google Maps
+                Link de Google Maps
                 </label>
                 <input
                   onChange={handleChange}
                   type="text"
                   name="coordinates"
                   value={newBranch.coordinates}
-                  placeholder="Ingresa link de coordenadas"
+                  placeholder="Ingresa el link de Google Maps"
                   className={`border border-black p-2 rounded w-full ${
                     errors.coordinates !== undefined &&
                     "border-2 border-red-500"
