@@ -265,6 +265,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                   defaultValue={formattedDate}
                   onChange={handleDate}
                   className="w-full border rounded-md border-black px-2  dark:invert xl:w-fit"
+                  onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
               <div className="flex gap-2 w-full xl:w-fit">
@@ -278,6 +279,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                   defaultValue={formattedDate}
                   onChange={handleDate}
                   className="w-full border rounded-md border-black px-2  dark:invert xl:w-fit"
+                  onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
             </section>

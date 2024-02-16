@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
 
 // hooks, routers, reducers:
+import React, { useEffect, useState } from "react";
 import HistoryServices from "./HistoryServices";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import ToasterConfig from "./Toaster.jsx";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 //components
 import Loader from "./Loader.jsx";
 import { clearClientId, getClientId } from "../redux/actions.js";
+import HistoryCalendar from "./HistoryCalendar.jsx";
+import EditClient from "./modals/EditClient.jsx";
 
 //icons
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -16,13 +21,10 @@ import { MdDelete } from "react-icons/md";
 
 //variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
-import HistoryCalendar from "./HistoryCalendar.jsx";
-import axios from "axios";
-import ToasterConfig from "./Toaster.jsx";
-import { toast } from "react-hot-toast";
-import EditClient from "./modals/EditClient.jsx";
-import converterGMT from "../functions/converteGMT.js";
 const { CLIENTSPROFILES, API_URL_BASE } = getParamsEnv();
+
+//functions
+import converterGMT from "../functions/converteGMT.js";
 
 
 const ClientInfo = () => {
@@ -52,15 +54,15 @@ const ClientInfo = () => {
         dispatch(getClientId(respuesta.data))
         setLoading(false)
       })
-      .catch(error => {
-        // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
-        let msg = '';
+      .catch(error => {  
+        let errorMessage= ""   
+        console.log(error)     
         if (!error.response) {
-          msg = error.message;
+          errorMessage = error.message;
         } else {
-          msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
         }
-        console.log("ERROR!!! " + msg);
+        toast.error(errorMessage);
       });
     }
   }, [detailId, clientRender]);
@@ -95,11 +97,17 @@ const ClientInfo = () => {
   const deleteConfirmed = async (confirmed) => {
     setShowDeleteConfirmation(true);
     if (confirmed) {
-      const deletedClient = await axios.post(`${API_URL_BASE}/v1/deleteclient/${detailId}`, { token: token })
-      toast.success("Cliente eliminado correctamente");
-      setTimeout(() => {
-        navigate(CLIENTSPROFILES);
-      }, 3000);
+      try {
+        const deletedClient = await axios.post(`${API_URL_BASE}/v1/deleteclient/${detailId}`, { token: token })
+        toast.success("Cliente eliminado correctamente");
+        setTimeout(() => {
+          navigate(CLIENTSPROFILES);
+        }, 3000);
+      } catch (error) {
+        const errorMessage = error.response ? error.response.data : 'Ocurrió un error';
+        toast.error(`Hubo un problema con la eliminación. ${errorMessage}`);
+      }
+     
     } else {
       setShowDeleteConfirmation(false);
     }

@@ -6,20 +6,15 @@ import PayMethodsTable from "../components/PayMethodsTable";
 import BranchTable from "../components/BranchTable";
 import SpecialtiesTable from "../components/SpecialtiesTable";
 import ErrorToken from "../views/ErrorToken";
-import { getBranches, getServices, getSpecialties } from "../redux/actions";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const ControlTables = () => {
   const [activeTab, setActiveTab] = useState("services");
 
-  const clients = useSelector((state) => state?.clients);
-  const count = useSelector((state) => state?.countClient);
-  const token = useSelector((state) => state?.token);
   const tokenError = useSelector((state) => state?.tokenError);
   const methods = useSelector((state) => state?.payMethods);
   const branches = useSelector((state) => state?.branches);
-  const dispatch = useDispatch();
 
   const renderTabContent = () => {
     switch (activeTab) {

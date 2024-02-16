@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Loader from '../Loader'
+import Loader from "../Loader";
 
 //icons
 import { IoClose } from "react-icons/io5";
@@ -25,8 +25,8 @@ const CreateSpecialtyModal = ({
     name: "",
   });
 
-  const [submitLoader, setSubmitLoader] = useState(false)
-  const [disableSubmit, setDisableSubmit] = useState(false)
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -80,9 +80,8 @@ const CreateSpecialtyModal = ({
     }
 
     try {
-
-      setDisableSubmit(true)
-      setSubmitLoader(true)
+      setDisableSubmit(true);
+      setSubmitLoader(true);
 
       const data = {
         specialtyName: Specialty.name,
@@ -92,26 +91,29 @@ const CreateSpecialtyModal = ({
       const response = await axios.post(`${API_URL_BASE}/v1/specialty`, data);
 
       if (response.data.created === "ok") {
-        setSubmitLoader(false)
+        setSubmitLoader(false);
         setAux(!aux);
         toast.success("Especialidad creada exitosamente");
 
         setTimeout(() => {
           closeModal();
-          setDisableSubmit(false)
+          setDisableSubmit(false);
           setSpecialty({
             name: "",
           });
         }, 3000);
       } else {
-        setDisableSubmit(false)
-            setSubmitLoader(false)
+        setDisableSubmit(false);
+        setSubmitLoader(false);
         toast.error("Hubo un problema con la creación");
       }
     } catch (error) {
-      setDisableSubmit(false)
-            setSubmitLoader(false)
-      toast.error(`Hubo un problema con la creación. ${error.response.data}`);
+      setDisableSubmit(false);
+      setSubmitLoader(false);
+      const errorMessage = error.response
+        ? error.response.data
+        : "An error occurred";
+      toast.error(`${errorMessage}`);
     }
   };
 
@@ -170,16 +172,17 @@ const CreateSpecialtyModal = ({
               </div>
 
               <div className="flex justify-center items-center">
-              {!submitLoader ?
-                                    <button
-                                    type="submit"
-                                    disabled={disableSubmit}
-                                    className="mt-2 px-4 py-2 w-full rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                                >
-                                    Crear Especialidad
-                                </button> :
-                <Loader />
-              }
+                {!submitLoader ? (
+                  <button
+                    type="submit"
+                    disabled={disableSubmit}
+                    className="mt-2 px-4 py-2 w-full rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                  >
+                    Crear Especialidad
+                  </button>
+                ) : (
+                  <Loader />
+                )}
               </div>
             </form>
           </div>

@@ -8,8 +8,14 @@ import Restricted from "./Restricted.jsx";
 import ErrorToken from "./ErrorToken";
 import Balance from "../components/Balance.jsx";
 import Loader from "../components/Loader.jsx";
-import getParamsEnv from "../functions/getParamsEnv.js";
 import axios from "axios";
+
+//toast
+import { toast } from "react-hot-toast";
+import ToasterConfig from "../components/Toaster";
+
+//variables de entorno
+import getParamsEnv from "../functions/getParamsEnv.js";
 const { API_URL_BASE } = getParamsEnv();
 
 const Home = () => {
@@ -25,43 +31,32 @@ const Home = () => {
 
   let requestMade = false;
   useEffect(() => {
-  //dispatch(getPayMethods({ token }))
-  //dispatch(getspecialists(branchWorking.branchName, { token: token }))
-  //dispatch((getServices({token})))
-  //.then(setLoading(false))
-  //}, []);
-
-    //! No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
-    //const respuesta = dispatch(getPayMethods({ token }))
-    //dispatch(getspecialists(branchWorking.branchName, { token: token }))
-    //dispatch(getServices({ token }))
-    //  .then(setLoading(false))
-    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+    if (!requestMade) { 
       setLoading(true);
       requestMade = true;
       axios.post(API_URL_BASE + "/v1/payments", { token })
         .then(respuesta => {
-          dispatch(getPayMethods(respuesta.data)); // actualizo el store
+          dispatch(getPayMethods(respuesta.data)); 
           return axios.post(API_URL_BASE + "/v1/specialists?branchWorking=" + branchWorking.branchName, { token });
         })
         .then(respuesta2 => {
-          dispatch(getspecialists(respuesta2.data)); // actualizo el store
+          dispatch(getspecialists(respuesta2.data)); 
           return axios.post(API_URL_BASE + "/v1/getservices", { token });
         })
         .then(respuesta3 => {
-          dispatch(getServices(respuesta3.data)); // actualizo el store
+          dispatch(getServices(respuesta3.data));
           setLoading(false);
           requestMade = false;
         })
-        .catch(error => {
-          // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
-          let msg = '';
+        .catch(error => {  
+          let errorMessage= ""   
+          console.log(error)     
           if (!error.response) {
-            msg = error.message;
+            errorMessage = error.message;
           } else {
-            msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
           }
-          console.log("ERROR!!! " + msg);
+          toast.error(errorMessage);
         });
     }
   }, [tokenError]);
@@ -76,13 +71,14 @@ const Home = () => {
         <NavBar user={user} />
         <div className="flex flex-row dark:bg-darkBackground">
           <SideBar />
-          {/*{loading ? (
+          {loading ? (
             <Loader />
           ) : (
             user.role === "superAdmin" ? 
             <Balance specialists={specialists} services={services} payMethods={payMethods}/> :  <Restricted />
-          )}*/}
+          )}
         </div>
+        <ToasterConfig />
       </>
     );
   }

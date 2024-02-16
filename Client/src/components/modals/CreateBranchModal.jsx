@@ -5,8 +5,7 @@ import { toast } from "react-hot-toast";
 import branchValidation from "../../functions/createBranchValidations";
 import { IoClose } from "react-icons/io5";
 import getParamsEnv from "../../functions/getParamsEnv";
-import Loader from '../Loader'
-
+import Loader from "../Loader";
 
 const { API_URL_BASE } = getParamsEnv();
 
@@ -25,8 +24,8 @@ const CreateBranchModal = ({
 
   const [errors, setErrors] = useState({});
 
-  const [submitLoader, setSubmitLoader] = useState(false)
-    const [disableSubmit, setDisableSubmit] = useState(false)
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const closeModal = () => {
     setShowCreateBranchModal(false);
@@ -60,9 +59,8 @@ const CreateBranchModal = ({
     }
 
     try {
-
-      setDisableSubmit(true)
-      setSubmitLoader(true)
+      setDisableSubmit(true);
+      setSubmitLoader(true);
 
       const data = {
         branchName: newBranch.name,
@@ -78,13 +76,13 @@ const CreateBranchModal = ({
       const response = await axios.post(`${API_URL_BASE}/v1/branch`, data);
 
       if (response.data.created === "ok") {
-        setSubmitLoader(false)
+        setSubmitLoader(false);
         setAux(!aux);
         toast.success("Sede creada exitosamente");
 
         setTimeout(() => {
           closeModal();
-          setDisableSubmit(false)
+          setDisableSubmit(false);
           setNewBranch({
             name: "",
             address: "",
@@ -93,14 +91,17 @@ const CreateBranchModal = ({
           });
         }, 3000);
       } else {
-        setDisableSubmit(false)
-            setSubmitLoader(false)
+        setDisableSubmit(false);
+        setSubmitLoader(false);
         toast.error("Hubo un problema con la creación");
       }
     } catch (error) {
-      setDisableSubmit(false)
-            setSubmitLoader(false)
-      toast.error(`Hubo un problema con la creación. ${error.response.data}`);
+      setDisableSubmit(false);
+      setSubmitLoader(false);
+      const errorMessage = error.response
+        ? error.response.data
+        : "An error occurred";
+      toast.error(`${errorMessage}`);
     }
   };
 
@@ -203,23 +204,22 @@ const CreateBranchModal = ({
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
                 {errors.coordinates !== "" && (
-                  <p className=" text-red-500 p-1">
-                    {errors.coordinates}
-                  </p>
+                  <p className=" text-red-500 p-1">{errors.coordinates}</p>
                 )}
               </div>
 
               <div className="flex justify-center items-center pt-4">
-              {!submitLoader ?
-                                    <button
-                                    type="submit"
-                                    disabled={disableSubmit}
-                                    className="mt-2 px-4 py-2 w-full rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                                >
-                                    Agregar sede
-                                </button> :
-                <Loader />
-              }
+                {!submitLoader ? (
+                  <button
+                    type="submit"
+                    disabled={disableSubmit}
+                    className="mt-2 px-4 py-2 w-full rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                  >
+                    Agregar sede
+                  </button>
+                ) : (
+                  <Loader />
+                )}
               </div>
             </form>
           </div>

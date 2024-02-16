@@ -34,6 +34,7 @@ function RegisterForm({
       if (e.keyCode === 27) {
         setShowResgisterFormModal(false);
       }
+      console.log(user);
     };
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
@@ -137,13 +138,16 @@ function RegisterForm({
           comission: userData.commission,
           token: tokenID,
         };
+
         const response = await axios.post(`${API_URL_BASE}/v1/newuser`, data);
+
+        console.log(user);
 
         const sendEmail = {
           origin: user.userName,
           target: userData.notificationEmail,
-          subject: "Laura Vargas - Alta de usuario",
-          html: `<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'> <html dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'> <head> <meta charset='UTF-8'> <meta content='width=device-width, initial-scale=1' name='viewport'> <meta name='x-apple-disable-message-reformatting'> <meta http-equiv='X-UA-Compatible' content='IE=edge'> <meta content='telephone=no' name='format-detection'> <title></title>     <link href='https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i' rel='stylesheet'>  </head> <body> <div dir='ltr' class='es-wrapper-color'>  <table class='es-wrapper' width='100%' height='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-email-paddings' valign='top'> <table cellpadding='0' cellspacing='0' class='es-header esd-footer-popover' align='center'> <tbody> <tr> <td class='esd-stripe' align='center' esd-custom-block-id='35507'> <table bgcolor='#ffffff' class='es-header-body' align='center' cellpadding='0' cellspacing='0' width='550' style='border-right:1px solid transparent;border-bottom:1px solid transparent;'> <tbody> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='509' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-block-image' align='center' style='font-size: 0px;'><img src='https://res.cloudinary.com/doyafxwje/image/upload/v1703605216/Logos/LogoLauraVargas_zhiwgn.jpg' alt='lauraLogo' style='display: block;' width='150' height='100'></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td width='509' class='esd-container-frame' align='center' valign='top'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td align='center' class='esd-block-text es-p15' > <h1 style='text-align: center; font-size: 18px; color: black; margin-bottom: 2px;'><span style='font-size:22px;'> Hola, ${data.name} ${data.lastName}! 👋</h1> <p style='text-align: center; font-size: 16px; color: black;'> Ya tienes habilitado el acceso al sistema. </p> <p style='text-align: center; font-size: 16px; color: black;'>¡Ingresa con tu cuenta de Gmail haciendo click <a href='https://laura-vargas-dkpl.vercel.app/'>aquí</a>! </p> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p5' style='background-color: transparent;' bgcolor='transparent' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='539' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-block-social' align='center' style='font-size: 0px;'> <table class='es-table-not-adapt es-social' cellspacing='0' cellpadding='0'> <tbody> <tr > <td valign='top' align='center'><a target='_blank' href='https://www.facebook.com/lauravargas.cp/'><img style='margin-right: 10px;' title='Facebook' src='https://ecyarqo.stripocdn.email/content/assets/img/social-icons/circle-colored/facebook-circle-colored.png' alt='Fb' width='40' height='40'></a></td> <td valign='top' align='center'><a target='_blank' href='https://www.instagram.com/lauravargas.cpmu/'><img title='Instagram' src='https://ecyarqo.stripocdn.email/content/assets/img/social-icons/circle-colored/instagram-circle-colored.png' alt='Inst' width='40' height='40'></a></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </div> </body> </html>`,
+          subject: `${user.companyName} - Alta de usuario`,
+          html: `<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'> <html dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'> <head> <meta charset='UTF-8'> <meta content='width=device-width, initial-scale=1' name='viewport'> <meta name='x-apple-disable-message-reformatting'> <meta http-equiv='X-UA-Compatible' content='IE=edge'> <meta content='telephone=no' name='format-detection'> <title></title>     <link href='https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i' rel='stylesheet'>  </head> <body> <div dir='ltr' class='es-wrapper-color'>  <table class='es-wrapper' width='100%' height='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-email-paddings' valign='top'> <table cellpadding='0' cellspacing='0' class='es-header esd-footer-popover' align='center'> <tbody> <tr> <td class='esd-stripe' align='center' esd-custom-block-id='35507'> <table bgcolor='#ffffff' class='es-header-body' align='center' cellpadding='0' cellspacing='0' width='550' style='border-right:1px solid transparent;border-bottom:1px solid transparent;'> <tbody> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='509' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-block-image' align='center' style='font-size: 0px;'><img src=${user.companyImg} alt='logoCompañía' style='display: block;' width='150' height='100'></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td width='509' class='esd-container-frame' align='center' valign='top'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td align='center' class='esd-block-text es-p15' > <h1 style='text-align: center; font-size: 18px; color: black; margin-bottom: 2px;'><span style='font-size:22px;'> Hola, ${data.name} ${data.lastName}! 👋</h1> <p style='text-align: center; font-size: 16px; color: black;'> Ya tienes habilitado el acceso al sistema. </p> <p style='text-align: center; font-size: 16px; color: black;'>¡Ingresa con tu cuenta de Gmail haciendo click <a href='https://google.com/linkaldeploy'>aquí</a>! </p> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p5' style='background-color: transparent;' bgcolor='transparent' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='539' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </div> </body> </html>`,
           token: tokenID,
         };
 
@@ -180,7 +184,10 @@ function RegisterForm({
       } catch (error) {
         setDisableSubmit(false);
         setSubmitLoader(false);
-        toast.error(`Hubo un problema con la creacion. ${error.response.data}`);
+        const errorMessage = error.response
+          ? error.response.data
+          : "An error occurred";
+        toast.error(`${errorMessage}`);
       }
     }
   };
@@ -266,9 +273,7 @@ function RegisterForm({
                 value={userData.notificationEmail}
               />
               {errors.notificationEmail !== "" && (
-                <p className=" text-red-500">
-                  {errors.notificationEmail}
-                </p>
+                <p className=" text-red-500">{errors.notificationEmail}</p>
               )}
             </div>
 

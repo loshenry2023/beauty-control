@@ -41,6 +41,7 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
                 type="date"
                 defaultValue=""
                 className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
+                onKeyDown={(e) => e.preventDefault()}
               />
             </div>
             <div className="flex gap-2">
@@ -53,6 +54,7 @@ const ClientFilters = ({setOrder, nameOrLastName, setAttribute, setNameOrLastNam
                 type="date"
                 defaultValue=""
                 className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
+                onKeyDown={(e) => e.preventDefault()}
               />
             </div> </>): null }
         </div>

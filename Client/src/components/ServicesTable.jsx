@@ -28,21 +28,25 @@ const ServicesTable = () => {
   const [filaService, setFilaService] = useState(null);
   const [serviceId, setServiceId] = useState(null);
   const specialties = useSelector((state) => state?.specialties);
+  const services = useSelector((state) => state?.services);
   const token = useSelector((state) => state?.token);
   const dispatch = useDispatch();
   const [aux, setAux] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const services = useSelector((state) => state?.services);
 
   let requestMade = false;
   useEffect(() => {
     if (!requestMade) {
     requestMade = true;
-    axios.post(API_URL_BASE + "/v1/getservices", { token })
-    .then((respuesta) => {
-        dispatch(getServices(respuesta.data))
-        setIsLoading(false);
+    axios.post(API_URL_BASE + "/v1/specialties", { token })
+    .then(respuesta => {
+      dispatch(getSpecialties(respuesta.data))
+      return axios.post(API_URL_BASE + "/v1/getservices", { token })
+    })
+    .then((respuesta2) => {
+        dispatch(getServices(respuesta2.data))
         requestMade = false;
+        setIsLoading(false);
       })
     .catch(error => {
       toast.error(error)
@@ -63,12 +67,11 @@ const ServicesTable = () => {
         toast.error("Hubo un problema al eliminar procedimiento");
       }
     } catch (error) {
-      console.error(error);
       const errorMessage = error.response
         ? error.response.data
-        : "An error occurred";
+        : "Ha ocurrido un error";
       toast.error(
-        `Hubo un problema al eliminar procedimiento. ${errorMessage}`
+        `${errorMessage}`
       );
     }
   };
@@ -121,7 +124,7 @@ const ServicesTable = () => {
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <button
-                      className="flex flex-row gap-1 p-2 rounded-full hover:bg-primaryPink hover:text-black"
+                      className="flex flex-row gap-1 p-2 rounded-full hover:bg-secondaryColor hover:text-black"
                       onClick={handleShowCreateModal}
                     >
                       <IoIosAddCircle size={20} /> Agregar
@@ -136,7 +139,7 @@ const ServicesTable = () => {
                   .map((fila, index) => (
                     <tr
                       key={index}
-                      className=" border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
+                      className="group border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
                     >
                       <td className="px-4 py-4">{fila.serviceName}</td>
                       <td className="px-4 py-4">
