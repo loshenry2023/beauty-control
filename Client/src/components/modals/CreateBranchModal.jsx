@@ -179,7 +179,7 @@ const CreateBranchModal = ({
                   type="text"
                   name="phone"
                   value={newBranch.phone}
-                  placeholder="Phone"
+                  placeholder="Teléfono"
                   className={`border border-black p-2 rounded w-full ${
                     errors.phone !== undefined && "border-2 border-red-500"
                   } dark:text-darkText dark:bg-darkPrimary`}
@@ -190,14 +190,14 @@ const CreateBranchModal = ({
               </div>
               <div>
                 <label className="pl-1  font-bold dark:text-darkText">
-                  Coordenadas Google Maps
+                  Link de Google Maps
                 </label>
                 <input
                   onChange={handleChange}
                   type="text"
                   name="coordinates"
                   value={newBranch.coordinates}
-                  placeholder="Ingresa sus link de coordenadas"
+                  placeholder="Ingresa el link de Google Maps"
                   className={`border border-black p-2 rounded w-full ${
                     errors.coordinates !== undefined &&
                     "border-2 border-red-500"
