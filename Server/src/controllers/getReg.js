@@ -47,35 +47,41 @@ const getReg = async (dataInc) => {
           },
           order: [["nameCompany", "asc"]],
         });
-        const countTot = result.count;
         const companies = result.rows;
         // Agrego el usuario principal al objeto de empresas:
+        let processedCompanies = new Set();
         let compOut = [];
         let firstUsr = "";
+        let countTot = 0;
         for (const company of companies) {
-          const { conn, User } = await connectDB(company.dbName);
-          await conn.sync();
-          const userFound = await User.findOne({  // User
-            attributes: [
-              "first",
-              "userName",
-            ],
-            where: { first: '1' },
-          });
-          if (userFound) {
-            firstUsr = userFound.userName;
-          } else {
-            firstUsr = "{no encontrado}";
+          if (!processedCompanies.has(company.nameCompany)) { // verifico si existe antes de agregarlo a dataOut
+            const { conn, User } = await connectDB(company.dbName);
+            await conn.sync();
+            const userFound = await User.findOne({  // User
+              attributes: [
+                "first",
+                "userName",
+              ],
+              where: { first: '1' },
+            });
+            if (userFound) {
+              firstUsr = userFound.userName;
+            } else {
+              firstUsr = "{no encontrado}";
+            }
+            await conn.close();
+
+            dataOut = {
+              nameCompany: company.nameCompany,
+              subscribedPlan: company.subscribedPlan,
+              expireAt: company.expireAt,
+              imgCompany: company.imgCompany,
+              firstUser: firstUsr,
+            };
+            compOut.push(dataOut);
+            processedCompanies.add(company.nameCompany);
+            countTot++;
           }
-          await conn.close();
-          dataOut = {
-            nameCompany: company.nameCompany,
-            subscribedPlan: company.subscribedPlan,
-            expireAt: company.expireAt,
-            imgCompany: company.imgCompany,
-            firstUser: firstUsr,
-          };
-          compOut.push(dataOut);
         }
         return { count: countTot, rows: compOut };
       case "PriceHistory":
