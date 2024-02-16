@@ -89,35 +89,44 @@ export const getcalendarcount = (calendarData) => {
   };
 };
 
-export const getBranches = (respuesta) => ({
-  type: GET_BRANCHES,
-  payload: respuesta,
-});
+export const getBranches = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const branchA = a.branchName.toLowerCase();
+    const branchB = b.branchName.toLowerCase();
+  
+    if (branchA < branchB) {
+      return -1;
+    }
+    if (branchB > branchA) {
+      return 1;
+    }
+    return 0;
+  })
+
+  return {
+    type: GET_BRANCHES,
+    payload: respuestaOrdenada,
+  }
+};
 
 export const getSpecialties = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const specialtyA = a.specialtyName.toLowerCase();
+    const specialtyB = b.specialtyName.toLowerCase();
+  
+    if (specialtyA < specialtyB) {
+      return -1;
+    }
+    if (specialtyA > specialtyB) {
+      return 1;
+    }
+    return 0;
+  });
+
   return {
     type: GET_SPECIALTIES,
-    payload: respuesta,
+    payload: respuestaOrdenada,
   };
-  // return async function (dispatch) {
-  //   try {
-  //     const response = await axios.post(API_URL_BASE + "/v1/specialties", token);
-  //     return dispatch({
-  //       type: GET_SPECIALTIES,
-  //       payload: response.data,
-  //     });
-  //   } catch (error) {
-  //     // Errores 401 y 403 son para quitar al usuario de la sesión:
-  //     if (error.request.status === 401 || error.request.status === 403) {
-  //       return dispatch({
-  //         type: SET_TOKEN_ERROR,
-  //         payload: error.request.status,
-  //       });
-  //     } else {
-  //       throw Error(error.message);
-  //     }
-  //   }
-  // };
 };
 
 export const getClients = (
@@ -132,35 +141,6 @@ export const getClients = (
   // token
   respuesta
 ) => {
-  // const endPoint = API_URL_BASE + "/v1/getclients?";
-  // return async function (dispatch) {
-  //   try {
-  //     const { data } = await axios.post(
-  //       `${endPoint}nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}&birthdaysMonth=${birthdaysMonth}`,
-  //       token
-  //     );
-  //     const modifiedData = data.rows.map((user) => {
-  //       const { createdAt, ...rest } = user;
-  //       const createdAtInBogotaTimezone = converterGMT(createdAt);
-  //       return { ...rest, createdAt: createdAtInBogotaTimezone };
-  //     });
-  //     return dispatch({
-  //       type: GET_CLIENTS,
-  //       payload: modifiedData,
-  //       countClient: data.count,
-  //     });
-  //   } catch (error) {
-  //     // Errores 401 y 403 son para quitar al usuario de la sesión:
-  //     if (error.request.status === 401 || error.request.status === 403) {
-  //       return dispatch({
-  //         type: SET_TOKEN_ERROR,
-  //         payload: error.request.status,
-  //       });
-  //     } else {
-  //       throw Error(error.message);
-  //     }
-  //   }
-  // };
   const modifiedData = respuesta.rows.map((user) => {
     const { createdAt, ...rest } = user;
     const createdAtInBogotaTimezone = converterGMT(createdAt);
@@ -175,28 +155,6 @@ export const getClients = (
 };
 
 export const getClientId = (respuesta) => {
-  // return async function (dispatch) {
-  //   try {
-  //     const response = await axios.post(
-  //       `${API_URL_BASE}/v1/getclient/${id}`,
-  //       token
-  //     );
-  //     return dispatch({
-  //       type: GET_CLIENT_ID,
-  //       payload: response.data,
-  //     });
-  //   } catch (error) {
-  //     // Errores 401 y 403 son para quitar al usuario de la sesión:
-  //     if (error.request.status === 401 || error.request.status === 403) {
-  //       return dispatch({
-  //         type: SET_TOKEN_ERROR,
-  //         payload: error.request.status,
-  //       });
-  //     } else {
-  //       throw Error(error.message);
-  //     }
-  //   }
-  // };
   return {
     type: GET_CLIENT_ID,
     payload: respuesta
@@ -263,28 +221,6 @@ export const getCalendar = (response) => {
 
 
 export const getUserId = (respuesta) => {
-  // return async function (dispatch) {
-  //   try {
-  //     const response = await axios.post(
-  //       `${API_URL_BASE}/v1/userdetails/${id}`,
-  //       token
-  //     );
-  //     return dispatch({
-  //       type: GET_USER_ID,
-  //       payload: response.data,
-  //     });
-  //   } catch (error) {
-  //     // Errores 401 y 403 son para quitar al usuario de la sesión:
-  //     if (error.request.status === 401 || error.request.status === 403) {
-  //       return dispatch({
-  //         type: SET_TOKEN_ERROR,
-  //         payload: error.request.status,
-  //       });
-  //     } else {
-  //       throw Error(error.message);
-  //     }
-  //   }
-  // };
   return {
     type: USER_DATA_ID,
     payload: respuesta
@@ -601,88 +537,51 @@ export const updateProductPrice = (productId, newPrice) => {
   };
 };
 //baba
-export const getPayMethods = (response) => ({
-  type: GET_PAY_METHODS,
-  payload: response,
-});
-// export const getPayMethods = (token) => {
-//   return async function (dispatch) {
-//     try {
-//       const response = await axios.post(API_URL_BASE + "/v1/payments", token);
+export const getPayMethods = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const payMethodA = a.paymentMethodName.toLowerCase();
+    const payMethodB = b.paymentMethodName.toLowerCase();
+  
+    if (payMethodA < payMethodB) {
+      return -1;
+    }
+    if (payMethodB > payMethodA) {
+      return 1;
+    }
+    return 0;
+  })
 
-//       return dispatch({
-//         type: GET_PAY_METHODS,
-//         payload: response.data,
-//       });
-//     } catch (error) {
-//       if (error.request.status === 401 || error.request.status === 403) {
-//         return dispatch({
-//           type: SET_TOKEN_ERROR,
-//           payload: error.request.status,
-//         });
-//       } else {
-//         throw Error(error.message);
-//       }
-//     }
-//   };
-// };
+  return {
+    type: GET_PAY_METHODS,
+    payload: respuestaOrdenada 
+  }
+};
 
 export const getspecialists = (response) => ({
   type: GET_SPECIALISTS,
   payload: response,
 });
-// export const getspecialists = (branchWorking, token) => {
-//   const endPoint = API_URL_BASE + "/v1/specialists?";
-//   return async function (dispatch) {
-//     try {
-//       const { data } = await axios.post(
-//         `${endPoint}branchWorking=${branchWorking}`,
-//         token
-//       );
 
-//       return dispatch({
-//         type: GET_SPECIALISTS,
-//         payload: data,
-//       });
-//     } catch (error) {
-//       // Errores 401 y 403 son para quitar al usuario de la sesión:
-//       if (error.request.status === 401 || error.request.status === 403) {
-//         return dispatch({
-//           type: SET_TOKEN_ERROR,
-//           payload: error.request.status,
-//         });
-//       } else {
-//         throw Error(error.message);
-//       }
-//     }
-//   };
-// };
 
-export const getServices = (response) => ({
-  type: GET_SERVICES,
-  payload: response,
-});
-// export const getServices = (token) => {
-//   return async function (dispatch) {
-//     try {
-//       const response = await axios.post(API_URL_BASE + "/v1/getservices", token);
-//       return dispatch({
-//         type: GET_SERVICES,
-//         payload: response.data,
-//       });
-//     } catch (error) {
-//       // Errores 401 y 403 son para quitar al usuario de la sesión:
-//       if (error.request.status === 401 || error.request.status === 403) {
-//         return dispatch({
-//           type: SET_TOKEN_ERROR,
-//           payload: error.request.status,
-//         });
-//       } else {
-//         throw Error(error.message);
-//       }
-//     }
-//   };
-// };
+export const getServices = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const serviceA = a.serviceName.toLowerCase();
+    const serviceB = b.serviceName.toLowerCase();
+  
+    if (serviceA < serviceB) {
+      return -1;
+    }
+    if (serviceB > serviceA) {
+      return 1;
+    }
+    return 0;
+  })
+
+  return {
+    type: GET_SERVICES,
+    payload: respuestaOrdenada,
+  }
+};
 
 export const setTokenError = (error) => ({
   type: SET_TOKEN_ERROR,

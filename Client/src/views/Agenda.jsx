@@ -1,11 +1,4 @@
-// Importaciones de componentes y librerías
-import Calendar from "../components/Calendar";
-import NavBar from "../components/NavBar";
-import SideBar from "../components/SideBar";
-import Loader from "../components/Loader";
-import CreateAppointment from "../components/modals/CreateAppointment";
-import ListClients from "../components/modals/ListClients";
-import ErrorToken from "./ErrorToken";
+// hooks, routers, reducers:
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,8 +8,25 @@ import {
   getToken,
   getUsers,
 } from "../redux/actions";
-import { FaPlusCircle } from "react-icons/fa";
 import axios from "axios";
+
+//components
+import ErrorToken from "./ErrorToken";
+import Calendar from "../components/Calendar";
+import NavBar from "../components/NavBar";
+import SideBar from "../components/SideBar";
+import Loader from "../components/Loader";
+import CreateAppointment from "../components/modals/CreateAppointment";
+import ListClients from "../components/modals/ListClients";
+
+// toast
+import ToasterConfig from "../../src/components/Toaster";
+import { toast } from "react-hot-toast";
+
+// icons
+import { FaPlusCircle } from "react-icons/fa";
+
+// variables de entorno
 import getParamsEnv from "../functions/getParamsEnv";
 const { API_URL_BASE } = getParamsEnv();
 
@@ -30,8 +40,6 @@ const Agenda = () => {
   const day = currentDate.getDate().toString().padStart(2, "0");
 
   const formattedDate = `${year}-${month}-${day}`;
-
-
 
   const branches = useSelector((state) => state?.branches);
   const tokenID = useSelector((state) => state?.token);
@@ -103,27 +111,6 @@ const Agenda = () => {
 
   let requestMade = false
   useEffect(() => {
-    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
-    // dispatch(getToken(tokenID));
-    // dispatch(getBranches({ token: tokenID }));
-    // dispatch(getServices({ token: tokenID }));
-    // dispatch(
-    //   getUsers(
-    //     nameOrLastName,
-    //     attribute,
-    //     order,
-    //     page,
-    //     size,
-    //     branch,
-    //     specialty,
-    //     role,
-    //     createDateEnd,
-    //     createDateStart,
-    //     { token: tokenID }
-    //   )
-    // );
-    // setLoading(false);
-
     if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
       requestMade = true;
       dispatch(getToken(tokenID))
@@ -143,15 +130,15 @@ const Agenda = () => {
         setLoading(false);
         requestMade = false;
       })
-      .catch(error => {
-        // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
-        let msg = '';
+      .catch(error => {  
+        let errorMessage= ""   
+        console.log(error)     
         if (!error.response) {
-          msg = error.message;
+          errorMessage = error.message;
         } else {
-          msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
         }
-        console.log("ERROR!!! " + msg);
+        toast.error(errorMessage);
       });
     }
   }, [specialty, tokenError]);
@@ -397,6 +384,7 @@ const Agenda = () => {
             />
           )}
         </div>
+        <ToasterConfig/>
       </div>
     );
   }

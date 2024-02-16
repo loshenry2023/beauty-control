@@ -3,12 +3,17 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { clearUserId, deleteUser, getUser, getUserId } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
+
+//components
 import EditModal from "./modals/EditModal.jsx";
 import Loader from "./Loader.jsx";
 import "./loading.css";
+
+//toast
+import { toast } from "react-hot-toast";
 import ToasterConfig from "./Toaster.jsx";
+
 
 //icons
 import { MdEdit } from "react-icons/md";
@@ -47,18 +52,16 @@ const UserInfo = () => {
         requestMade = false;
         setLoading(false)
       })
-      .catch(error => {
-        // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
-        let msg = '';
+      .catch(error => {  
+        let errorMessage= ""   
+        console.log(error)     
         if (!error.response) {
-          msg = error.message;
+          errorMessage = error.message;
         } else {
-          msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
         }
-        console.log("ERROR!!! " + msg);
+        toast.error(errorMessage);
       });
-    // dispatch(getUserId(detailId, token))
-    // .then(() => {setLoading(false)})
     }
   }, [detailId]);
 
@@ -119,7 +122,7 @@ const UserInfo = () => {
               </div>
               <h3 className="text-lg font-bold leading-tight dark:text-darkText">
                 Usuario:{" "}
-                <span className="text-md tracking-wide font-medium text-black">
+                <span className="text-md tracking-wide font-medium text-black dark:text-darkText">
                   {userID?.userName}
                 </span>
               </h3>

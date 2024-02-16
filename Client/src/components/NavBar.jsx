@@ -139,13 +139,13 @@ const NavBar = () => {
           :
           <MdLightMode
             onClick={handleDarkMode}
-            className="h-6 w-6 cursor-pointer"
+            className="h-6 w-6 cursor-pointer dark:text-yellow-500"
           />}
-          <CiBellOn className="relative h-6 w-6" />
+          <CiBellOn className="relative h-6 w-6 dark:text-darkText" />
           {user.role === "superAdmin" || user.role === "admin" || appointments.count === 0 ? null :
             showRed && <span onClick={() => eraseNotifications()} className=" flex flex-row items-center justify-center font-bold mx-auto my-auto absolute w-4 h-4 top-[40px] right-[76px] rounded-full bg-red-500 cursor-pointer"> {appointments.count}  </span>}
           <Link to={ROOT}>
-            <IoExitOutline className="h-6 w-6 " onClick={handleLogout} />
+            <IoExitOutline className="h-6 w-6 dark:text-darkText" onClick={handleLogout} />
           </Link>
         </div>
       </nav>

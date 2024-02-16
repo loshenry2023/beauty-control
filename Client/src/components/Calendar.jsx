@@ -34,20 +34,21 @@ const Calendar = ({
   setShowEditAppointment,
   showEditAppointment,
   setLoadingToProps,
-  loadingToProps
+  loadingToProps,
 }) => {
   const dispatch = useDispatch();
 
   const [date, setDate] = useState({});
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [citaId, setCitaId] = useState(null);
-  
+  const [aux, setAux] = useState(false);
+
   const days = ["D", "L", "M", "M", "J", "V", "S"];
   const currentDate = dayjs();
   const workingBranch = useSelector((state) => state?.workingBranch);
   const specialists = useSelector((state) => state?.specialists);
   const workingBranchID = workingBranch.id;
-  const branchWorking= workingBranch.branchName;
+  const branchWorking = workingBranch.branchName;
   const token = useSelector((state) => state?.token);
   const calendar = useSelector((state) => state?.calendar);
   const [today, setToday] = useState(currentDate);
@@ -127,50 +128,64 @@ const Calendar = ({
     // setSpecialty(dateInfo.service.specialtyName);
     // }
     // setEffectControl(false);
-    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+    if (!requestMade) {
+      // evito llamados en paralelo al pedir los datos iniciales
       requestMade = true;
-      axios.post(API_URL_BASE + "/v1/specialists?branchWorking=" + branchWorking.branchName, { token })
-        .then(respuesta => {
-          dispatch(getspecialists(respuesta.data)); 
-          return axios.post(API_URL_BASE + `/v1/getcalendar?branch=${branch}&dateFrom=${dateFrom}&dateTo=${dateTo}&userId=${userId}`, { token });
+      axios
+        .post(
+          API_URL_BASE +
+            "/v1/specialists?branchWorking=" +
+            branchWorking.branchName,
+          { token }
+        )
+        .then((respuesta) => {
+          dispatch(getspecialists(respuesta.data));
+          return axios.post(
+            API_URL_BASE +
+              `/v1/getcalendar?branch=${branch}&dateFrom=${dateFrom}&dateTo=${dateTo}&userId=${userId}`,
+            { token }
+          );
         })
-        .then(respuesta2 => {
+        .then((respuesta2) => {
           dispatch(getCalendar(respuesta2.data));
           setLoadingToProps(false);
           if (showEditAppointment) {
             setSpecialty(date.User.Specialties[0].specialtyName);
-          }else {
-          setSpecialty(dateInfo.service.specialtyName);
+          } else {
+            setSpecialty(dateInfo.service.specialtyName);
           }
           setEffectControl(false);
         })
-        .catch(error => {
-          // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
-          let msg = '';
+        .catch(error => {  
+          let errorMessage= ""   
+          console.log(error)     
           if (!error.response) {
-            msg = error.message;
+            errorMessage = error.message;
           } else {
-            msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
           }
-          console.log("ERROR!!! " + msg);
+          toast.error(errorMessage);
         });
-  }}, [
+    }
+  }, [
     workingBranch.id,
     dateFrom,
     dateTo,
     citaId,
     refrescarCita,
     showEditAppointment,
-    userId
+    userId,
   ]);
 
   const handleShowEditAppointment = (date) => {
     const parsedDate = JSON.parse(date);
     setDate(parsedDate);
-    setShowEditAppointment(true);
+    setAux(true);
+    setTimeout(() => {
+      setShowEditAppointment(true);
+      setAux(false);
+    }, 2000);
   };
-
- 
 
   const handleModal = (id) => {
     setCitaId(id);
@@ -191,7 +206,7 @@ const Calendar = ({
   };
 
   return (
-    <div >
+    <div>
       {loadingToProps ? (
         <Loader />
       ) : (
@@ -285,9 +300,12 @@ const Calendar = ({
           <div className="flex flex-col w-72 sm:px-5 overflow-auto sm:w-96 sm:h-96 md:w-[600px]">
             {/* // se pued eponer mas con h-full // */}
             <h2 className="text-2xl font-semibold mb-2 dark:text-darkText">
-              {capitalizedDate(formatedDate)} 
+              {capitalizedDate(formatedDate)}
             </h2>
-            <p className="text-sm dark:text-darkText"> Los rangos horarios son de uso exclusivo para filtrar citas</p>
+            <p className="text-sm dark:text-darkText">
+              {" "}
+              Los rangos horarios son de uso exclusivo para filtrar citas
+            </p>
             <div className="flex flex-row gap-2 mt-0.5 mb-3">
               <button
                 onClick={
@@ -405,34 +423,41 @@ const Calendar = ({
               </button>
             </div>
             <div>
-            {user.role === "especialista" ? (
-              <></>
-            ) : (
-              <div>
-                <select
-                  name="specialists"
-                  id=""
-                  className="w-60 border border-black rounded-md text-md dark:text-darkText dark:bg-darkPrimary md:w-fit"
-                  onChange={(e) => {setUserId(e.target.value)}}
-                >
-                  <option value=""> -- Mostrar agendas especialistas --  </option>
-                  {specialists.map((specialis, index) => (
-                    <option key={index} value={specialis.id}>
-                      {`${specialis.name} ${specialis.lastName}`}
+              {user.role === "especialista" ? (
+                <></>
+              ) : (
+                <div className="flex flex-row justify-between">
+                  <select
+                    name="specialists"
+                    id=""
+                    className="w-60 border border-black rounded-md text-md dark:text-darkText dark:bg-darkPrimary md:w-fit"
+                    onChange={(e) => {
+                      setUserId(e.target.value);
+                    }}
+                  >
+                    <option value="">
+                      {" "}
+                      -- Mostrar agendas especialistas --{" "}
                     </option>
-                  ))}
-                </select>
-              </div>
-            )}
-              </div>
+                    {specialists.map((specialis, index) => (
+                      <option key={index} value={specialis.id}>
+                        {`${specialis.name} ${specialis.lastName}`}
+                      </option>
+                    ))}
+                  </select>
+                  {!showEditAppointment && aux && (
+                      <span className="font-bold">Cargando...</span>
+                    )}
+                </div>
+              )}
+            </div>
             {calendar.length === 0 && (
               <h4 className="font-medium mt-2 text-xl dark:text-darkText">
                 Sin turnos hasta el momento
               </h4>
             )}
             {calendar.map((cita, index) => {
-              return (
-                cita.Client === null ? null :
+              return cita.Client === null ? null : (
                 <div
                   key={index}
                   className={
@@ -445,7 +470,10 @@ const Calendar = ({
                     <div className="flex flex-row justify-between">
                       <h5 className="text-md font-medium tracking-wide dark:text-darkText underline underline-offset-2">
                         {" "}
-                        {converter12Hrs(cita.date_from.split(" ")[1].slice(0, 5))} -{" "}
+                        {converter12Hrs(
+                          cita.date_from.split(" ")[1].slice(0, 5)
+                        )}{" "}
+                        -{" "}
                         {converter12Hrs(cita.date_to.split(" ")[1].slice(0, 5))}
                         <span>
                           {" "}

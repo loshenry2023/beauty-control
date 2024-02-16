@@ -54,14 +54,13 @@ const SpecialtiesTable = ({ branches }) => {
 
         setSpecialtyId(null);
       } else {
-        toast.error("Hubo un problema al eliminar Especialidad");
+        toast.error("Hubo un problema al eliminar la Especialidad");
       }
     } catch (error) {
-      console.error(error);
       const errorMessage = error.response
         ? error.response.data
-        : "An error occurred";
-      toast.error(`Hubo un problema al eliminar Especialiad. ${errorMessage}`);
+        : "Ha ocurrido un error";
+      toast.error(`${errorMessage}`);
     }
   };
 
@@ -102,7 +101,7 @@ const SpecialtiesTable = ({ branches }) => {
 
                 <th scope="col" className="px-4 py-3">
                   <button
-                    className="flex flex-row gap-1 p-2 rounded-full hover:bg-primaryPink hover:text-black"
+                    className="flex flex-row gap-1 p-2 rounded-full hover:bg-secondaryColor hover:text-black"
                     onClick={handleShowCreateModal}
                   >
                     <IoIosAddCircle size={20} /> Agregar
@@ -117,7 +116,7 @@ const SpecialtiesTable = ({ branches }) => {
                 .map((fila, index) => (
                   <tr
                     key={index}
-                    className=" border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
+                    className="group border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
                   >
                     <td className="px-4 py-4">{fila.specialtyName}</td>
 

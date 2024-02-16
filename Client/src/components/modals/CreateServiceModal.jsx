@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Loader from '../Loader'
-
+import Loader from "../Loader";
 
 //icons
 import { IoClose } from "react-icons/io5";
@@ -15,7 +14,6 @@ import serviceValidation from "../../functions/serviceValidation";
 
 //Variables de entorno
 import getParamsEnv from "../../functions/getParamsEnv";
-import { getSpecialties } from "../../redux/actions";
 
 const { API_URL_BASE } = getParamsEnv();
 
@@ -26,11 +24,6 @@ const CreateServiceModal = ({
   specialties,
   token,
 }) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getSpecialties({token}))
-  },[])
 
   const [service, setService] = useState({
     name: "",
@@ -47,8 +40,8 @@ const CreateServiceModal = ({
     setShowCreateServiceModal(false);
   };
 
-  const [submitLoader, setSubmitLoader] = useState(false)
-  const [disableSubmit, setDisableSubmit] = useState(false)
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -100,9 +93,8 @@ const CreateServiceModal = ({
     if (hasErrors) {
     } else {
       try {
-
-        setDisableSubmit(true)
-        setSubmitLoader(true)
+        setDisableSubmit(true);
+        setSubmitLoader(true);
 
         const data = {
           serviceName: service.name,
@@ -116,13 +108,13 @@ const CreateServiceModal = ({
         const response = await axios.post(`${API_URL_BASE}/v1/service`, data);
 
         if (response.data.created === "ok") {
-          setSubmitLoader(false)
+          setSubmitLoader(false);
           setAux(!aux);
           toast.success("Procedimiento creado exitosamente");
 
           setTimeout(() => {
             closeModal();
-            setDisableSubmit(false)
+            setDisableSubmit(false);
             setService({
               email: "",
               name: "",
@@ -136,14 +128,17 @@ const CreateServiceModal = ({
             });
           }, 3000);
         } else {
-          setDisableSubmit(false)
-        setSubmitLoader(false)
+          setDisableSubmit(false);
+          setSubmitLoader(false);
           toast.error("Hubo un problema con la creación");
         }
       } catch (error) {
-        setDisableSubmit(false)
-        setSubmitLoader(false)
-        toast.error(`Hubo un problema con la creacion. ${error}`);
+        setDisableSubmit(false);
+        setSubmitLoader(false);
+        const errorMessage = error.response
+          ? error.response.data
+          : "An error occurred";
+        toast.error(`${errorMessage}`);
       }
     }
   };
@@ -204,7 +199,7 @@ const CreateServiceModal = ({
                     name="specialty"
                     className="w-full border text-gray-500 border-black rounded-md text-md  dark:border-darkText p-2 dark:text-darkText dark:bg-darkPrimary"
                   >
-                    <option value="">-- Especialidad --</option>
+                    <option value="">-- Seleccionar Especialidad --</option>
                     {specialties.map((specialty, index) => (
                       <option key={index} value={JSON.stringify(specialty)}>
                         {specialty.specialtyName}
@@ -270,16 +265,17 @@ const CreateServiceModal = ({
               </div>
 
               <div className="flex justify-center items-center">
-              {!submitLoader ?
-                                    <button
-                                    type="submit"
-                                    disabled={disableSubmit}
-                                    className="mt-2 px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                                >
-                                    Crear nuevo procedimiento
-                                </button> :
-                <Loader />
-              }
+                {!submitLoader ? (
+                  <button
+                    type="submit"
+                    disabled={disableSubmit}
+                    className="mt-2 px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                  >
+                    Crear nuevo procedimiento
+                  </button>
+                ) : (
+                  <Loader />
+                )}
               </div>
             </form>
           </div>

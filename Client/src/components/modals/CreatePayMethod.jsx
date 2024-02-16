@@ -105,13 +105,16 @@ const CreatePayMethodModal = ({
         }, 3000);
       } else {
         setDisableSubmit(false)
-      setSubmitLoader(false)
+        setSubmitLoader(false)
         toast.error("Hubo un problema con la creación");
       }
     } catch (error) {
       setDisableSubmit(false)
       setSubmitLoader(false)
-      toast.error(`Hubo un problema con la creación. ${error}`);
+      const errorMessage = error.response
+        ? error.response.data
+        : "An error occurred";
+      toast.error(`${errorMessage}`);
     }
   };
 

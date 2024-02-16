@@ -1,26 +1,30 @@
 //Hooks, components, reducer
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { setTokenError } from "../redux/actions";
+import axios from "axios";
+
+//components
 import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import SpecialistTable from "../components/SpecialistTable";
-import { useSelector, useDispatch } from "react-redux";
-import { setTokenError } from "../redux/actions";
 import Loader from "../components/Loader";
-import axios from "axios";
 import Restricted from "./Restricted";
 import ErrorToken from "./ErrorToken";
 
-//Toast
+//toast
 import { toast } from "react-hot-toast";
 import ToasterConfig from "../components/Toaster";
 
+//variables de entorno
 import getParamsEnv from "../functions/getParamsEnv";
 const { API_URL_BASE } = getParamsEnv();
 
+//functions
+import { isEqual } from "../functions/isEqual";
+
 const SpecialistMonitoring = () => {
   const testData = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
-
-  const dispatch = useDispatch();
   const [specialistData, setSpecialist] = useState({});
   const [loading, setLoading] = useState(true);
   const count = specialistData.count;
@@ -83,29 +87,6 @@ const SpecialistMonitoring = () => {
     }
   };
 
-  function isEqual(obj1, obj2) {
-    // Obtener las claves de los objetos
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-      // Verificar si el número de claves es el mismo
-    if (keys1.length !== keys2.length) {
-      return false;
-    }
-      // Iterar sobre las claves y verificar si los valores son iguales
-    for (let key of keys1) {
-      // Si el valor de la clave en obj1 es un objeto, llamar a isEqual recursivamente
-      if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-        if (!isEqual(obj1[key], obj2[key])) {
-          return false;
-        }
-      } else if (obj1[key] !== obj2[key]) { // Si los valores no son iguales, retornar falso
-        return false;
-      }
-    }
-      // Si todas las comparaciones pasan, los objetos son iguales
-    return true;
-  }
-
   let requestMade = false;
   useEffect(() => {
         if(!requestMade){
@@ -117,17 +98,17 @@ const SpecialistMonitoring = () => {
               setLoading(false);
             }
           })
-          .catch(error => {
-          // PENDIENTE - HACER UN MEJOR MANEJO DE ERRORES:
-          let msg = '';
-          if (!error.response) {
-            msg = error.message;
-          } else {
-            msg = "Error fetching data: " + error.response.status + " - " + error.response.data;
-          }
-          console.log("ERROR!!! " + msg);
-          })
-        }}), [tokenError];
+          .catch(error => {  
+            let errorMessage= ""   
+            if (!error.response) {
+              errorMessage = error.message;
+            } else {
+              errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+            }
+            toast.error(errorMessage);
+          });
+        }
+  }), [tokenError];
 
   if (tokenError === 401 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
@@ -159,6 +140,7 @@ const SpecialistMonitoring = () => {
                     defaultValue={formattedDate}
                     onChange={handleDate}
                     className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
+                    onKeyDown={(e) => e.preventDefault()}
                   />
                 </div>
                 <div className="flex gap-2">
@@ -172,6 +154,7 @@ const SpecialistMonitoring = () => {
                     defaultValue={formattedDate}
                     onChange={handleDate}
                     className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
+                    onKeyDown={(e) => e.preventDefault()}
                   />
                 </div>
               </div>

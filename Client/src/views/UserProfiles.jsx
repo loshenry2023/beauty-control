@@ -65,28 +65,7 @@ function UserProfiles() {
 
   let requestMade = false;
   useEffect(() => {
-    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
-        // dispatch(
-    //   getUsers(
-    //     nameOrLastName,
-    //     attribute,
-    //     order,
-    //     page,
-    //     size,
-    //     branch,
-    //     specialty,
-    //     role,
-    //     createDateEnd,
-    //     createDateStart,
-    //     token
-    //   )
-    // )
-    //   .then(dispatch(getBranches(token)))
-    //   .then(dispatch(getSpecialties(token)))
-    //   .then(() => {
-    //     setLoading(false);
-    //   });
-    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+    if (!requestMade) { 
     requestMade = true;
     axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`, token)
     .then(respuesta => {
@@ -150,6 +129,7 @@ function UserProfiles() {
                           type="date"
                           defaultValue={""}
                           className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
+                          onKeyDown={(e) => e.preventDefault()}
                         />
                       </div>
                       <div className="flex gap-2">
@@ -162,6 +142,7 @@ function UserProfiles() {
                           type="date"
                           defaultValue={""}
                           className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
+                          onKeyDown={(e) => e.preventDefault()}
                         />
                       </div>
                     </div>

@@ -30,10 +30,21 @@ const PayMethodsTable = ({ methods }) => {
   useEffect(() => {
     if (!requestMade) {
       requestMade = true;
-      axios.post(API_URL_BASE + "/v1/payments", { token }).then((respuesta) => {
+      axios.post(API_URL_BASE + "/v1/payments", { token })
+      .then((respuesta) => {
         dispatch(getPayMethods(respuesta.data));
         requestMade = false;
         setIsLoading(false);
+      })
+      .catch(error => {  
+        let errorMessage= ""   
+        console.log(error)     
+        if (!error.response) {
+          errorMessage = error.message;
+        } else {
+          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+        }
+        toast.error(errorMessage);
       });
     }
   }, [aux]);
@@ -55,9 +66,9 @@ const PayMethodsTable = ({ methods }) => {
       console.error(error);
       const errorMessage = error.response
         ? error.response.data
-        : "An error occurred";
+        : "Ha ocurrido un error";
       toast.error(
-        `Hubo un problema al eliminar procedimiento. ${errorMessage}`
+        `${errorMessage}`
       );
     }
   };
@@ -115,7 +126,7 @@ const PayMethodsTable = ({ methods }) => {
                   .map((fila, index) => (
                     <tr
                       key={index}
-                      className=" border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
+                      className="group border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
                     >
                       <td className="px-4 py-4">{fila.paymentMethodName}</td>
                       <td className="px-4 py-4">
