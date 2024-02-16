@@ -6,7 +6,7 @@ let database;
 
 async function connectDB(databaseName) {
     const strConn = generateStringConnectionDb(databaseName);
-    database = new Sequelize(strConn, { logging: false, native: false });
+    database = new Sequelize(strConn, { logging: false, native: false, });
 
     const BranchModel = require("./models/Branch");
     const ClientModel = require("./models/Client");
@@ -50,16 +50,19 @@ async function connectDB(databaseName) {
     } = database.models;
 
     // Relaciones:
-    Client.hasMany(Calendar); //un cliente puede tener muchas citas agendadas
-    Client.hasMany(HistoryService); //un cliente puede tener muchos procedimientos hechos
+    Incoming.belongsToMany(Payment, { through: "incoming_payment" }); // muchos ingresos pertenecen a muchos medios de pago
+    Service.belongsToMany(Specialty, { through: "service_specialty" }); // muchos services pertenecen a muchas especialidades
     User.belongsToMany(Specialty, { through: "user_specialty" }); // muchos usuarios pertenecen a muchas epecialidades
     User.belongsToMany(Branch, { through: "user_branch" }); // muchos usuarios pertenecen a muchas sedes
-    Service.belongsToMany(Specialty, { through: "service_specialty" }); // muchos services pertenecen a muchas especialidades
+
+    Client.hasMany(Calendar); //un cliente puede tener muchas citas agendadas
+    Client.hasMany(HistoryService); //un cliente puede tener muchos procedimientos hechos
+
     Calendar.belongsTo(Service); // un Calendar pertenece a un único service
     Calendar.belongsTo(User); // un Calendar pertenece a un único usuario
     Calendar.belongsTo(Client); // un Calendar pertenece a un único cliente
     Calendar.belongsTo(Branch); // un Calendar pertenece a una única sede
-    Incoming.belongsToMany(Payment, { through: "incoming_payment" }); // muchos ingresos pertenecen a muchos medios de pago
+
     HistoryService.hasMany(Incoming); //un registro histórico puede tener muchos pagos hechos
 
     return { conn: database, Branch, Client, HistoryService, Payment, Service, Specialty, User, Calendar, Incoming, CatGastos, Product, PriceHistory };

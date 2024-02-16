@@ -2,10 +2,10 @@ const getRegBalance = require("../../controllers/balance/getRegBalance");
 const showLog = require("../../functions/showLog");
 const checkToken = require('../../functions/checkToken');
 
-const getBalance = async (req, res) => {
+const getBalanceHandler = async (req, res) => {
   try {
     const { token } = req.body;
-    showLog(`getBalance`);
+    showLog(`getBalanceHandler`);
     // Verifico token:
     if (!token) { throw Error("Se requiere token"); }
     const checked = await checkToken(token);
@@ -20,17 +20,17 @@ const getBalance = async (req, res) => {
     }
     const resp = await getRegBalance(req.body, checked.dbName);
     if (resp) {
-      showLog(`getBalance OK`);
+      showLog(`getBalanceHandler OK`);
       return res.status(200).json(resp);
     } else {
-      showLog(`getBalance ERROR-> Not found`);
+      showLog(`getBalanceHandler ERROR-> Not found`);
       return res.status(404).json({ message: "Not found" });
     }
   } catch (err) {
-    showLog(`getBalance ERROR-> ${err.message}`);
+    showLog(`getBalanceHandler ERROR-> ${err.message}`);
     return res.status(500).send(err.message);
   }
 };
 
-module.exports = getBalance;
+module.exports = getBalanceHandler;
 

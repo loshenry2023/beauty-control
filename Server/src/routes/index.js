@@ -66,7 +66,10 @@ const postProductHandler = require("../Handlers/insumos/postProductHandler");
 const putProductHandler = require("../Handlers/insumos/putProductHandler");
 const getProdHistoricPricesHandler = require("../Handlers/insumos/getProdHistoricPricesHandler");
 //! Balance y comisiones:
-const getBalance = require("../Handlers/balance/getBalance");
+const getBalance = require("../Handlers/balance/getBalanceHandler");
+//! Resguardo y restauración de datos:
+const postDoBackup = require("../Handlers/backup/postDoBackupHandler");
+const postDoRestoreHandler = require("../Handlers/backup/postDoRestoreHandler");
 
 // Todo - Rutas
 //! Empresas:
@@ -135,5 +138,7 @@ router.put("/v1/products/:id", putProductHandler); // edita un insumo
 router.post("/v1/productsHist", getProdHistoricPricesHandler); // obtiene y devuelve el histórico de precios de un inusmo
 //! Balance y comisiones:
 router.post("/v1/getbalance", getBalance); // obtiene todos los usuarios para el balance y comisiones
-
+//! Resguardo y restauración de datos:
+router.post("/v1/dobackup", postDoBackup); // genera un resguardo de las tablas
+router.post("/v1/dorestore", postDoRestoreHandler); // restaura un resguardo previo
 module.exports = router;
