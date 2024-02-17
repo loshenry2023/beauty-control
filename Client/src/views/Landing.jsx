@@ -24,6 +24,8 @@ const Landing = () => {
   const navigate = useNavigate();
   const [hayUser, setHayuser] = useState(false);
   const [showInfo, setShowInfo] = useState(0);
+  const [auxNosotros, setAuxNosotros] = useState(true);
+  const [auxMision, setAuxMision] = useState(true);
   const [showTeamDevModal, setShowTeamDevModal] = useState(false);
 
   useEffect(() => {
@@ -34,11 +36,6 @@ const Landing = () => {
       setHayuser(false);
     }
 
-    const intervalId = setInterval(() => {
-      setShowInfo(prevShowInfo => (prevShowInfo + 1) % 3); // Toggle between 0 and 1
-    }, 15000);
-
-    return () => clearInterval(intervalId);
   }, [token]);
 
   const handleLogin = () => {
@@ -59,6 +56,15 @@ const Landing = () => {
     dispatch(setLogout(user.token));
     navigate(ROOT);
   };
+
+
+  const onClickNosotros = () => {
+    setShowInfo(prevShowInfo => prevShowInfo === 1 ? 0 : 1);
+  }
+
+  const onClickMision = () => {
+    setShowInfo(prevShowInfo => prevShowInfo === 2 ? 0 : 2);
+  }
 
   return (
     <section>
@@ -156,27 +162,22 @@ const Landing = () => {
               )}
               <div className="transition-all duration-3000 ease-out"  style={{ opacity: showInfo === 1 ? 1 : 0 }}>
               {showInfo === 1 && (
-                <div className="pt-14 w-3/4 font-fontBody text-xl tracking-widest">
-                    <p className="mb-5">
-                    Somos una empresa dedicada a ofrecer <strong>  soluciones tecnológicas</strong> diseñadas para potenciar el rendimiento y la eficiencia de los negocios dentro del sector del cuidado personal. Buscamos optimizar procesos para aumentar la rentabilidad <img className="h-10 pb-2 inline" src="hhttps://res.cloudinary.com/doyafxwje/image/upload/v1708140100/Landing/chart_h44ymt.png" alt="chart" /> y mejorar la <strong>atención al público</strong>
-                    </p>
-                    <p className="mb-5">
-                    Nuestro enfoque se centra en la aplicación de nuevas tecnologías para impulsar el <strong>crecimiento <img className="h-5 inline" src="https://res.cloudinary.com/doyafxwje/image/upload/v1708140100/Landing/computer_y9cqqc.webp" alt="computer" />  y la competitividad </strong>en un mercado en constante evolución, brindando soluciones a medida que satisfacen las necesidades específicas de cada empresa.
-                    </p>
+                <div className="pt-14 w-4/5 font-fontBody text-xl tracking-widest leading-8">
+                    <img className="h-40 pr-10 float-right" src="https://res.cloudinary.com/doyafxwje/image/upload/v1708187276/Landing/vector-simple-purple-contrast-color-fresh-wind-business-man-working-with-computer-at-desk_2718496_gqqarq.jpg" alt="computer" />  
                     <p>
-                    Aspiramos a ser una herramienta transversal que impulse el <strong>espíritu emprendedor</strong>, proporcionando recursos para alcanzar metas y llevar los negocios al siguiente nivel.
+                    Somos una empresa dedicada a ofrecer <strong> soluciones tecnológicas</strong> diseñadas para potenciar el rendimiento y la eficiencia de los negocios dentro del sector del cuidado personal. Buscamos optimizar procesos para aumentar la rentabilidad y mejorar la <strong>atención al público</strong>.
+                    Nuestro enfoque se centra en la aplicación de nuevas tecnologías para impulsar el <strong>crecimiento y la competitividad </strong>en un mercado en constante evolución, brindando soluciones a medida que satisfacen las necesidades específicas de cada empresa.
                     </p>
               </div>
               )}
               </div>
               <div className="transition-all duration-3000 ease-out"  style={{ opacity: showInfo === 2 ? 1 : 0 }}>
               {showInfo === 2 && (
-                <div className="pt-14 w-3/4 font-fontBody text-xl tracking-widest">
+                <div className="pt-14 w-4/5 font-fontBody text-xl tracking-widest leading-8">
+                   <img className="h-40 p-1 float-right" src="https://res.cloudinary.com/doyafxwje/image/upload/v1708187561/Landing/Screenshot_1_qtc2l2.png" alt="computer" />  
                 <p className="mb-5">
-                Beauty Control cuenta con varias herramientas de gestión claves en el día a día mediantes las cuales vamos a poder: <strong> administrar  inventarios, gestionar citas, dar de alta clientes o empleados, ver ingresos diarios o mensuales, etc.</strong>
-                </p>
-                <p className="mb-5">
-                Buscamos agilizar procesos para que los empresarios y sus equipos puedan dedicar <strong> más atención a sus clientes y empleados , fortaleciendo así las relaciones humanas que son el corazón de cualquier negocio exitoso</strong> .
+                Beauty Control cuenta con varias herramientas de gestión administrativa mediante las cuales vamos a poder: <strong> controlar inventarios, gestionar citas, dar de alta clientes o empleados, ver ingresos diarios o mensuales, etc.</strong>
+                Buscamos agilizar procesos para que los empresarios y sus equipos puedan dedicar <strong> más atención a sus clientes y empleados, fortaleciendo así las relaciones humanas</strong> que son el corazón de cualquier negocio exitoso .
                 <br /></p>
                 <p>
                 El servicio busca generar oportunidades y transformar la manera en que se conducen los negocios.
@@ -187,18 +188,14 @@ const Landing = () => {
               <ul className="absolute left-0 top-0 flex flex-row gap-4">
                 <li
                   className={showInfo == 1 ? "w-fit bg-[#F3E500] px-4 py-2 rounded-xl shadow-sm shadow-black text-black font-bold cursor-pointer hover:scale-[1.02]" : "w-fit bg-slate-800 text-white px-4 py-2 rounded-xl shadow-sm shadow-black font-bold cursor-pointer hover:scale-[1.02]"}
-                  onClick={() => {
-                    setShowInfo(1);
-                  }}
+                  onClick={onClickNosotros}
                 >
                   {" "}
                   Nosotros{" "}
                 </li>
                 <li
                   className={showInfo == 2 ? "w-fit bg-[#F3E500] px-4 py-2 rounded-xl shadow-sm shadow-black text-black font-bold cursor-pointer hover:scale-[1.02]" : "w-fit bg-slate-800 text-white  px-4 py-2 rounded-xl shadow-sm shadow-black font-bold cursor-pointer hover:scale-[1.02]"}
-                  onClick={() => {
-                    setShowInfo(2);
-                  }}
+                  onClick={onClickMision}
                 >
                   {" "}
                   Nuestro servicio{" "}
