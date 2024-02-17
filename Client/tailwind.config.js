@@ -23,6 +23,9 @@ export default {
         fontTitle: ['Alegreya Sans'],
         fontBody: ['Clear Sans'],
       },
+      transitionDuration: {
+          '3000': '3000ms',
+        }
     },
   },
   plugins: [],
