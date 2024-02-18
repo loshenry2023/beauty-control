@@ -12,7 +12,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
             {
                 branchName: firstBranchName,
                 address: "Carga un domicilio",
-                phoneNumber: "+570000000000",
+                phoneNumber: "0000000000",
                 coordinates: "¡Carga el link de Google Maps apuntando a tu sucursal!",
                 linkFb: "¡Carga un link de tu red social!",
                 linkIg: "¡Carga un link de tu red social!",
@@ -21,7 +21,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
             {
                 branchName: `${nameCompany}, sede 2 (¡ponle un nombre!)`,
                 address: "Carga un domicilio",
-                phoneNumber: "+570000000000",
+                phoneNumber: "0000000000",
                 coordinates: "¡Carga el link de Google Maps apuntando a tu sucursal!",
                 linkFb: "¡Carga el link de tu red social!",
                 linkIg: "¡Carga el link de tu red social!",
@@ -210,7 +210,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                 notificationEmail: userName,
                 name: "Usuario",
                 lastName: "Maestro",
-                phoneNumber1: "+570000000000",
+                phoneNumber1: "0000000000",
                 image: "https://res.cloudinary.com/doyafxwje/image/upload/v1707517244/Logos/beuatycontrol-logo_hlmilv.png",
                 comission: 0,
                 role: "superAdmin",
