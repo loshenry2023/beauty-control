@@ -19,7 +19,7 @@ const deleteReg = async (dataInc) => {
         if (tableNameText !== "Company") {
             regToDelete = await tableName.findByPk(id);
             if (!regToDelete) { throw Error("Registro no encontrado"); }
-            if (await tableName.count() < 2) { throw Error("No se permite eliminar el último registro"); }
+            if (await tableName.count() < 2) { throw Error("No se puede eliminar porque es el único disponible"); }
         }
         switch (tableNameText) {
             case "Company":
