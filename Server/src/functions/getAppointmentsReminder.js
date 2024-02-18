@@ -72,7 +72,7 @@ async function getAppointmentsReminder(dbName) {
         }
         let cont = 0;
         for (const data of reg) {
-            await processData(data, nameCompany, imgCompany);
+            await processData(data, Calendar, nameCompany, imgCompany);
             cont++;
         }
         await conn.close(); // cierro la conexión
@@ -88,7 +88,7 @@ async function getAppointmentsReminder(dbName) {
     }
 }
 
-async function processData(reg, nameCompany, imgCompany) {
+async function processData(reg, Calendar, nameCompany, imgCompany) {
     const dateApp = reg.date_from.toISOString().slice(0, 10);
     const timeApp = reg.date_from.toISOString().slice(11, 16);
     const clientName = reg.Client.name

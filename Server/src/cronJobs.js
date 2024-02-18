@@ -20,10 +20,10 @@ async function DailyProcess() {
     await depuraLogs();
 }
 
-//cron.schedule('*/10 * * * * *', () => { // para pruebas de envíos frecuentes
-//cron.schedule('0 * * * *', () => { // una vez x hora
-//cron.schedule('0 9,17 * * *', () => { // a las 9hs y a las 17hs de Colombia
-cron.schedule('0 8 * * *', () => { // una vez al día a las 8hs de Colombia
+cron.schedule('*/10 * * * * *', () => { // para pruebas de envíos frecuentes
+    //cron.schedule('0 * * * *', () => { // una vez x hora
+    //cron.schedule('0 9,17 * * *', () => { // a las 9hs y a las 17hs de Colombia
+    //cron.schedule('0 8 * * *', () => { // una vez al día a las 8hs de Colombia
     DailyProcess();
 }, {
     scheduled: true,
