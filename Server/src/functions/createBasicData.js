@@ -17,6 +17,8 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                 linkFb: "¡Carga un link de tu red social!",
                 linkIg: "¡Carga un link de tu red social!",
                 linkTk: "¡Carga un link de tu red social!",
+                openningHours: "06:00",
+                clossingHours: "20:00",
             },
             {
                 branchName: `${nameCompany}, sede 2 (¡ponle un nombre!)`,
@@ -26,6 +28,8 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                 linkFb: "¡Carga el link de tu red social!",
                 linkIg: "¡Carga el link de tu red social!",
                 linkTk: "¡Carga el link de tu red social!",
+                openningHours: "06:00",
+                clossingHours: "20:00",
             },
         ];
         let branchCrtd;
