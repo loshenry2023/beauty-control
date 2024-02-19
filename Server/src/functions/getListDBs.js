@@ -5,22 +5,22 @@ const showLog = require("./showLog");
 const { Op } = require('sequelize');
 
 async function getListDBs() {
-  try {
-    const existingCompanies = await Company.findAll({
-      attributes: [connMain.fn('DISTINCT', connMain.col('dbName')), "dbName"],
-      where: {
-        dbName: {
-          [Op.ne]: DB_NAME
-        }
-      }
-    });
-    const dbNames = existingCompanies.map(company => company.dbName);
-    return dbNames;
-  }
-  catch (error) {
-    showLog(`Error obtaining databases: ${error}`);
-    throw Error("Error obteniendo listado de empresas: " + error);
-  }
+    try {
+        const existingCompanies = await Company.findAll({
+            attributes: [connMain.fn('DISTINCT', connMain.col('dbName')), "dbName"],
+            where: {
+                dbName: {
+                    [Op.ne]: DB_NAME
+                }
+            }
+        });
+        const dbNames = existingCompanies.map(company => company.dbName);
+        return dbNames;
+    }
+    catch (error) {
+        showLog(`Error obtaining databases: ${error}`);
+        throw Error("Error obteniendo listado de empresas: " + error);
+    }
 }
 
 module.exports = getListDBs;
