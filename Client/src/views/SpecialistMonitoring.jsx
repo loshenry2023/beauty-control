@@ -1,6 +1,6 @@
 //Hooks, components, reducer
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTokenError } from "../redux/actions";
 import axios from "axios";
 
@@ -24,6 +24,7 @@ const { API_URL_BASE } = getParamsEnv();
 import { isEqual } from "../functions/isEqual";
 
 const SpecialistMonitoring = () => {
+  const dispatch = useDispatch()
   const testData = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
   const [specialistData, setSpecialist] = useState({});
   const [loading, setLoading] = useState(true);
@@ -98,19 +99,24 @@ const SpecialistMonitoring = () => {
               setLoading(false);
             }
           })
-          .catch(error => {  
-            let errorMessage= ""   
-            if (!error.response) {
-              errorMessage = error.message;
+          .catch(error => { 
+            if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+                setLoading(false)
+               dispatch(setTokenError(error.request.status))
             } else {
-              errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+              let errorMessage= ""     
+              if (!error.response) {
+                errorMessage = error.message;
+              } else {
+                errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+              }
+              toast.error(errorMessage);
             }
-            toast.error(errorMessage);
           });
         }
   }), [tokenError];
 
-  if (tokenError === 401 || tokenError === 403) {
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
   } else {
     return (

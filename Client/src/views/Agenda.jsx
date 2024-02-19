@@ -3,10 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getBranches,
-  getClients,
-  getServices,
   getToken,
   getUsers,
+  setTokenError,
 } from "../redux/actions";
 import axios from "axios";
 
@@ -32,6 +31,7 @@ const { API_URL_BASE } = getParamsEnv();
 
 const Agenda = () => {
   const [loading, setLoading] = useState(true);
+  const [auxUser, setAuxUser] = useState(false);
   const dispatch = useDispatch();
   const tokenError = useSelector((state) => state?.tokenError);
   const currentDate = new Date();
@@ -111,37 +111,38 @@ const Agenda = () => {
 
   let requestMade = false
   useEffect(() => {
+    setAuxUser(false)
     if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
       requestMade = true;
       dispatch(getToken(tokenID))
       axios.post(API_URL_BASE + "/v1/branches", { token: tokenID })
       .then(respuesta => {
         dispatch(getBranches( respuesta.data ))
-        return axios.post(API_URL_BASE + "/v1/getservices", { token: tokenID });
-      })
-      .then(respuesta2 => {
-        dispatch(getServices(respuesta2.data))
         return axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`,
         { token: tokenID }
-        );
-      })
-      .then(respuesta3 => {
-        dispatch(getUsers(respuesta3.data))
+        )})
+      .then(respuesta2 => {
+        dispatch(getUsers(respuesta2.data))
         setLoading(false);
+        setAuxUser(true)
         requestMade = false;
       })
-      .catch(error => {  
-        let errorMessage= ""   
-        console.log(error)     
-        if (!error.response) {
-          errorMessage = error.message;
+      .catch(error => { 
+        if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+            setLoading(false)
+           dispatch(setTokenError(error.request.status))
         } else {
-          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          let errorMessage= ""     
+          if (!error.response) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          }
+          toast.error(errorMessage);
         }
-        toast.error(errorMessage);
       });
     }
-  }, [specialty, tokenError]);
+  }, [specialty, tokenError]); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -234,7 +235,7 @@ const Agenda = () => {
     }));
   }, [chosenClient]);
 
-  if (tokenError === 401 || tokenError === 403) {
+  if (tokenError === 401 || tokenError === 402 ||  tokenError === 403) {
     return (
       <ErrorToken error={tokenError} />
     );
@@ -303,7 +304,7 @@ const Agenda = () => {
                       </select>
                     )}
 
-                    {!showEditAppointment && (
+                    {!showEditAppointment && dateInfo.service.name && auxUser ? (
                       <select
                         onChange={handleChange}
                         name="specialist"
@@ -326,7 +327,14 @@ const Agenda = () => {
                             )
                         )}
                       </select>
-                    )}
+                    ) :  <select
+                    disabled
+                    className="w-full mt-3 sm:mt-0 sm:w-60 pl-2 py-1  border cursor-not-allowed border-black rounded-md text-md dark:text-darkText dark:bg-darkPrimary dark:border-darkText md:w-64"
+                  >
+                    <option>
+                      -- Especialista--
+                    </option>
+                  </select>}
                     {user.role === "especialista" ? null : (
                       <button
                         onClick={handleAppointmentModal}
@@ -334,7 +342,7 @@ const Agenda = () => {
                         className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-white cursor-pointer" : "bg-white cursor-not-allowed"
                           } shadow shadow-black text-black ${isFormCompleted ? "hover:scale-[1.02]" : "cursor-not-allowed"
                           } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
-                            ? "dark:hover:bg-secondaryColor"
+                            ? "dark:hover:bg-secondaryColor dark:hover:text-black"
                             : "dark:cursor-not-allowed"
                           }`}
                       >

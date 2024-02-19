@@ -193,7 +193,7 @@ const EditBranchModal = ({
                 <input
                   onChange={handleChange}
                   type="text"
-                  name="Teléfono"
+                  name="phone"
                   value={newBranch.phone}
                   placeholder="Phone"
                   className={`border border-black p-2 rounded w-full ${

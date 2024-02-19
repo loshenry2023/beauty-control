@@ -112,7 +112,6 @@ const Landing = () => {
             >
               <path
                 fill="#FFF"
-                fill-opacity="1"
                 d="M0,320L4200,128L1440,330L0,320Z"
               ></path>
             </svg>
@@ -211,7 +210,7 @@ const Landing = () => {
           >
             @Developed by
           </Link>
-          <svg className="absolute bottom-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#FFFF" fill-opacity="1" d="M0,320L1440,256L1440,0L0,0Z"></path></svg>
+          <svg className="absolute bottom-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#FFFF" d="M0,320L1440,256L1440,0L0,0Z"></path></svg>
         </footer>
       </div>
     </section>

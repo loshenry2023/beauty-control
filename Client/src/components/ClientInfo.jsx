@@ -10,7 +10,7 @@ import axios from "axios";
 
 //components
 import Loader from "./Loader.jsx";
-import { clearClientId, getClientId } from "../redux/actions.js";
+import { clearClientId, getClientId, setTokenError } from "../redux/actions.js";
 import HistoryCalendar from "./HistoryCalendar.jsx";
 import EditClient from "./modals/EditClient.jsx";
 
@@ -25,6 +25,7 @@ const { CLIENTSPROFILES, API_URL_BASE } = getParamsEnv();
 
 //functions
 import converterGMT from "../functions/converteGMT.js";
+import ErrorToken from "../views/ErrorToken.jsx";
 
 
 const ClientInfo = () => {
@@ -40,32 +41,35 @@ const ClientInfo = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const token = useSelector(state => state?.token)
   const clientInfo = useSelector(state => state?.clientID)
+  const tokenError = useSelector((state) => state?.tokenError);
   const user = useSelector(state => state?.user)
   const [clientRender, setClientRender] = useState(false)
 
   let requestMade = false
   useEffect(() => {
-    // dispatch(getClientId(detailId, { token: token }))
-    //   .then(() => { setLoading(false) })
-    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+    if (!requestMade) { 
       requestMade = true;
       axios.post(API_URL_BASE + `/v1/getclient/${detailId}`,{token})
       .then(respuesta => {
         dispatch(getClientId(respuesta.data))
         setLoading(false)
       })
-      .catch(error => {  
-        let errorMessage= ""   
-        console.log(error)     
-        if (!error.response) {
-          errorMessage = error.message;
+      .catch(error => { 
+        if (error.request.status === 401 || error.request.status === 401 || error.request.status === 403) {
+            setLoading(false)
+           dispatch(setTokenError(error.request.status))
         } else {
-          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          let errorMessage= ""     
+          if (!error.response) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          }
+          toast.error(errorMessage);
         }
-        toast.error(errorMessage);
       });
     }
-  }, [detailId, clientRender]);
+  }, [detailId, clientRender, tokenError]);
 
   const handleGoBack = () => {
     dispatch(clearClientId());
@@ -112,6 +116,12 @@ const ClientInfo = () => {
       setShowDeleteConfirmation(false);
     }
   }
+
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
+    return (
+      <ErrorToken error={tokenError} />
+    );
+  } else {
   return (
     <>
       {loading ? <Loader /> : (
@@ -185,7 +195,7 @@ const ClientInfo = () => {
       <ToasterConfig />
     </>
 
-  );
+  )}
 };
 
 export default ClientInfo;

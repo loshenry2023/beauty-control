@@ -3,7 +3,7 @@ import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import Loader from "../components/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { getClients } from "../redux/actions";
+import { getClients, setTokenError } from "../redux/actions";
 import ClientsTable from "../components/ClientsTable";
 import ErrorToken from "./ErrorToken";
 
@@ -54,6 +54,21 @@ const ClientsProfiles = () => {
       .then(respuesta => {
         dispatch(getClients(respuesta.data))
         setLoading(false)
+      })
+      .catch(error => { 
+        console.log(error)
+        if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+          setLoading(false)
+           dispatch(setTokenError(error.request.status))
+        } else {
+          let errorMessage= ""     
+          if (!error.response) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          }
+          toast.error(errorMessage);
+        }
       })
     }
   }, [

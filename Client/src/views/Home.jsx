@@ -3,7 +3,7 @@ import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { getPayMethods, getServices, getspecialists } from '../redux/actions.js'
+import { getPayMethods, getServices, getspecialists, setTokenError } from '../redux/actions.js'
 import Restricted from "./Restricted.jsx";
 import ErrorToken from "./ErrorToken";
 import Balance from "../components/Balance.jsx";
@@ -48,20 +48,24 @@ const Home = () => {
           setLoading(false);
           requestMade = false;
         })
-        .catch(error => {  
-          let errorMessage= ""   
-          console.log(error)     
-          if (!error.response) {
-            errorMessage = error.message;
+        .catch(error => { 
+          if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+              setLoading(false)
+             dispatch(setTokenError(error.request.status))
           } else {
-            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+            let errorMessage= ""     
+            if (!error.response) {
+              errorMessage = error.message;
+            } else {
+              errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+            }
+            toast.error(errorMessage);
           }
-          toast.error(errorMessage);
         });
     }
   }, [tokenError]);
 
-  if (tokenError === 401 || tokenError === 403) {
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return (
       <ErrorToken error={tokenError} />
     );

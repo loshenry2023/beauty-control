@@ -17,7 +17,8 @@ import { FaEye } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { getCalendar, getspecialists } from "../redux/actions";
+import { getCalendar, getspecialists, setTokenError } from "../redux/actions";
+import ToasterConfig from "./Toaster";
 
 const { API_URL_BASE, DATEDETAILBASE } = getParamsEnv();
 
@@ -42,11 +43,13 @@ const Calendar = ({
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [citaId, setCitaId] = useState(null);
   const [aux, setAux] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const days = ["D", "L", "M", "M", "J", "V", "S"];
   const currentDate = dayjs();
   const workingBranch = useSelector((state) => state?.workingBranch);
   const specialists = useSelector((state) => state?.specialists);
+  const tokenError = useSelector((state) => state?.tokenError);
   const workingBranchID = workingBranch.id;
   const branchWorking = workingBranch.branchName;
   const token = useSelector((state) => state?.token);
@@ -118,19 +121,11 @@ const Calendar = ({
 
   let requestMade = false;
   useEffect(() => {
-    // dispatch(getspecialists(branchWorking, { token: token }));
-    // setEffectControl(true);
-    // dispatch(getCalendar(branch, dateFrom, dateTo, userId, { token: token }));
-    // setLoading(false);
-    // if (showEditAppointment) {
-    //   setSpecialty(date.User.Specialties[0].specialtyName);
-    // }else {
-    // setSpecialty(dateInfo.service.specialtyName);
-    // }
-    // setEffectControl(false);
     if (!requestMade) {
-      // evito llamados en paralelo al pedir los datos iniciales
       requestMade = true;
+      if (!showEditAppointment) {
+        setLoading(true);
+      }
       axios
         .post(
           API_URL_BASE +
@@ -148,23 +143,32 @@ const Calendar = ({
         })
         .then((respuesta2) => {
           dispatch(getCalendar(respuesta2.data));
-          setLoadingToProps(false);
           if (showEditAppointment) {
             setSpecialty(date.User.Specialties[0].specialtyName);
           } else {
             setSpecialty(dateInfo.service.specialtyName);
           }
+          //! LOS DOBLES LLAMADOS ESTAN POR ESTA LOGICA
           setEffectControl(false);
+          setLoadingToProps(false);
+          setLoading(false);
         })
-        .catch(error => {  
-          let errorMessage= ""   
-          console.log(error)     
+        .catch((error) => {
+          if (error.request.status === 401 || error.request.status === 401 || error.request.status === 403) {
+            setLoading(false)
+           dispatch(setTokenError(error.request.status))
+        } else {
+          let errorMessage = "";
+          console.log(error);
           if (!error.response) {
             errorMessage = error.message;
           } else {
-            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+            errorMessage = `${error.response.status} ${
+              error.response.statusText
+            } - ${error.response.data.split(":")[1]}`;
           }
           toast.error(errorMessage);
+        }
         });
     }
   }, [
@@ -175,6 +179,7 @@ const Calendar = ({
     refrescarCita,
     showEditAppointment,
     userId,
+    tokenError,
   ]);
 
   const handleShowEditAppointment = (date) => {
@@ -205,6 +210,11 @@ const Calendar = ({
     }
   };
 
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
+    return (
+      <ErrorToken error={tokenError} />
+    );
+  } else {
   return (
     <div>
       {loadingToProps ? (
@@ -338,7 +348,7 @@ const Calendar = ({
                 }
                 className={
                   activeButton.range1
-                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
+                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary dark:ring-blue-500"
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
@@ -377,7 +387,7 @@ const Calendar = ({
                 }
                 className={
                   activeButton.range2
-                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
+                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary dark:ring-blue-500"
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
@@ -415,7 +425,7 @@ const Calendar = ({
                 }
                 className={
                   activeButton.range3
-                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
+                    ? "focus:ring-[3px] ring-black focus:border-none border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary dark:ring-blue-500"
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
@@ -446,87 +456,142 @@ const Calendar = ({
                     ))}
                   </select>
                   {!showEditAppointment && aux && (
-                      <span className="font-bold">Cargando...</span>
-                    )}
+                    <div class="mt-2 flex items-center text-md dark:text-darkText">
+                    <div role="status">
+                      <svg
+                        aria-hidden="true"
+                        class="w-4 h-4 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentFill"
+                        />
+                      </svg>
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                    <span>
+                    Cargando...
+                    </span>
+                  </div>
+                  )}
                 </div>
               )}
             </div>
-            {calendar.length === 0 && (
-              <h4 className="font-medium mt-2 text-xl dark:text-darkText">
-                Sin turnos hasta el momento
-              </h4>
-            )}
-            {calendar.map((cita, index) => {
-              return cita.Client === null ? null : (
-                <div
-                  key={index}
-                  className={
-                    cita.current === true
-                      ? "border p-1 shadow shadow-black rounded-lg mt-2 hover:scale-[1.01] dark:bg-darkPrimary dark:border-none"
-                      : "bg-secondaryColor  shadow shadow-black p-1 border-black mt-2 rounded-lg dark:bg-red-950 cursor-not-allowed"
-                  }
-                >
-                  <div className="flex flex-col">
-                    <div className="flex flex-row justify-between">
-                      <h5 className="text-md font-medium tracking-wide dark:text-darkText underline underline-offset-2">
-                        {" "}
-                        {converter12Hrs(
-                          cita.date_from.split(" ")[1].slice(0, 5)
-                        )}{" "}
-                        -{" "}
-                        {converter12Hrs(cita.date_to.split(" ")[1].slice(0, 5))}
-                        <span>
-                          {" "}
-                          - {cita.Client.name} {cita.Client.lastName}
-                        </span>
-                      </h5>
-                      {cita.current === false ? null : (
-                        <div className="flex pt-[6px] gap-2">
-                          <Link to={`${DATEDETAILBASE}/${cita.id}`}>
-                            <FaEye
-                              className={
-                                user.role === "especialista"
-                                  ? "hover:scale-125 hover:text-blue-500 cursor-pointer delay-200 dark:text-darkText dark:hover:text-blue-500 mr-2"
-                                  : "hover:scale-125 hover:text-blue-500 cursor-pointer delay-200 dark:text-darkText dark:hover:text-blue-500"
-                              }
-                            />
-                          </Link>
-                          {user.role === "especialista" ? null : (
-                            <>
-                              <MdEdit
-                                onClick={() =>
-                                  handleShowEditAppointment(
-                                    JSON.stringify(cita)
-                                  )
-                                }
-                                className="hover:scale-125 hover:text-primaryPink cursor-pointer delay-200 dark:text-darkText dark:hover:text-primaryPink"
-                              />
-                              <MdDelete
-                                onClick={() => handleModal(cita.id)}
-                                className="hover:scale-125 hover:text-red-500 cursor-pointer delay-200 dark:text-darkText dark:hover:text-red-500"
-                              />
-                            </>
+
+            {loading ? (
+              <div class="mt-2 flex items-center text-xl dark:text-darkText">
+                <div role="status">
+                  <svg
+                    aria-hidden="true"
+                    class="w-6 h-6 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentFill"
+                    />
+                  </svg>
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <span>
+                Cargando la agenda...
+                </span>
+              </div>
+            ) : (
+              <div>
+                {calendar.length === 0 && (
+                  <h4 className="font-medium mt-2 text-xl dark:text-darkText">
+                    Sin turnos hasta el momento
+                  </h4>
+                )}
+                {calendar.map((cita, index) => {
+                  return cita.Client === null ? null : (
+                    <div
+                      key={index}
+                      className={
+                        cita.current === true
+                          ? "border p-1 shadow shadow-black rounded-lg mt-2 hover:scale-[1.01] dark:bg-darkPrimary dark:border-none"
+                          : "bg-secondaryColor  shadow shadow-black p-1 border-black mt-2 rounded-lg dark:bg-red-950 cursor-not-allowed"
+                      }
+                    >
+                      <div className="flex flex-col">
+                        <div className="flex flex-row justify-between">
+                          <h5 className="text-md font-medium tracking-wide dark:text-darkText underline underline-offset-2">
+                            {" "}
+                            {converter12Hrs(
+                              cita.date_from.split(" ")[1].slice(0, 5)
+                            )}{" "}
+                            -{" "}
+                            {converter12Hrs(
+                              cita.date_to.split(" ")[1].slice(0, 5)
+                            )}
+                            <span>
+                              {" "}
+                              - {cita.Client.name} {cita.Client.lastName}
+                            </span>
+                          </h5>
+                          {cita.current === false ? null : (
+                            <div className="flex pt-[6px] gap-2">
+                              <Link to={`${DATEDETAILBASE}/${cita.id}`}>
+                                <FaEye
+                                  className={
+                                    user.role === "especialista"
+                                      ? "hover:scale-125 hover:text-blue-500 cursor-pointer delay-200 dark:text-darkText dark:hover:text-blue-500 mr-2"
+                                      : "hover:scale-125 hover:text-blue-500 cursor-pointer delay-200 dark:text-darkText dark:hover:text-blue-500"
+                                  }
+                                />
+                              </Link>
+                              {user.role === "especialista" ? null : (
+                                <>
+                                  <MdEdit
+                                    onClick={() =>
+                                      handleShowEditAppointment(
+                                        JSON.stringify(cita)
+                                      )
+                                    }
+                                    className="hover:scale-125 hover:text-primaryPink cursor-pointer delay-200 dark:text-darkText dark:hover:text-primaryPink"
+                                  />
+                                  <MdDelete
+                                    onClick={() => handleModal(cita.id)}
+                                    className="hover:scale-125 hover:text-red-500 cursor-pointer delay-200 dark:text-darkText dark:hover:text-red-500"
+                                  />
+                                </>
+                              )}
+                            </div>
                           )}
                         </div>
-                      )}
+                        <p className="text-md tracking-wide font-medium dark:text-darkText">
+                          {" "}
+                          <span className="font-bold">Especialista:</span>{" "}
+                          {cita.User === null
+                            ? "Error en la carga de especialista"
+                            : `${cita.User.name} ${cita.User.lastName}`}
+                        </p>
+                        <p className="text-md tracking-wide font-medium dark:text-darkText">
+                          <span className="font-bold">Procedimiento:</span>{" "}
+                          {cita.Service === null
+                            ? "Error en la carga de procedimiento. Llamar cliente"
+                            : cita.Service.serviceName}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-md tracking-wide font-medium dark:text-darkText">
-                      {" "}
-                      <span className="font-bold">Especialista:</span>{" "}
-                      {cita.User === null
-                        ? "Error en la carga de especialista"
-                        : `${cita.User.name} ${cita.User.lastName}`}
-                    </p>
-                    <p className="text-md tracking-wide font-medium dark:text-darkText">
-                      <span className="font-bold">Procedimiento:</span>{" "}
-                      {cita.Service === null
-                        ? "Error en la carga de procedimiento. Llamar cliente"
-                        : cita.Service.serviceName}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -571,51 +636,9 @@ const Calendar = ({
           setSpecialty={setSpecialty}
         />
       )}
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        gutter={8}
-        containerClassName=""
-        containerStyle={{
-          zIndex: 1000,
-          marginTop: "20px",
-          height: "150px",
-        }}
-        toastOptions={{
-          className: "",
-          duration: 3000,
-          style: {
-            background: "#ffc8c8",
-            color: "#363636",
-          },
-
-          success: {
-            duration: 3000,
-            theme: {
-              primary: "green",
-              secondary: "black",
-            },
-            style: {
-              background: "#00A868",
-              color: "#FFFF",
-            },
-          },
-
-          error: {
-            duration: 3000,
-            theme: {
-              primary: "pink",
-              secondary: "black",
-            },
-            style: {
-              background: "#C43433",
-              color: "#fff",
-            },
-          },
-        }}
-      />
+      <ToasterConfig />
     </div>
-  );
+  )}
 };
 
 export default Calendar;

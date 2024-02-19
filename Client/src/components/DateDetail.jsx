@@ -1,23 +1,28 @@
+//hooks, reducer, actions
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { useParams } from "react-router-dom";
-import { getClientId, getPayMethods } from "../redux/actions/";
-import HistoryServices from "./HistoryServices";
+import { getClientId, setTokenError } from "../redux/actions/";
 import { toast } from "react-hot-toast";
-import ToasterConfig from "../components/Toaster";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
+//components
+import HistoryServices from "./HistoryServices";
+import ToasterConfig from "../components/Toaster";
+import Loader from "./Loader";
+import ErrorToken from "../views/ErrorToken"
 import { UploadWidgetDate } from "./UploadWidgetDate";
+import { UploadWidgetConsent } from "./UploadWidgetConsent";
+
+//icons
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
-import Loader from "./Loader";
-import { UploadWidgetConsent } from "./UploadWidgetConsent";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "./dateDetail.css";
-import getParamsEnv from "../functions/getParamsEnv";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import "./dateDetail.css";
 
+//variabels de entorno
+import getParamsEnv from "../functions/getParamsEnv";
 const { API_URL_BASE, AGENDA } = getParamsEnv();
 
 const DateDetail = () => {
@@ -26,6 +31,7 @@ const DateDetail = () => {
   const { id: appointmentId } = useParams();
   const branch = useSelector((state) => state?.workingBranch);
   const token = useSelector((state) => state?.token);
+  const tokenError = useSelector((state) => state?.tokenError);
   const calendar = useSelector((state) => state?.calendar);
   const clientInfo = useSelector((state) => state?.clientID);
   const payMethods = useSelector((state) => state?.payMethods);
@@ -71,9 +77,17 @@ const DateDetail = () => {
         axios.post(API_URL_BASE + `/v1/getclient/${findAppointment.Client.id}`,{token})
         .then(respuesta => {
           dispatch(getClientId(respuesta.data));
+          setIsLoading(true);
         })
-        
-        setIsLoading(true);
+        .catch(error => { 
+            let errorMessage= ""     
+            if (!error.response) {
+              errorMessage = error.message;
+            } else {
+              errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+            }
+            toast.error(errorMessage);
+          })
       }
     }
   }, [dispatch, token, appointmentId, clientId]);
@@ -247,6 +261,7 @@ const DateDetail = () => {
   if (!isLoading) {
     return <Loader />;
   }
+
 
   return (
     <div className="flex flex-col mx-auto py-10 overflow-auto">
@@ -570,7 +585,7 @@ const DateDetail = () => {
         </div>
       )}
     </div>
-  );
+  )
 };
 
 export default DateDetail;

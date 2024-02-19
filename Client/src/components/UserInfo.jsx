@@ -1,7 +1,7 @@
 // hooks, routers, reducers:
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { clearUserId, deleteUser, getUser, getUserId } from "../redux/actions";
+import { clearUserId, deleteUser, getUser, getUserId, setTokenError } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
@@ -22,6 +22,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 
 //variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
+import ErrorToken from "../views/ErrorToken.jsx";
 const { USERPROFILES, API_URL_BASE } = getParamsEnv()
 
 const UserInfo = () => {
@@ -38,7 +39,7 @@ const UserInfo = () => {
   const branches = useSelector((state) => state?.branches);
   const userID = useSelector((state) => state?.userDataId);
   const user = useSelector((state) => state?.user);
-
+  const tokenError = useSelector((state) => state?.tokenError);
   const token = { token: user.token };
   const tokenID = user.token;
 
@@ -53,6 +54,10 @@ const UserInfo = () => {
         setLoading(false)
       })
       .catch(error => {  
+        if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+          setLoading(false)
+         dispatch(setTokenError(error.request.status))
+      } else {
         let errorMessage= ""   
         console.log(error)     
         if (!error.response) {
@@ -61,9 +66,9 @@ const UserInfo = () => {
           errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
         }
         toast.error(errorMessage);
-      });
+      }})
     }
-  }, [detailId]);
+  }, [detailId, tokenError]);
 
   const confirmDelete = (detailId) => {
     if (userID?.userName === user.userName) {
@@ -99,6 +104,12 @@ const UserInfo = () => {
   const especialidades = userID?.specialties;
   const sedes = userID?.branches;
 
+
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
+    return (
+      <ErrorToken error={tokenError} />
+    );
+  } else {
     return (
       <>
         {loading ? <Loader /> : (
@@ -241,7 +252,7 @@ const UserInfo = () => {
         )}
         <ToasterConfig />
       </>
-    );
+    )};
   } 
 
 

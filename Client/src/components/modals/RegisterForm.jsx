@@ -10,12 +10,13 @@ import validateRegisterInput from "../../functions/registerFormValidations";
 
 //Cloudinary
 import { UploadWidget } from "../Uploadwidget";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import Loader from "../Loader";
 
 //Variables de entorno
 import getParamsEnv from "../../functions/getParamsEnv";
 import { useSelector } from "react-redux";
+import ToasterConfig from "../Toaster";
 const { API_URL_BASE } = getParamsEnv();
 
 function RegisterForm({
@@ -147,7 +148,7 @@ function RegisterForm({
           origin: user.userName,
           target: userData.notificationEmail,
           subject: `${user.companyName} - Alta de usuario`,
-          html: `<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'> <html dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'> <head> <meta charset='UTF-8'> <meta content='width=device-width, initial-scale=1' name='viewport'> <meta name='x-apple-disable-message-reformatting'> <meta http-equiv='X-UA-Compatible' content='IE=edge'> <meta content='telephone=no' name='format-detection'> <title></title>     <link href='https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i' rel='stylesheet'>  </head> <body> <div dir='ltr' class='es-wrapper-color'>  <table class='es-wrapper' width='100%' height='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-email-paddings' valign='top'> <table cellpadding='0' cellspacing='0' class='es-header esd-footer-popover' align='center'> <tbody> <tr> <td class='esd-stripe' align='center' esd-custom-block-id='35507'> <table bgcolor='#ffffff' class='es-header-body' align='center' cellpadding='0' cellspacing='0' width='550' style='border-right:1px solid transparent;border-bottom:1px solid transparent;'> <tbody> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='509' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-block-image' align='center' style='font-size: 0px;'><img src=${user.companyImg} alt='logoCompañía' style='display: block;' width='150' height='100'></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td width='509' class='esd-container-frame' align='center' valign='top'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td align='center' class='esd-block-text es-p15' > <h1 style='text-align: center; font-size: 18px; color: black; margin-bottom: 2px;'><span style='font-size:22px;'> Hola, ${data.name} ${data.lastName}! 👋</h1> <p style='text-align: center; font-size: 16px; color: black;'> Ya tienes habilitado el acceso al sistema. </p> <p style='text-align: center; font-size: 16px; color: black;'>¡Ingresa con tu cuenta de Gmail haciendo click <a href='https://google.com/linkaldeploy'>aquí</a>! </p> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p5' style='background-color: transparent;' bgcolor='transparent' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='539' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </div> </body> </html>`,
+          html: `<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'> <html dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'> <head> <meta charset='UTF-8'> <meta content='width=device-width, initial-scale=1' name='viewport'> <meta name='x-apple-disable-message-reformatting'> <meta http-equiv='X-UA-Compatible' content='IE=edge'> <meta content='telephone=no' name='format-detection'> <title></title>     <link href='https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i' rel='stylesheet'>  </head> <body> <div dir='ltr' class='es-wrapper-color'>  <table class='es-wrapper' width='100%' height='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-email-paddings' valign='top'> <table cellpadding='0' cellspacing='0' class='es-header esd-footer-popover' align='center'> <tbody> <tr> <td class='esd-stripe' align='center' esd-custom-block-id='35507'> <table bgcolor='#ffffff' class='es-header-body' align='center' cellpadding='0' cellspacing='0' width='550' style='border-right:1px solid transparent;border-bottom:1px solid transparent;'> <tbody> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='509' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-block-image' align='center' style='font-size: 0px;'><img src=${user.companyImg} alt='logoCompañía' style='display: block;' width='150' height='100'></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td width='509' class='esd-container-frame' align='center' valign='top'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td align='center' class='esd-block-text es-p15' > <h1 style='text-align: center; font-size: 18px; color: black; margin-bottom: 2px;'><span style='font-size:22px;'> Hola, ${data.name} ${data.lastName}! 👋</h1> <p style='text-align: center; font-size: 16px; color: black;'> Ya tienes habilitado el acceso al sistema. </p> <p style='text-align: center; font-size: 16px; color: black;'>¡Ingresa con tu cuenta de email haciendo click <a href='https://google.com/linkaldeploy'>aquí</a>! </p> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p5' style='background-color: transparent;' bgcolor='transparent' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='539' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </div> </body> </html>`,
           token: tokenID,
         };
 
@@ -173,7 +174,6 @@ function RegisterForm({
             });
             setDisableSubmit(false);
             closeModal();
-
             axios.post(`${API_URL_BASE}/v1/sendmail`, sendEmail);
           }, 3000);
         } else {
@@ -437,6 +437,7 @@ function RegisterForm({
           </form>
         </div>
       </div>
+      <ToasterConfig />
     </>
   );
 }

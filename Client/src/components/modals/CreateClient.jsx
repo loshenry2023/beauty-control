@@ -115,7 +115,7 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
         const response = await axios.post(`${API_URL_BASE}/v1/newclient`, data)
         
         if (response.data.created === "ok") {
-            setSubmitLoader(false)
+        setSubmitLoader(false)
         toast.success("Cliente creado exitosamente")
         setActivarNuevoCliente(!activarNuevoCliente)     
         if (location.pathname !== "/clientsProfiles") {
@@ -144,7 +144,7 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
           }
     } catch (error) {
         setDisableSubmit(false)
-            setSubmitLoader(false)
+        setSubmitLoader(false)
         toast.error(`Hubo un problema con la creacion. ${error.response.data}`)
       }
     }
