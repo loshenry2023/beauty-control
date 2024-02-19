@@ -12,6 +12,7 @@ import Pagination from "../Pagination";
 
 import axios from "axios";
 import getParamsEnv from "../../functions/getParamsEnv";
+import Loader from "../Loader";
 const { API_URL_BASE } = getParamsEnv();
 
 
@@ -31,6 +32,7 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
   const [size, setSize] = useState(10);
   const [createDateStart, setCreateDateStart] = useState("");
   const [createDateEnd, setCreateDateEnd] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const [showClientFormModal, setShowClientFormModal] = useState(false);
   const [activarNuevoCliente, setActivarNuevoCliente] = useState(false);
@@ -41,24 +43,12 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
 
   let requestMade = false;
   useEffect(() => {
-    // dispatch(
-    //   getClients(
-    //     nameOrLastName,
-    //     attribute,
-    //     order,
-    //     page,
-    //     size,
-    //     createDateEnd,
-    //     createDateStart,
-    //     birthdaysMonth,
-    //     { token }
-    //   )
-    // )
-    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+    if (!requestMade) {
       requestMade = true
       axios.post(API_URL_BASE + `/v1/getclients?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}&birthdaysMonth=${birthdaysMonth}`, {token})
       .then(respuesta => {
         dispatch(getClients(respuesta.data))
+        setLoading(false)
       })
     }
     const close = (e) => {
@@ -95,10 +85,13 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
         </>
       </div>
       <ClientFilters setNameOrLastName={setNameOrLastName} nameOrLastName={nameOrLastName} setAttribute={setAttribute} setOrder={setOrder} setPage={setPage} setSize={setSize} />
+      {loading ? <Loader /> :
       <div>
-        <ClientsTable count={count} setChosenClient={setChosenClient} setShowClientListModal={setShowClientListModal} clients={clients} />
-      </div>
+      <ClientsTable count={count} setChosenClient={setChosenClient} setShowClientListModal={setShowClientListModal} clients={clients} />
       <Pagination page={page} setPage={setPage} size={size} setSize={setSize} count={count} />
+    </div>
+      }
+      
     </div>
     {showClientFormModal ?
       <CreateClient

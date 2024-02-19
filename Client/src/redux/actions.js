@@ -583,7 +583,9 @@ export const getServices = (respuesta) => {
   }
 };
 
-export const setTokenError = (error) => ({
-  type: SET_TOKEN_ERROR,
-  payload: error,
-});
+export const setTokenError = (error) => {
+  return{
+    type: SET_TOKEN_ERROR,
+    payload: error,
+  }
+};

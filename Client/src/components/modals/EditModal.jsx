@@ -152,11 +152,7 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                 const response = await axios.put(`${API_URL_BASE}/v1/edituserdata/${userId.id}`, data);
 
                 if (response.data.updated === "ok") {
-                    setSubmitLoader(false)
-                    toast.success("Usuario modificado exitosamente")
                     setTimeout(() => {
-                        closeModal();
-                        setDisableSubmit(false)
                         setUserData(
                             {
                                 name: "",
@@ -172,12 +168,14 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                                 notificationEmail: "notificationEmail@gmail.com"
                             }
                         );
+                        closeModal();
+                        setDisableSubmit(false)
+                        setSubmitLoader(false)
                         navigate(USERPROFILES);
-                    }, 3000);
-
+                    }, 4000);
+                    toast.success("Usuario modificado exitosamente")
                 } else {
-
-                    setDisableSubmit(false)
+                setDisableSubmit(false)
                 setSubmitLoader(false)
                 }
             } catch (error) {
@@ -194,7 +192,10 @@ function EditModal({ setShowEditModal, branches, specialties, userId, tokenID })
                     <div className="w-full bg-white shadow rounded-lg p-4 pt-2 pb-2 mx-auto md:w-1/2 2xl:w-1/3 scale-90 dark:bg-darkBackground">
                         <div className='flex justify-between '>
                             <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">Editar usuario</h1>
-                            <IoClose onClick={closeModal} className='cursor-pointer mt-1 w-5 h-5 hover:scale-125 dark:text-darkText' />
+                            {!submitLoader &&
+                            <IoClose onClick={closeModal} className='cursor-pointer mt-1 w-5 h-5 hover:scale-125 dark:text-darkText' /> }
+                             {submitLoader &&
+                            <IoClose className="cursor-not-allowed mt-1 w-5 h-5 dark:text-darkText"/> }
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className="first-letter:grid grid-cols-1 mb-1">

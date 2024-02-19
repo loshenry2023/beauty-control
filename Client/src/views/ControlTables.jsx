@@ -47,7 +47,7 @@ const ControlTables = () => {
     }
   };
 
-  if (tokenError === 401 || tokenError === 403) {
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
   } else {
     return (

@@ -1,7 +1,7 @@
 //hooks, componentes, reducer
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBranches, getSpecialties, getUsers } from "../redux/actions";
+import { getBranches, getSpecialties, getUsers, setTokenError } from "../redux/actions";
 import RegisterForm from "../components/modals/RegisterForm";
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
@@ -80,6 +80,21 @@ function UserProfiles() {
       dispatch(getBranches(respuesta3.data))
       setLoading(false)
     })
+    .catch(error => { 
+      console.log(error)
+      if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+        setLoading(false)
+         dispatch(setTokenError(error.request.status))
+      } else {
+        let errorMessage= ""     
+        if (!error.response) {
+          errorMessage = error.message;
+        } else {
+          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+        }
+        toast.error(errorMessage);
+      }
+    })
     }
   }, [
     nameOrLastName,
@@ -100,7 +115,7 @@ function UserProfiles() {
     setShowResgisterFormModal(true);
   };
 
-  if (tokenError === 401 || tokenError === 403) {
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
   } else {
     return (

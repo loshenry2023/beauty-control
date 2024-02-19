@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { getUser, setBranch } from "../redux/actions";
+import { getUser, setBranch, setTokenError } from "../redux/actions";
 import Loader from "../components/Loader";
 import ToasterConfig from "../components/Toaster";
 
@@ -18,6 +18,10 @@ const BranchSelection = () => {
   const [workingBranch, setWorkingBranch] = useState({})
   const [isButtonDisabled, setButtonDisabledState] = useState(true);
   const [loading, setLoading] = useState(true);
+  const tokenError = useSelector((state) => state?.tokenError);
+  const user = useSelector((state) => state?.user);
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
 
   useEffect(() => {
       const userData = {
@@ -31,15 +35,22 @@ const BranchSelection = () => {
         dispatch(getUser(userInfo))
         setLoading(false)
       })
-      .catch(error => {
-        console.error(error.message)
-        toast.error(error)
+      .catch(error => { 
+        if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+            setLoading(false)
+           dispatch(setTokenError(error.request.status))
+        } else {
+          let errorMessage= ""     
+          if (!error.response) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          }
+          toast.error(errorMessage);
+        }
       });
   }, [])
 
-  const user = useSelector((state) => state?.user);
-  const dispatch = useDispatch()
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const branchObject = JSON.parse(e.target.value);
@@ -67,6 +78,11 @@ const BranchSelection = () => {
     }
   })
 
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
+    return (
+      <ErrorToken error={tokenError} />
+    );
+  } else {
   return (
     <section className="bg-[url('https://res.cloudinary.com/doyafxwje/image/upload/v1703630993/LogIn/osoq2vut2vy2fivyauxm.jpg')] bg-cover bg-center flex flex-col items-center justify-center h-screen lg:py-0">
       {loading ? <Loader /> :
@@ -98,7 +114,7 @@ const BranchSelection = () => {
         </div>}
       <ToasterConfig />
     </section>
-  );
+  )}
 };
 
 export default BranchSelection;
