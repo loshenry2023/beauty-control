@@ -1,69 +1,55 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { editProduct, updateProductPrice } from "../redux/actions";
 import { IoClose } from "react-icons/io5";
 import { toast } from "react-hot-toast";
 import ToasterConfig from "./../components/Toaster";
 import editConsumableValidation from "../functions/editConsumableValidation";
-
 import getParamsEnv from "../functions/getParamsEnv";
-const { CONSUMABLES } = getParamsEnv();
+import axios from "axios";
+import { useSelector } from "react-redux";
+import Loader from "./Loader";
+
+const {API_URL_BASE} = getParamsEnv()
 
 function EditConsumableForm({
   setEditConsumableModal,
-  code,
-  onClose,
-  setProductsData,
+  productData,
   user,
+  aux,
+  setAux
 }) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const productsState = useSelector((state) => state.products);
-  const products = Array.isArray(productsState.rows) ? productsState.rows : [];
 
-  const product = products.find((p) => p.code === parseInt(code, 10));
+  const workingBranch = useSelector((state) => state?.workingBranch);
+  const token = useSelector((state) => state?.token);
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [product, setProduct] = useState({
+    productName: productData.productName || "",
+    description: productData.description || "",
+    productCode: productData.productCode || "",
+    supplier: productData.supplier || "",
+    amount: productData.amount || "",
+    newPrice: productData.price || "",
+    priceHistory: [],
+    adjustmentValue: 0,
+    updatedAmount: 0
+  });
 
-  const [productName, setProductName] = useState("");
-  const [description, setDescription] = useState("");
-  const [supplier, setSupplier] = useState("");
-  const [amount, setAmount] = useState("");
-  const [newPrice, setNewPrice] = useState("");
   const [errors, setErrors] = useState({});
-  const [priceHistory, setPriceHistory] = useState([]);
-  const [adjustmentValue, setAdjustmentValue] = useState(0);
-  const [updatedAmount, setUpdatedAmount] = useState(0);
 
   useEffect(() => {
-    if (product) {
-      setProductName(product.productName);
-      setDescription(product.description);
-      setSupplier(product.supplier);
-      setAmount(product.amount);
-
-      const currentPrice =
-        product.PriceHistories.length > 0
-          ? product.PriceHistories[0].price
-          : "Precio no disponible";
-      setPriceHistory(currentPrice);
-      setNewPrice(currentPrice);
-    }
-
     const close = (e) => {
-      if(e.keyCode === 27){
-        setEditConsumableModal(false)
+      if (e.keyCode === 27) {
+        setEditConsumableModal(false);
       }
-    }
-    window.addEventListener('keydown', close)
-    return () => window.removeEventListener('keydown', close)
-  }, [product, products]);
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [setEditConsumableModal]);
 
   const handleAdjustAmount = (operation) => {
-    let updatedAmount = parseInt(amount, 10);
-    let amountToAddOrSubtract = parseInt(adjustmentValue, 10);
+    let updatedAmount = parseInt(product.amount, 10);
+    let amountToAddOrSubtract = parseInt(product.adjustmentValue, 10);
 
     if (isNaN(amountToAddOrSubtract) || amountToAddOrSubtract <= 0) {
-      // console.error("Ingresa un número válido para la cantidad.");
       return;
     }
 
@@ -81,93 +67,91 @@ function EditConsumableForm({
       setErrors({});
     }
 
-    setAmount(updatedAmount);
+    setProduct({ ...product, amount: updatedAmount });
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+
+    e.preventDefault()
     const resetFields = () => {
-      setProductName("");
-      setDescription("");
-      setSupplier("");
-      setAmount("");
-      setNewPrice("");
+      setProduct({
+        ...product,
+        productName: "",
+        description: "",
+        supplier: "",
+        amount: "",
+        newPrice: "",
+      });
       setErrors({});
     };
+  
     const fieldErrors = editConsumableValidation(
-      productName,
-      supplier,
-      amount,
-      newPrice
+      product.productName,
+      product.supplier,
+      product.amount,
+      product.newPrice
     );
-
+  
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
-
+  
       toast.error("Hubo un error al actualizar el insumo");
-
+  
       setTimeout(() => {
-        onClose();
+        setEditConsumableModal(false);
         resetFields();
         toast.dismiss();
       }, 3000);
-
+  
       return;
     } else {
       setErrors({});
     }
-
+  
     if (
-      productName === product.productName &&
-      description === product.description &&
-      supplier === product.supplier &&
-      amount === product.amount &&
-      parseFloat(newPrice) === parseFloat(priceHistory)
+      product.productName === productData.productName &&
+      product.description === productData.description &&
+      product.supplier === productData.supplier &&
+      product.amount === productData.amount &&
+      parseFloat(product.newPrice) === parseFloat(productData.priceHistory)
     ) {
       toast.error("No se realizaron modificaciones.");
-      // setTimeout(() => {
-      //   setEditConsumableModal(false);
-      // }, 2000);
       return;
     }
 
-    let updatedProduct = { ...(product || {}) };
-
-    updatedProduct = {
-      ...(product || {}),
-      productName,
-      description,
-      supplier,
-      amount,
-    };
-
-    setProductsData(updatedProduct);
-    if (parseFloat(newPrice) !== parseFloat(priceHistory)) {
-      try {
-        await dispatch(updateProductPrice(product.code, newPrice));
-      } catch (error) {
-        console.error(
-          "Error al actualizar el precio del producto:",
-          error.message
-        );
-        toast.error("Hubo un problema al actualizar el precio.");
-      }
+    setSubmitLoader(true)
+    
+    const data = {
+      price: product.newPrice,
+      branchId: workingBranch.id,
+      productName: product.productName,
+      description: product.description,
+      supplier: product.supplier,
+      amount: product.amount,
+      token
     }
-
+  
+  
     try {
-      await dispatch(editProduct(product.code, updatedProduct));
-      setProductsData(updatedProduct);
+      const response = await axios.put(`${API_URL_BASE}/v1/products/${product.productCode}`, data)
+
+      if (response.data.updated === "ok") {
+        setSubmitLoader(false)
+        toast.success("Producto modificado correctamente")
+        setTimeout(() => {
+          setEditConsumableModal(false)
+          resetFields();
+          setAux(!aux)
+        },3000)
+      }
+
     } catch (error) {
+      setSubmitLoader(false)
       console.error("Error al editar el producto:", error.message);
       toast.error("Hubo un problema al editar el producto.");
     }
-    toast.success("Insumo modificado correctamente.");
-
-    onClose();
-    resetFields();
-    setTimeout(() => {
-      setEditConsumableModal(false);
-    }, 3000);
   };
+  
 
   return (
     <>
@@ -183,7 +167,7 @@ function EditConsumableForm({
                 className="cursor-pointer mt-2 w-5 h-5 dark:text-darkText"
               />
             </div>
-            <form>
+            <form onSubmit={handleUpdate}>
               {user.role === "superAdmin" && (
                 <>
                   <div className="mb-2">
@@ -191,8 +175,8 @@ function EditConsumableForm({
                     <input
                       className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                       type="text"
-                      value={productName}
-                      onChange={(e) => setProductName(e.target.value)}
+                      value={product.productName}
+                      onChange={(e) => setProduct({ ...product, productName: e.target.value })}
                     />
                   </div>
                   <div className="mb-2">
@@ -202,8 +186,8 @@ function EditConsumableForm({
                     <input
                       className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                       type="text"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      value={product.description}
+                      onChange={(e) => setProduct({ ...product, description: e.target.value })}
                     />
                   </div>
                   <div className="mb-2">
@@ -211,8 +195,8 @@ function EditConsumableForm({
                     <input
                       className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                       type="text"
-                      value={supplier}
-                      onChange={(e) => setSupplier(e.target.value)}
+                      value={product.supplier}
+                      onChange={(e) => setProduct({ ...product, supplier: e.target.value })}
                     />
                   </div>
                 </>
@@ -224,8 +208,8 @@ function EditConsumableForm({
                 <input
                   className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                   type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  value={product.amount}
+                  onChange={(e) => setProduct({ ...product, amount: e.target.value })}
                   readOnly
                 />
               </div>
@@ -239,11 +223,11 @@ function EditConsumableForm({
                     <input
                       className="border border-black p-2 rounded mr-2 dark:text-darkText dark:bg-darkPrimary"
                       type="number"
-                      value={adjustmentValue}
+                      value={product.adjustmentValue}
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
                         if (!isNaN(value) && value >= 0) {
-                          setAdjustmentValue(value);
+                          setProduct({ ...product, adjustmentValue: value });
                         }
                       }}
                       min="0"
@@ -269,11 +253,11 @@ function EditConsumableForm({
                       <input
                         className="border border-black p-2 rounded mr-2 dark:text-darkText dark:bg-darkPrimary"
                         type="number"
-                        value={adjustmentValue}
+                        value={product.adjustmentValue}
                         onChange={(e) => {
                           const value = parseInt(e.target.value);
                           if (!isNaN(value) && value >= 0) {
-                            setAdjustmentValue(value);
+                            setProduct({ ...product, adjustmentValue: value });
                           }
                         }}
                         min="0"
@@ -299,8 +283,8 @@ function EditConsumableForm({
                     <input
                       className="border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary"
                       type="number"
-                      value={newPrice}
-                      onChange={(e) => setNewPrice(e.target.value)}
+                      value={product.newPrice}
+                      onChange={(e) => setProduct({ ...product, newPrice: e.target.value })}
                     />
                   </div>
                 </>
@@ -313,14 +297,17 @@ function EditConsumableForm({
                   ))}
                 </div>
               )}
-              <div className="flex justify-center mb-4 space-x-20 mt-6">
-                <button
-                  type="button"
-                  onClick={handleUpdate}
-                  className="h-10 cursor-pointer flex items-center justify-center shadow shadow-black bg-primaryPink text-black text-md p-5 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                >
-                  Actualizar insumo
-                </button>
+              <div className="flex justify-center items-center">
+                {!submitLoader ? (
+                  <button
+                    type="submit"
+                    className="mt-2 px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                  >
+                    Modificar insumo
+                  </button>
+                ) : (
+                  <Loader />
+                )}
               </div>
             </form>
           </div>

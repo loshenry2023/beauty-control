@@ -85,6 +85,7 @@ const getReg = async (dataInc) => {
                 }
                 return { count: countTot, rows: compOut };
             case "PriceHistory":
+                
                 const { branchId, productCode: prodID } = dataQuery;
                 reg = await tableName.findAndCountAll({ //PriceHistory
                     attributes: [
