@@ -57,11 +57,14 @@ const putReg = async (dataInc) => {
 }
 
 async function editRegProduct(dataMain) {
+    //{ Product: tableName, data: data, id: id, conn: conn, Branch: tableName2, PriceHistory: tableName3, dataLog: dataLog });
+
     const { Product, data, id, conn, Branch, PriceHistory, dataLog } = dataMain;
     const { price, branchId: brnchId, productName, description, supplier, amount } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
         if (!price || !brnchId || !productName || !description || !supplier || !amount) { throw Error("Faltan datos"); }
+
         // Verifico que la sede del insumo exista:
         const productBranch = await Branch.findByPk(brnchId);
         if (!productBranch) {

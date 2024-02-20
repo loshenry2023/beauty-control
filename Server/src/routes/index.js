@@ -65,6 +65,7 @@ const getAllProductsHandler = require("../Handlers/insumos/getAllProductsHandler
 const postProductHandler = require("../Handlers/insumos/postProductHandler");
 const putProductHandler = require("../Handlers/insumos/putProductHandler");
 const getProdHistoricPricesHandler = require("../Handlers/insumos/getProdHistoricPricesHandler");
+const deleteProductHandler = require("../Handlers/insumos/deleteProductHandler");
 //! Balance y comisiones:
 const getBalance = require("../Handlers/balance/getBalanceHandler");
 //! Resguardo y restauración de datos:
@@ -136,6 +137,7 @@ router.post("/v1/products", getAllProductsHandler); // obtiene y devuelve todos 
 router.post("/v1/productsCreate", postProductHandler); // crea un nuevo insumo
 router.put("/v1/products/:id", putProductHandler); // edita un insumo
 router.post("/v1/productsHist", getProdHistoricPricesHandler); // obtiene y devuelve el histórico de precios de un inusmo
+router.put("/v1/productdelete/:id", deleteProductHandler); // elimina un insumo
 //! Balance y comisiones:
 router.post("/v1/getbalance", getBalance); // obtiene todos los usuarios para el balance y comisiones
 //! Resguardo y restauración de datos:
