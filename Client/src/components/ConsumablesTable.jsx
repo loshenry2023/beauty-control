@@ -105,9 +105,9 @@ const ConsumablesTable = ({ products, user, onClose, workingBranch, aux, setAux 
           <EditConsumableForm
           aux={aux}
           setAux={setAux}
-           setEditConsumableModal={setEditConsumableModal}
-            productData={productData}
-            user={user}
+          setEditConsumableModal={setEditConsumableModal}
+          productData={productData}
+          user={user}
           />
         )}
       </>

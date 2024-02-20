@@ -1,10 +1,6 @@
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getProductPricesHistory,
-  clearProductPricesHistory,
-} from "../redux/actions";
 import { useNavigate } from "react-router-dom";
 import BarChartComponent from "./BarChartComponent";
 import { IoMdArrowRoundBack } from "react-icons/io";
