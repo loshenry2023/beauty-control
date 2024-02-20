@@ -27,6 +27,8 @@ const deleteClientHandler = async (req, res) => {
             tableName: Client,
             id: id,
             tableNameText: "Client",
+            tableName2: "",
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,

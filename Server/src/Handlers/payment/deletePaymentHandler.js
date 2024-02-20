@@ -27,6 +27,8 @@ const deletePaymentHandler = async (req, res) => {
             tableName: Payment,
             id: id,
             tableNameText: "Payment",
+            tableName2: "",
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,

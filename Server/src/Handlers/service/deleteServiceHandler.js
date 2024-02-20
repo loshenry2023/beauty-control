@@ -27,6 +27,8 @@ const deleteServiceHandler = async (req, res) => {
             tableName: Service,
             id: id,
             tableNameText: "Service",
+            tableName2: "",
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,

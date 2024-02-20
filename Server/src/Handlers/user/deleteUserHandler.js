@@ -20,13 +20,15 @@ const deleteUserHandler = async (req, res) => {
             return res.status(401).send(`Sin permiso.`);
         }
 
-        const { conn, User } = await connectDB(checked.dbName);
+        const { conn, User, Calendar } = await connectDB(checked.dbName);
         await conn.sync();
 
         const data = {
             tableName: User,
             id: id,
             tableNameText: "User",
+            tableName2: Calendar,
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,

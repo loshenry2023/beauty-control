@@ -28,6 +28,8 @@ const deleteCatHandler = async (req, res) => {
             tableName: CatGastos,
             id: id,
             tableNameText: "CatGastos",
+            tableName2: "",
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,
