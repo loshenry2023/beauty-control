@@ -20,6 +20,7 @@ const postProductHandler = async (req, res) => {
         }
 
         const { conn, Product, Branch, PriceHistory } = await connectDB(checked.dbName);
+     
         await conn.sync();
         const data = {
             userLogged: checked.userName,

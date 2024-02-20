@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../redux/actions";
-
+import axios from "axios";
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import ConsumablesTable from "../components/ConsumablesTable";
@@ -9,7 +9,7 @@ import NewConsumableModal from "../components/modals/newConsumableModal";
 import ErrorToken from "./ErrorToken";
 
 import getParamsEnv from "../functions/getParamsEnv";
-const { NEWCONSUMABLE } = getParamsEnv();
+const { API_URL_BASE } = getParamsEnv();
 
 import { FaPlus } from "react-icons/fa";
 
@@ -38,29 +38,40 @@ function Consumables() {
   const user = useSelector((state) => state?.user);
   const branches = user.branches;
   const [selectedBranch, setSelectedBranch] = useState("");
-  const products = useSelector((state) => state?.products);
   const token = useSelector((state) => state?.token);
   const tokenError = useSelector((state) => state?.tokenError);
-
+  const [products, setProducts] = useState(null)
   const workingBranch = useSelector((state) => state?.workingBranch);
 
   const count = useSelector((state) => state?.count);
+  const [aux, setAux] = useState(false)
+
 
   useEffect(() => {
-    if (user && user.branches && user.branches.length > 0) {
-      setSelectedBranch(workingBranch.branchName);
-    }
-  }, [user, tokenError]);
-
-  useEffect(() => {
-    //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
+   /*  //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
     if (selectedBranch) {
       dispatch(
         getProducts(token, productName, selectedBranch, page, size, description)
       ).then(() => {
         setLoading(false);
       });
+    } */
+
+    const getProducts = async () => {
+      try {
+        const data = {
+          token, productName, branchId: workingBranch.id, page, size, description
+        }
+        const response = await axios.post(`${API_URL_BASE}/v1/products`, data )
+        setProducts(response.data)
+        console.log(response.data)
+      } catch (error) {
+        console.log(error)
+      }
     }
+
+    getProducts()
+    setLoading(false)
   }, [
     productName,
     selectedBranch,
@@ -70,6 +81,7 @@ function Consumables() {
     newProductAdded,
     editedProduct,
     token,
+    aux
   ]);
 
   const handleShowNewConsumableModal = () => {
@@ -84,7 +96,12 @@ function Consumables() {
     setEditedProduct(!editedProduct);
   };
 
-  const totalPages = Math.ceil(count.count / size);
+  
+
+  const totalPages = products && products.count ? Math.ceil(products.count / size) : 0;
+
+
+  console.log(totalPages)
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
@@ -126,6 +143,7 @@ function Consumables() {
                   )}
                   {user?.role === "superAdmin" && showNewConsumableModal && (
                     <NewConsumableModal
+                    token={token}
                       onClose={() => {
                         setShowNewConsumableModal(false);
                         handleNewProductAdded();
@@ -160,6 +178,9 @@ function Consumables() {
                   </section>
                   <section>
                     <ConsumablesTable
+                    aux={aux}
+                    setAux={setAux}
+                    workingBranch={workingBranch}
                       products={products}
                       user={user}
                       onClose={() => {
@@ -167,7 +188,8 @@ function Consumables() {
                       }}
                     />
                   </section>
-                  <div className="flex items-center justify-center mt-4">
+                  
+                    <div className="flex items-center justify-center mt-4">
                     <button
                       onClick={() => handlePageChange(page - 1)}
                       disabled={page === 0}
