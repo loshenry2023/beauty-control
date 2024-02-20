@@ -36,7 +36,7 @@ const postDoBackupHandler = async (req, res) => {
                     return res.status(500).send(err);
                 } else {
                     // lo elimino localmente:
-                    //fs.unlinkSync(resp.file);
+                    fs.unlinkSync(resp.file);
                 }
             });
             showLog(`postDoBackupHandler OK`);

@@ -27,6 +27,8 @@ const deleteCalendarHandler = async (req, res) => {
             tableName: Calendar,
             id: id,
             tableNameText: "Calendar",
+            tableName2: "",
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,

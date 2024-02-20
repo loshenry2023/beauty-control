@@ -62,7 +62,7 @@ async function editRegProduct(dataMain) {
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
         if (!price || !brnchId || !productName || !description || !supplier || !amount) { throw Error("Faltan datos"); }
-        // Verifico que la sede exista:
+        // Verifico que la sede del insumo exista:
         const productBranch = await Branch.findByPk(brnchId);
         if (!productBranch) {
             throw Error("Sede no encontrada");
@@ -72,6 +72,18 @@ async function editRegProduct(dataMain) {
         });
         if (!existingProd) {
             throw Error("Insumo no encontrado");
+        }
+        // No permito un nombre repetido:
+        const prdLowercase = productName.toLowerCase();
+        const existingPrd = await Product.findOne({
+            where: {
+                productName: { [Op.iLike]: prdLowercase },
+                branchId: brnchId,
+                productCode: { [Op.ne]: existingProd.productCode },
+            },
+        });
+        if (existingPrd) {
+            throw Error("El nombre del insumo ya existe");
         }
         // Inicio la transacción:
         transaction = await conn.transaction();
@@ -251,6 +263,20 @@ async function editRegClient(dataMain) {
         if (!existingClient) {
             throw Error("Cliente no encontrado");
         }
+        // No permito un cliente repetido:
+        const clntNameLowercase = name.toLowerCase();
+        const clntLastNameLowercase = lastName.toLowerCase();
+        const clnteMailLowercase = email.toLowerCase();
+        const existingClnt = await Client.findOne({
+            where: {
+                name: { [Op.iLike]: clntNameLowercase },
+                lastName: { [Op.iLike]: clntLastNameLowercase },
+                email: { [Op.iLike]: clnteMailLowercase }
+            },
+        });
+        if (existingClnt) {
+            throw Error("El cliente ya existe");
+        }
         // Inicio la transacción:
         transaction = await conn.transaction();
         existingClient.name = name;
@@ -283,6 +309,17 @@ async function editRegService(dataMain) {
         if (!existingService) {
             throw Error("Procedimiento no encontrado");
         }
+        // No permito que le ponga un nombre repetido:
+        const svcLowercase = serviceName.toLowerCase();
+        const existingSpec = await Service.findOne({
+            where: {
+                serviceName: { [Op.iLike]: svcLowercase },
+                id: { [Op.ne]: id }
+            },
+        });
+        if (existingSpec) {
+            throw Error("El procedimiento ya existe");
+        }
         // Inicio la transacción:
         transaction = await conn.transaction();
         existingService.serviceName = serviceName;
@@ -309,6 +346,17 @@ async function editRegBranch(dataMain) {
         const existingBranch = await Branch.findByPk(id);
         if (!existingBranch) {
             throw Error("Sede no encontrada");
+        }
+        // No permito un nombre repetido:
+        const brnchLowercase = branchName.toLowerCase();
+        const existingSd = await Branch.findOne({
+            where: {
+                branchName: { [Op.iLike]: brnchLowercase },
+                id: { [Op.ne]: id }
+            },
+        });
+        if (existingSd) {
+            throw Error("El nombre de sede ya existe");
         }
         existingBranch.branchName = branchName;
         existingBranch.coordinates = coordinates;
@@ -337,6 +385,18 @@ async function editRegPayment(dataMain) {
         if (!existingPay) {
             throw Error("Medio de pago no encontrado");
         }
+        // No permito un nombre repetido:
+        const payLowercase = paymentMethodName.toLowerCase();
+        const existingPaym = await Payment.findOne({
+            where: {
+                paymentMethodName: { [Op.iLike]: payLowercase },
+                id: { [Op.ne]: id }
+            },
+        });
+        if (existingPaym) {
+            throw Error("El nombre ya existe");
+        }
+
         existingPay.paymentMethodName = paymentMethodName;
         await existingPay.save();
         logData({ op: "U", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Payment method ${paymentMethodName} ${id} was modified` });
@@ -355,6 +415,19 @@ async function editRegSpecialty(dataMain) {
         if (!existingSpec) {
             throw Error("Especialidad no encontrada");
         }
+        // No permito un nombre repetido:
+        const spLowercase = specialtyName.toLowerCase();
+        const existingSp = await Specialty.findOne({
+            where: {
+                specialtyName: { [Op.iLike]: spLowercase },
+                id: { [Op.ne]: id }
+            },
+        });
+        if (existingSp) {
+            throw Error("El nombre ya existe");
+        }
+
+
         existingSpec.specialtyName = specialtyName;
         await existingSpec.save();
         logData({ op: "U", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Specialty ${specialtyName} ${id} was modified` });
@@ -372,6 +445,17 @@ async function editRegCatGastos(dataMain) {
         const existingCat = await CatGastos.findByPk(id);
         if (!existingCat) {
             throw Error("Categoría no encontrada");
+        }
+        // No permito un nombre repetido:
+        const catLowercase = catName.toLowerCase();
+        const existingCate = await CatGastos.findOne({
+            where: {
+                catName: { [Op.iLike]: catLowercase },
+                id: { [Op.ne]: id }
+            },
+        });
+        if (existingCate) {
+            throw Error("El nombre ya existe");
         }
         existingCat.catName = catName;
         await existingCat.save();

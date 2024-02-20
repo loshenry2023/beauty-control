@@ -20,13 +20,15 @@ const deleteSpecialtyHandler = async (req, res) => {
             return res.status(401).send(`Sin permiso.`);
         }
 
-        const { conn, Specialty } = await connectDB(checked.dbName);
+        const { conn, Specialty, Service } = await connectDB(checked.dbName);
         await conn.sync();
 
         const data = {
             tableName: Specialty,
             id: id,
             tableNameText: "Specialty",
+            tableName2: Service,
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,

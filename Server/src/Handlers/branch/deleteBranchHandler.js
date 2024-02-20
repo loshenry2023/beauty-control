@@ -20,13 +20,15 @@ const deleteBranchHandler = async (req, res) => {
             return res.status(401).send(`Sin permiso.`);
         }
 
-        const { conn, Branch } = await connectDB(checked.dbName);
+        const { conn, Branch, Calendar, User } = await connectDB(checked.dbName);
         await conn.sync();
 
         const data = {
             tableName: Branch,
             id: id,
             tableNameText: "Branch",
+            tableName2: Calendar,
+            tableName3: User,
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,

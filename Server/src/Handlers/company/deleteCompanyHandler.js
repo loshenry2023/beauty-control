@@ -24,6 +24,8 @@ const deleteCompanyHandler = async (req, res) => {
             tableName: "",
             id: nameCompany,
             tableNameText: "Company",
+            tableName2: "",
+            tableName3: "",
             userLogged: checked.userName,
             dbName: checked.dbName,
             nameCompany: checked.nameCompany,
