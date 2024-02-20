@@ -146,12 +146,12 @@ const getReg = async (dataInc) => {
                         order: [["createdAt", "DESC"]],
                     });
                     dataOut = {
-                        price: latestPriceHistory ? latestPriceHistory.price : null,
                         productCode: product.productCode,
                         productName: product.productName,
                         description: product.description,
+                        price: latestPriceHistory ? latestPriceHistory.price : null,
                         supplier: product.supplier,
-                        amount: product.amount
+                        amount: product.amount,
                     };
                     prodOut.push(dataOut);
                 }
