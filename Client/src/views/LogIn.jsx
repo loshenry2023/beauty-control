@@ -99,7 +99,11 @@ const LogIn = () => {
         } else {
           if (error.message.includes("404")) {
             toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)
-          } else {
+          } 
+          else if (error.message.includes("402")) {
+            toast.error(`La suscripción ha expirado. Para renovarla, contacta al administrador.`)
+          }
+          else {
             toast.error(`${error.message}. Por favor comunícate con el administrador.`)
           }
         };
@@ -142,7 +146,11 @@ const LogIn = () => {
     } catch (error) {
       if (error.message.includes("404")) {
         toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)
-      } else {
+      } 
+      else if (error.message.includes("402")) {
+        toast.error(`La suscripción ha expirado. Para renovarla, contacta al administrador.`)
+      }
+      else {
         toast.error(`${error.message}. Por favor comunícate con el administrador.`)
       }
     }

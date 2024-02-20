@@ -20,10 +20,11 @@ const { ROOT, HOME, AGENDA, BRANCH } = getParamsEnv();
 
 const SSadminNavBar = () => {
   const [theme, setTheme] = useState(JSON.parse(localStorage.getItem("darkMode")) ? JSON.parse(localStorage.getItem("darkMode")) : "light");
-
+  
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
   const handleDarkMode = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -47,17 +48,6 @@ const SSadminNavBar = () => {
 
   }, [theme]);
 
-
-
-/*   let roleColor;
-  if (user.role === "superAdmin") {
-    roleColor = "linear-gradient(to right, #D1CFCE, #868585, #525151)"; //
-  } else if (user.role === "admin") {
-    roleColor = "linear-gradient(to right, #D1CFCE, #868585, #322e2e)"; //#FFDBC7
-  } else if (user.role === "especialista") {
-    roleColor = "#D1CFCE";
-  } */
-
   const handleLogout = () => {
     dispatch(setLogout(user.token));
     navigate(ROOT);
@@ -69,7 +59,7 @@ const SSadminNavBar = () => {
   return (
     <>
       <nav
-       className={`h-20 flex pr-10 justify-between items-center shadow-md shadow-secondaryColor bg-gradient-to-r from-blue-200 to-blue-500`}
+       className={`h-20 flex pr-10 justify-between items-center shadow-md bg-gradient-to-r from-blue-200 to-blue-500`}
         
       >
         <div className="flex flex-row items-center gap-5">
@@ -86,12 +76,7 @@ const SSadminNavBar = () => {
             </Link>
         </div>
         <div className="flex gap-4 ml:10 sm:ml-28 items-center pointer-events:auto ">
-          {/* <img
-            src={user.image}
-            alt="userPhoto"
-            className="h-10 w-10 shadow-md shadow-black rounded-full"
-          /> */}
-          <span className=" text-center font-extrabold font-medium sm:text-lg">
+          <span className=" text-center font-extrabold sm:text-lg">
             {" "}
             Control de Empresas
           </span>

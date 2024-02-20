@@ -10,9 +10,8 @@ import getParamsEnv from "../functions/getParamsEnv";
 import ToasterConfig from "./Toaster";
 import { IoIosAddCircle } from "react-icons/io";
 import EditCompanyModal from "./modals/EditCompanyModal";
+import Loader from "./Loader";
 const { API_URL_BASE } = getParamsEnv();
-
-
 
 const ControlCompany = () => {
   const [showCreateCompanyModal, setShowCreateCompanyModal] = useState(false);
@@ -24,26 +23,33 @@ const ControlCompany = () => {
   const token = useSelector((state) => state?.token);
   const dispatch = useDispatch();
   const [aux, setAux] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [companies, setCompanies] = useState()
+  const [isLoading, setIsLoading] = useState(true);
+  const [companies, setCompanies] = useState();
 
   useEffect(() => {
-    axios.post(`${API_URL_BASE}/v1/companyadminlist`, { token: token })
-      .then(response => {
+    const data = {
+      dateCreateFrom: "2023-02-01",
+      dateCreateTo: "2025-02-15",
+      showExpired: 1,
+      token: token,
+    };
+    axios
+      .post(`${API_URL_BASE}/v1/companyadminlist`, data)
+      .then((response) => {
         setCompanies(response.data);
+        setIsLoading(false)
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, [aux]);
 
-
   const handleDelete = async () => {
     try {
-      const response = await axios.post(
-        `${API_URL_BASE}/v1/companyadmindel`,
-        { token, nameCompany: companyName }
-      );
+      const response = await axios.post(`${API_URL_BASE}/v1/companyadmindel`, {
+        token,
+        nameCompany: companyName,
+      });
       if (response.data.deleted === "ok") {
         setAux(!aux);
         toast.success("Procedimiento eliminado exitosamente");
@@ -86,7 +92,6 @@ const ControlCompany = () => {
     setFilaCompany(filaCompany);
   };
 
-  console.log(companies)
 
   if (!isLoading) {
     return (
@@ -113,7 +118,7 @@ const ControlCompany = () => {
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <button
-                      className="flex flex-row gap-1 p-2 rounded-full hover:bg-primaryPink hover:text-black"
+                      className="flex flex-row gap-1 p-2 rounded-full hover:bg-primaryPink hover:text-black dark:hover:bg-darkText"
                       onClick={handleShowCreateModal}
                     >
                       <IoIosAddCircle size={20} /> Agregar
@@ -122,38 +127,51 @@ const ControlCompany = () => {
                 </tr>
               </thead>
               <tbody>
-             {companies && companies.rows
-                  .slice()
-                  .sort((a, b) => a.nameCompany.localeCompare(b.CompanyName))
-                  .map((fila, index) => ( 
-                    <tr
-                      key={index}
-                      className=" border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
-                    >
-                      <td className="px-4 py-4">{fila.nameCompany}</td>
-                      <td className="px-4 py-4">{fila.userName}</td>
-                      <td className="px-4 py-4">{fila.subscribedPlan}</td>
-                      <td className="px-4 py-4">{fila.expireAt.split('T')[0]}</td>
-                      <td className="px-4 py-4">
-                        <img className='h-8 w-8' src="https://res.cloudinary.com/dvptbowso/image/upload/v1701979529/HenryPF/ses9qbgrnytwd9l1ovcu.png" alt={fila.CompanyName} />
-                      </td>
-                      
-                      <td className="px-4 py-4">
-                        <button
-                          className=" hover:bg-blue-700 text-black px-2 py-1 rounded mr-2"
-                          onClick={() => handleEditCompanyModal(fila)}
-                        >
-                          <MdEdit size={25} className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"/>
-                        </button>
-                        <button
-                          className=" hover:bg-red-700 text-black px-2 py-1 rounded"
-                          onClick={() => handleDeleteModal(fila.nameCompany)}
-                        >
-                          <MdDeleteForever size={25} className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"/>
-                        </button>
-                      </td>
-                    </tr>
-            ))}
+                {companies &&
+                  companies.rows
+                    .slice()
+                    .sort((a, b) => a.nameCompany.localeCompare(b.CompanyName))
+                    .map((fila, index) => (
+                      <tr
+                        key={index}
+                        className="group border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
+                      >
+                        <td className="px-4 py-4">{fila.nameCompany}</td>
+                        <td className="px-4 py-4">{fila.firstUser}</td>
+                        <td className="px-4 py-4">{fila.subscribedPlan}</td>
+                        <td className="px-4 py-4">
+                          {fila.expireAt.split("T")[0]}
+                        </td>
+                        <td className="px-4 py-4">
+                          <img
+                            className="h-8 w-8"
+                            src={fila.imgCompany}
+                            alt="imagen_empresa"
+                          />
+                        </td>
+
+                        <td className="px-4 py-4">
+                          <button
+                            className=" hover:bg-blue-700 text-black px-2 py-1 rounded mr-2"
+                            onClick={() => handleEditCompanyModal(fila)}
+                          >
+                            <MdEdit
+                              size={25}
+                              className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"
+                            />
+                          </button>
+                          <button
+                            className=" hover:bg-red-700 text-black px-2 py-1 rounded"
+                            onClick={() => handleDeleteModal(fila.nameCompany)}
+                          >
+                            <MdDeleteForever
+                              size={25}
+                              className="dark:text-darkText group-hover:text-black dark:group-hover:text-black"
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
@@ -206,7 +224,9 @@ const ControlCompany = () => {
       </>
     );
   } else {
-    return <p>cargando</p>;
+    return (
+      <Loader />
+    )
   }
 };
 

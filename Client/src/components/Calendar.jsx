@@ -145,9 +145,10 @@ const Calendar = ({
           dispatch(getCalendar(respuesta2.data));
           if (showEditAppointment) {
             setSpecialty(date.User.Specialties[0].specialtyName);
-          } else {
-            setSpecialty(dateInfo.service.specialtyName);
           }
+          // } else {
+          //   setSpecialty(dateInfo.service.specialtyName);
+          // }
           //! LOS DOBLES LLAMADOS ESTAN POR ESTA LOGICA
           setEffectControl(false);
           setLoadingToProps(false);
@@ -159,7 +160,6 @@ const Calendar = ({
            dispatch(setTokenError(error.request.status))
         } else {
           let errorMessage = "";
-          console.log(error);
           if (!error.response) {
             errorMessage = error.message;
           } else {
@@ -189,7 +189,7 @@ const Calendar = ({
     setTimeout(() => {
       setShowEditAppointment(true);
       setAux(false);
-    }, 2000);
+    }, 3500);
   };
 
   const handleModal = (id) => {

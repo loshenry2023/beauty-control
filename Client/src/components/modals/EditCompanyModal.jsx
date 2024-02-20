@@ -73,18 +73,6 @@ const EditCompanyModal = ({
         [name]: value,
       }));
     }
-
-   /*  setService((prevInfo) => {
-      const validationErrors = serviceValidation({
-        ...prevInfo,
-        [name]: value,
-      });
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: validationErrors[name],
-      }));
-      return prevInfo;
-    }); */
   };
 
   console.log(company)
@@ -93,14 +81,7 @@ const EditCompanyModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   /*  const validationErrors = serviceValidation(service);
-    setErrors(validationErrors);
-    const hasErrors = Object.values(validationErrors).some(
-      (error) => error !== undefined
-    );
 
-    if (hasErrors) {
-    } else { */
       try {
 
         setDisableSubmit(true)
@@ -234,6 +215,7 @@ const EditCompanyModal = ({
                     className={`border border-black p-2 rounded w-full ${
                       errors.expireAt !== undefined && "border-2 border-red-500"
                     } dark:text-darkText dark:bg-darkPrimary`}
+                    onKeyDown={(e) => e.preventDefault()}
                   />
                   {errors.expireAt !== "" && (
                     <p className=" text-red-500">{errors.expireAt}</p>

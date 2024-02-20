@@ -35,7 +35,6 @@ function RegisterForm({
       if (e.keyCode === 27) {
         setShowResgisterFormModal(false);
       }
-      console.log(user);
     };
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
@@ -142,7 +141,6 @@ function RegisterForm({
 
         const response = await axios.post(`${API_URL_BASE}/v1/newuser`, data);
 
-        console.log(user);
 
         const sendEmail = {
           origin: user.userName,
