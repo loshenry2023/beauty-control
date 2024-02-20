@@ -36,6 +36,10 @@ const newConsumableValidation = (data) => {
       "La descripción debe tener al menos 3 caracteres";
   }
 
+  if (data.productCode.length === 0) {
+    validationErrors.productCode = "El codigo de producto no puede quedar vacío"
+  }
+
   return validationErrors;
 };
 

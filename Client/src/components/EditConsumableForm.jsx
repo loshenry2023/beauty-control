@@ -27,7 +27,7 @@ function EditConsumableForm({
     productCode: productData.productCode || "",
     supplier: productData.supplier || "",
     amount: productData.amount || "",
-    newPrice: productData.price || "",
+    newPrice: Math.floor(productData.price) || "",
     priceHistory: [],
     adjustmentValue: 0,
     updatedAmount: 0
@@ -264,14 +264,14 @@ function EditConsumableForm({
                       />
                       <button
                         type="button"
-                        className="border border-black p-1 rounded font-bold dark:text-darkText dark:border-darkText"
+                        className="focus:ring-2 ring-blue-600 border border-black p-1 rounded font-bold dark:text-darkText dark:border-darkText"
                         onClick={() => handleAdjustAmount("subtract")}
                       >
                         Quitar
                       </button>
                       <button
                         type="button"
-                        className="border border-black p-1 rounded font-bold dark:text-darkText dark:border-darkText ml-2"
+                        className="focus:ring-2 ring-blue-600 border border-black p-1 rounded font-bold dark:text-darkText dark:border-darkText ml-2"
                         onClick={() => handleAdjustAmount("add")}
                       >
                         Agregar

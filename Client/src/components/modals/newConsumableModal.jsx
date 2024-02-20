@@ -7,10 +7,9 @@ import getParamsEnv from "../../functions/getParamsEnv";
 import { toast } from "react-hot-toast";
 import Loader from "../Loader";
 
-
 const { API_URL_BASE, CONSUMABLES } = getParamsEnv();
 
-function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
+function NewConsumableModal({ onClose, token, setEditConsumableModal }) {
   const dispatch = useDispatch();
   const [submitLoader, setSubmitLoader] = useState(false);
   const user = useSelector((state) => state?.user);
@@ -31,11 +30,19 @@ function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
     brnchId: workingBranch.id || "",
     productCode: "",
   });
+
   const updateNewConsumable = (field, value) => {
     setNewConsumable((prevConsumable) => ({
       ...prevConsumable,
       [field]: value,
     }));
+
+    // Manejo de errores en tiempo real
+    const validationErrors = newConsumableValidation({
+      ...newConsumable,
+      [field]: value,
+    });
+    setErrors(validationErrors);
   };
 
   useEffect(() => {
@@ -49,17 +56,15 @@ function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
   }, [user]);
 
   const handleSubmit = async (e) => {
-    console.log("papa")
     e.preventDefault();
-    
+
     const validationErrors = newConsumableValidation(newConsumable);
-    console.log(validationErrors)
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    setSubmitLoader(true)
+    setSubmitLoader(true);
 
     const data = {
       amount: newConsumable.amount,
@@ -69,7 +74,7 @@ function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
       productCode: newConsumable.productCode,
       productName: newConsumable.productName,
       supplier: newConsumable.supplier,
-      token
+      token,
     };
 
     try {
@@ -79,19 +84,19 @@ function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
       );
 
       if (response.data.created === "ok") {
-        setSubmitLoader(false)
+        setSubmitLoader(false);
+        setEditConsumableModal(false)
         setIsCodeInUse(false);
         toast.success("Producto creado con éxito");
-        setShowNewConsumableModal(false)
         onClose();
       } else {
-        setSubmitLoader(false)
-        setSubmissionStatus("error");
+        setSubmitLoader(false);
       }
     } catch (error) {
-      setSubmitLoader(false)
-      toast.error(error.response.data);
-    } 
+      setSubmitLoader(false);
+      console.log(error)
+      toast.error(error.response ? error.response.data : error);
+    }
   };
 
   const handleGoBack = () => {
@@ -111,7 +116,7 @@ function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
                 Agregar nuevo insumo
               </h1>
               <IoClose
-                onClick={() => setShowNewConsumableModal(false)}
+                onClick={() => onClose()}
                 className="cursor-pointer mt-2 w-5 h-5 dark:text-darkText hover:scale-125"
               />
             </div>
@@ -207,7 +212,10 @@ function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
                   placeholder="Cantidad..."
                   value={newConsumable.amount}
                   onChange={(e) =>
-                    updateNewConsumable("amount", parseInt(e.target.value, 10))
+                    updateNewConsumable(
+                      "amount",
+                      parseInt(e.target.value, 10)
+                    )
                   }
                 />
                 {errors.amount && (
@@ -241,21 +249,18 @@ function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
                 />
               </div>
               <div className=" flex justify-center mb-4 space-x-20 mt-6">
-
-              <div className="flex justify-center items-center">
-                {!submitLoader ? (
-                  <button
-                    type="submit"
-                    className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                  >
-                   Agregar
-                  </button>
-                ) : (
-                  <Loader />
-                )}
-              </div>
-
-
+                <div className="flex justify-center items-center">
+                  {!submitLoader ? (
+                    <button
+                      type="submit"
+                      className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                    >
+                      Agregar
+                    </button>
+                  ) : (
+                    <Loader />
+                  )}
+                </div>
               </div>
             </form>
           </div>

@@ -376,7 +376,7 @@ export const getProducts = (
   };
 };
 
-export const createProductRequest = () => ({
+/* export const createProductRequest = () => ({
   type: CREATE_PRODUCT_REQUEST,
 });
 
@@ -535,7 +535,7 @@ export const updateProductPrice = (productId, newPrice) => {
       }
     }
   };
-};
+}; */
 //baba
 export const getPayMethods = (respuesta) => {
   const respuestaOrdenada = respuesta.sort((a, b) => {

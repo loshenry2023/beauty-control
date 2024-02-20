@@ -67,6 +67,7 @@ function Consumables() {
         console.log(response.data)
       } catch (error) {
         console.log(error)
+        toast.error("Hubo un error en la creación.")
       }
     }
 
@@ -133,7 +134,7 @@ function Consumables() {
                     <div className="flex justify-center md:ml-auto">
                       <button
                         onClick={handleShowNewConsumableModal}
-                        className="bg-primaryPink hover:bg-secondaryColor text-white py-2 px-4 rounded border dark:bg-darkPrimary dark:border-darkText dark:hover:bg-gray-200 dark:hover:text-black"
+                        className="bg-secondaryColor hover:bg-primaryColor hover:text-white text-black py-2 px-4 rounded border dark:bg-darkPrimary dark:border-darkText dark:text-darkText dark:hover:bg-gray-200 dark:hover:text-black"
                       >
                         <div className="flex items-center">
                           Nuevo Insumo <FaPlus className="ml-2" />
