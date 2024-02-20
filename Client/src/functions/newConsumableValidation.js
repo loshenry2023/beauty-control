@@ -22,7 +22,7 @@ const newConsumableValidation = (data) => {
     validationErrors.price = "El precio debe ser mayor a 0";
   }
 
-  if (!data.branchId) {
+  if (!data.brnchId) {
     validationErrors.branchId = "Selecciona una sucursal";
   }
 

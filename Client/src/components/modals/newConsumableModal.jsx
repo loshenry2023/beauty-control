@@ -5,30 +5,32 @@ import axios from "axios";
 import newConsumableValidation from "../../functions/newConsumableValidation";
 import getParamsEnv from "../../functions/getParamsEnv";
 import { toast } from "react-hot-toast";
+import Loader from "../Loader";
+
 
 const { API_URL_BASE, CONSUMABLES } = getParamsEnv();
 
-function NewConsumableModal({ onClose }) {
+function NewConsumableModal({ onClose, token, setShowNewConsumableModal }) {
   const dispatch = useDispatch();
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const user = useSelector((state) => state?.user);
+  const branches = user.branches;
+  const [selectedBranch, setSelectedBranch] = useState(null);
+
+  const [errors, setErrors] = useState({});
+  const [isCodeInUse, setIsCodeInUse] = useState(false);
+
+  const workingBranch = useSelector((state) => state?.workingBranch);
+
   const [newConsumable, setNewConsumable] = useState({
     productName: "",
     description: "",
     supplier: "",
     amount: 0,
     price: 0.0,
-    branchId: "",
+    brnchId: workingBranch.id || "",
     productCode: "",
   });
-  const [submissionStatus, setSubmissionStatus] = useState(null);
-  const user = useSelector((state) => state?.user);
-  const branches = user.branches;
-  const [selectedBranch, setSelectedBranch] = useState(null);
-  const [codeCounter, setCodeCounter] = useState(1);
-  const [errors, setErrors] = useState({});
-  const [isCodeInUse, setIsCodeInUse] = useState(false);
-
-  const workingBranch = useSelector((state) => state?.workingBranch);
-
   const updateNewConsumable = (field, value) => {
     setNewConsumable((prevConsumable) => ({
       ...prevConsumable,
@@ -37,15 +39,6 @@ function NewConsumableModal({ onClose }) {
   };
 
   useEffect(() => {
-    if (user && user.branches && user.branches.length > 0) {
-      const defaultBranchId = workingBranch.id;
-      setSelectedBranch(defaultBranchId);
-
-      selectedBranch;
-
-      updateNewConsumable("branchId", defaultBranchId);
-    }
-
     const close = (e) => {
       if (e.keyCode === 27) {
         onClose();
@@ -56,48 +49,55 @@ function NewConsumableModal({ onClose }) {
   }, [user]);
 
   const handleSubmit = async (e) => {
+    console.log("papa")
     e.preventDefault();
-    const newCode = codeCounter + 1;
-    setCodeCounter(newCode);
-
+    
     const validationErrors = newConsumableValidation(newConsumable);
-
+    console.log(validationErrors)
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      //console.error("Hubo errores de validación", validationErrors);
-    } else {
-      if (!selectedBranch) {
-        //console.error("error con la sucursal");
-        return;
-      }
+      return;
+    }
 
-      try {
-        const response = await axios.post(
-          API_URL_BASE + "/v1/products",
-          newConsumable
-        );
+    setSubmitLoader(true)
 
-        if (response.statusText === "Created") {
-          setIsCodeInUse(false);
-          toast.success("Producto creado con éxito");
-          setSubmissionStatus("success");
-          onClose();
-        } else {
-          setSubmissionStatus("error");
-        }
-      } catch (error) {
-        toast.error(
-          `Código N°: ${newConsumable.productCode} en uso, por favor elija otro.`
-        );
-        setIsCodeInUse(true);
+    const data = {
+      amount: newConsumable.amount,
+      brnchId: newConsumable.brnchId,
+      description: newConsumable.description,
+      price: newConsumable.price,
+      productCode: newConsumable.productCode,
+      productName: newConsumable.productName,
+      supplier: newConsumable.supplier,
+      token
+    };
+
+    try {
+      const response = await axios.post(
+        API_URL_BASE + "/v1/productsCreate",
+        data
+      );
+
+      if (response.data.created === "ok") {
+        setSubmitLoader(false)
+        setIsCodeInUse(false);
+        toast.success("Producto creado con éxito");
+        setShowNewConsumableModal(false)
+        onClose();
+      } else {
+        setSubmitLoader(false)
         setSubmissionStatus("error");
       }
-    }
+    } catch (error) {
+      setSubmitLoader(false)
+      toast.error(error.response.data);
+    } 
   };
 
   const handleGoBack = () => {
     onClose();
   };
+
   return (
     <div className="modal" style={{ zIndex: 1000 }}>
       <div
@@ -111,7 +111,7 @@ function NewConsumableModal({ onClose }) {
                 Agregar nuevo insumo
               </h1>
               <IoClose
-                onClick={handleGoBack}
+                onClick={() => setShowNewConsumableModal(false)}
                 className="cursor-pointer mt-2 w-5 h-5 dark:text-darkText hover:scale-125"
               />
             </div>
@@ -241,21 +241,21 @@ function NewConsumableModal({ onClose }) {
                 />
               </div>
               <div className=" flex justify-center mb-4 space-x-20 mt-6">
-                <button
-                  type="submit"
-                  onClick={handleSubmit}
-                  className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                >
-                  Agregar
-                </button>
 
-                <button
-                  type="button"
-                  onClick={handleGoBack}
-                  className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                >
-                  Cancelar
-                </button>
+              <div className="flex justify-center items-center">
+                {!submitLoader ? (
+                  <button
+                    type="submit"
+                    className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                  >
+                   Agregar
+                  </button>
+                ) : (
+                  <Loader />
+                )}
+              </div>
+
+
               </div>
             </form>
           </div>
