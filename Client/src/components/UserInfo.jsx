@@ -59,7 +59,6 @@ const UserInfo = () => {
          dispatch(setTokenError(error.request.status))
       } else {
         let errorMessage= ""   
-        console.log(error)     
         if (!error.response) {
           errorMessage = error.message;
         } else {

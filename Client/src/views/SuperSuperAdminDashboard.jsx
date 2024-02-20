@@ -9,10 +9,13 @@ const SuperSuperAdminDashboard = () => {
 
   return (
     <>
+      <div className='w-full h-screen dark:bg-darkBackground'>
       <SSadminNavBar />
-      <div className='w-2/3 m-auto pt-8'>
+      <div className='w-2/3 m-auto pt-20'>
         <ControlCompany />
       </div>
+      </div>
+
     </>
 
   )

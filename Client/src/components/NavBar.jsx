@@ -89,6 +89,7 @@ const NavBar = () => {
 
   const showRed = localStorage.getItem('showRed');
 
+
   return (
     <>
       <nav
@@ -130,7 +131,7 @@ const NavBar = () => {
           </span>
         </div>
         <div className="flex gap-4 items-center pointer-events:auto">
-          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className="h-6 w-6 cursor-pointer dark:text-darkText" /> : null}
+          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className={user.role === "superAdmin" ? "h-6 w-6 cursor-pointer dark:text-black" : "h-6 w-6 cursor-pointer dark:text-darkText" }/> : null}
           {theme==="light" ?
           <MdDarkMode
             onClick={handleDarkMode}
@@ -141,11 +142,11 @@ const NavBar = () => {
             onClick={handleDarkMode}
             className="h-6 w-6 cursor-pointer dark:text-yellow-500"
           />}
-          <CiBellOn className="relative h-6 w-6 dark:text-darkText" />
+          <CiBellOn className="relative h-6 w-6 " />
           {user.role === "superAdmin" || user.role === "admin" || appointments.count === 0 ? null :
             showRed && <span onClick={() => eraseNotifications()} className=" flex flex-row items-center justify-center font-bold mx-auto my-auto absolute w-4 h-4 top-[40px] right-[76px] rounded-full bg-red-500 cursor-pointer"> {appointments.count}  </span>}
           <Link to={ROOT}>
-            <IoExitOutline className="h-6 w-6 dark:text-darkText" onClick={handleLogout} />
+            <IoExitOutline className="h-6 w-6 " onClick={handleLogout} />
           </Link>
         </div>
       </nav>
