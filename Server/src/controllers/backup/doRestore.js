@@ -9,9 +9,8 @@ const { Op } = require("sequelize");
 const logData = require("../../functions/logData");
 
 const doRestore = async (data, req, res) => {
-    const { conn, Branch, Calendar, CatGastos, Client, HistoryService, Incoming, Payment, PriceHistory, Product, Service, Specialty, User } = await connectDB(data.dbName);
+    const { conn, Branch, CatGastos, Client, Payment, PriceHistory, Product, Service, Specialty, User, Calendar, HistoryService, Incoming } = await connectDB(data.dbName);
     await conn.sync();
-
     try {
         showLog('doRestore');
         let regToDelete;
