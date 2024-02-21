@@ -71,7 +71,7 @@ const getBalance = require("../Handlers/balance/getBalanceHandler");
 //! Resguardo y restauración de datos:
 const postDoBackup = require("../Handlers/backup/postDoBackupHandler");
 const postDoRestoreHandler = require("../Handlers/backup/postDoRestoreHandler");
-
+const postDoRestoreTestHandler = require("../Handlers/backup/postDoRestoreTestHandler");
 // Todo - Rutas
 //! Empresas:
 router.post("/v1/companyadmin", postCompanyHandler); // crea una nueva empresa
@@ -143,4 +143,5 @@ router.post("/v1/getbalance", getBalance); // obtiene todos los usuarios para el
 //! Resguardo y restauración de datos:
 router.post("/v1/dobackup", postDoBackup); // genera un resguardo de las tablas
 router.post("/v1/dorestore", postDoRestoreHandler); // restaura un resguardo previo
+router.post("/v1/dorestoretest", postDoRestoreTestHandler); // TEST: prepara los datos para la posterior restauración de un resguardo en modo test
 module.exports = router;

@@ -1,14 +1,14 @@
 // ! Resguardo en txt las tablas de la empresa. No se resguarda el calendario de citas ni el historial.
 const { connectDB } = require("../../DB_connection_General"); // conexión a la base de datos de trabajo
-//const { Op } = require("sequelize");
 const showLog = require("../../functions/showLog");
 const fs = require('fs');
 const path = require('path');
 const logData = require("../../functions/logData");
 
 const doBackup = async (dataInc, res) => {
-    const { data, userLogged, dbName, nameCompany } = dataInc
+    const { userLogged, dbName, nameCompany } = dataInc
     showLog('doBackup');
+    if (!dbName) { throw Error('faltan datos'); }
     const { conn, Branch, Calendar, CatGastos, Client, HistoryService, Incoming, Payment, PriceHistory, Product, Service, Specialty, User } = await connectDB(dbName);
     await conn.sync();
     try {
@@ -40,18 +40,6 @@ const doBackup = async (dataInc, res) => {
         });
         output += "~~~~~~~~~~~~\n";
 
-        // Calendario:
-        // const regCal = await Calendar.findAll({
-        //     // where: { id: idBranch },
-        // });
-        // output += "~~Calendar\n";
-        // regCal.map((reg, index) => {
-        //     //showLog(reg?.linkTk);
-        //     const formattedOutput = `${reg?.date_from ?? ''}\t${reg?.date_to ?? ''}\t${reg?.obs ?? ''}\t${reg?.current ?? ''}\t${reg?.reminded ?? ''}\t\n`;
-        //     output += formattedOutput;
-        // });
-        // output += "~~~~~~~~~~~~\n";
-
         // Cat. gastos:
         const regCatGast = await CatGastos.findAll({
         });
@@ -74,28 +62,6 @@ const doBackup = async (dataInc, res) => {
             output += formattedOutput;
         });
         output += "~~~~~~~~~~~~\n";
-
-        // Incoming:
-        // const regIncoming = await Incoming.findAll({
-        //     include: [Payment],
-        // });
-        // output += "~~Incoming\n";
-        // regIncoming.map(async(reg, index) => {
-        //     showLog(`--- incoming ${reg?.paymentMethodName}`);
-        //     const formattedOutput = `${reg?.amount ?? ''}\t${reg?.paymentMethodName ?? ''}\t${reg?.DateIncoming ?? ''}\t\n`;
-        //     output += formattedOutput;
-        //     // Obtengo los pagos relacionados:
-        //     output += "~~~incoming_payment\n";
-        //     if (reg?.Payments && reg.Payments.length > 0) {
-        //         reg.Payments.forEach(payment => {
-        //             showLog(`------ meth ${payment.paymentMethodName}`);
-        //             output += `${payment.paymentMethodName}\t`;
-        //         });
-        //         output += `\n`;
-        //     }
-        //     output += "~~~F~~~~~~~~\n";
-        // });
-        // output += "~~~~~~~~~~~~\n";
 
         // PriceHistory:
         const regPriceHistory = await PriceHistory.findAll({
@@ -188,18 +154,6 @@ const doBackup = async (dataInc, res) => {
             output += formattedOutput;
         });
         output += "~~~~~~~~~~~~\n";
-
-        // HistoryService:
-        // const regHistoryService = await HistoryService.findAll({
-        //     // where: { id: idBranch },
-        // });
-        // output += "~~HistoryService\n";
-        // regHistoryService.map(async(reg, index) => {
-        //     //showLog(reg?.linkTk);
-        //     const formattedOutput = `${reg?.imageServiceDone ?? ''}\t${reg?.date ?? ''}\t${reg?.conformity ?? ''}\t${reg?.branchName ?? ''}\t${reg?.serviceName ?? ''}\t${reg?.attendedBy ?? ''}\t${reg?.email ?? ''}\t${reg?.name ?? ''}\t${reg?.lastName ?? ''}\t${reg?.id_pers ?? ''}\t${reg?.idUser ?? ''}\t\n`;
-        //     output += formattedOutput;
-        // });
-        // output += "~~~~~~~~~~~~\n";
         output += "~~~FIN\n";
 
         fs.writeFileSync(filePath, output, 'utf-8');

@@ -252,7 +252,7 @@ async function AddRegCompany(dataMain) {
             origin: EMAIL_MAIN,
             target: EMAIL_MAIN,
             subject: "¡Bienvenidos a Beauty Control!",
-            html: `${nameCompany}: que disfrutes de tu suscripción. -> ${origin}`,
+            html: `${nameCompany}: que disfrutes de tu suscripción. -> ${origin}. Tu suscripción expira el ${expireAt}`,
         }
         await sendMail(data, ".");
         const data2 = {
