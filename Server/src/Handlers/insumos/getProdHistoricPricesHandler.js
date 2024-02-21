@@ -6,7 +6,7 @@ const checkToken = require('../../functions/checkToken');
 const getProdHistoricPricesHandler = async (req, res) => {
     try {
         const { token, branchId, productCode } = req.body
-        console.log(req.body);
+        //console.log(req.body);
         showLog(`getProdHistoricPricesHandler`);
         // Verifico token:
         if (!token) { throw Error("Se requiere token"); }

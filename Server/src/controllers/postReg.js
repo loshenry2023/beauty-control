@@ -63,13 +63,13 @@ const postReg = async (dataInc) => {
 }
 
 async function AddRegProduct(datamain) {
-  
+
     const { Product, data, conn, Branch, PriceHistory, dataLog } = datamain;
-    console.log(data, "data")
+    //console.log(data, "data")
     const { price, brnchId, productCode, productName, description, supplier, amount } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
-        if (!price || !brnchId || !productCode || !productName || !description || !supplier || !amount) {console.log("papa"); }
+        if (!price || !brnchId || !productCode || !productName || !description || !supplier || !amount) { console.log("papa"); }
         const existingProduct = await Product.findOne({
             where: { productCode, branchId: brnchId },
         });

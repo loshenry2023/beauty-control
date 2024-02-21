@@ -5,9 +5,10 @@ const showLog = require("../functions/showLog");
 const sendMail = require("../functions/sendMail");
 const { EMAIL } = require("../functions/paramsEnv");
 const { Op } = require('sequelize');
+const logData = require("../functions/logData");
 
 async function getAppointmentsReminder(dbName) {
-    showLog(`getAppointmentsReminder`);
+    //showLog(`getAppointmentsReminder`);
     const { conn, Service, Branch, Calendar, Client, User } = await connectDB(dbName);
     await conn.sync();
 
@@ -76,7 +77,7 @@ async function getAppointmentsReminder(dbName) {
             cont++;
         }
         await conn.close(); // cierro la conexión
-        showLog(`getAppointmentsReminder OK - ${cont} sent`);
+        //showLog(`getAppointmentsReminder OK -> ${dbName} - ${cont} sent`);
         return { sent: true };
     } catch (err) {
         // Cierro la conexión:
@@ -88,7 +89,7 @@ async function getAppointmentsReminder(dbName) {
     }
 }
 
-async function processData(reg, Calendar, nameCompany, imgCompany) {
+async function processData(reg, Calendar, nameCompany, imgCompany, dbName) {
     const dateApp = reg.date_from.toISOString().slice(0, 10);
     const timeApp = reg.date_from.toISOString().slice(11, 16);
     const clientName = reg.Client.name
@@ -118,6 +119,8 @@ async function processData(reg, Calendar, nameCompany, imgCompany) {
         // Inicio la transacción:
         existingEvent.reminded = true;
         await existingEvent.save();
+        logData({ op: "S", nameCompany: nameCompany, dbName: dbName, userName: ".", desc: `Appointment reminder sent to ${reg.Client.email}` });
+        showLog(`getAppointmentsReminder OK -> sent to ${nameCompany}, ${reg.Client.email}`);
     } else {
         showLog(`getAppointmentsReminder ERROR ${reg.Client.email}-> ${resp.message}`);
     }
