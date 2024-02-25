@@ -55,10 +55,10 @@ const getAllProductsHandler = async (req, res) => {
             tableNameText: "Insumos",
             tableName2: Branch,
             tableName3: PriceHistory,
-            tableName4: dataAdded,
+            tableName4: "",
             tableName5: "",
             id: "",
-            dataQuery: "",
+            dataQuery: dataAdded,
             conn: conn,
             tableName6: ""
         }
