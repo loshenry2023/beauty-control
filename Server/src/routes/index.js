@@ -56,16 +56,16 @@ const deleteCalendarHandler = require("../Handlers/calendar/deleteCalendarHandle
 const putCalendarHandler = require("../Handlers/calendar/putCalendarHandler");
 const getCalendarHandler = require("../Handlers/calendar/getCalendarHandler");
 //! Categorías de gastos:
-const postCatHandler = require("../Handlers/catGastos/postCatHandler");
-const putCatHandler = require("../Handlers/catGastos/putCatHandler");
-const deleteCatHandler = require("../Handlers/catGastos/deleteCatHandler");
-const getCatHandler = require("../Handlers/catGastos/getCatHandler");
+const postCatHandler = require("../Handlers/catExpenses/postCatHandler");
+const putCatHandler = require("../Handlers/catExpenses/putCatHandler");
+const deleteCatHandler = require("../Handlers/catExpenses/deleteCatHandler");
+const getCatHandler = require("../Handlers/catExpenses/getCatHandler");
 //! Insumos:
-const getAllProductsHandler = require("../Handlers/insumos/getAllProductsHandler");
-const postProductHandler = require("../Handlers/insumos/postProductHandler");
-const putProductHandler = require("../Handlers/insumos/putProductHandler");
-const getProdHistoricPricesHandler = require("../Handlers/insumos/getProdHistoricPricesHandler");
-const deleteProductHandler = require("../Handlers/insumos/deleteProductHandler");
+const getAllProductsHandler = require("../Handlers/product/getAllProductsHandler");
+const postProductHandler = require("../Handlers/product/postProductHandler");
+const putProductHandler = require("../Handlers/product/putProductHandler");
+const getProdHistoricPricesHandler = require("../Handlers/product/getProdHistoricPricesHandler");
+const deleteProductHandler = require("../Handlers/product/deleteProductHandler");
 //! Balance y comisiones:
 const getBalance = require("../Handlers/balance/getBalanceHandler");
 //! Resguardo y restauración de datos:

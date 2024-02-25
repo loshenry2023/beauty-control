@@ -19,83 +19,6 @@ const getReg = async (dataInc) => {
     try {
         let reg;
         switch (tableNameText) {
-            case "Company":
-                const { dateCreateFrom, dateCreateTo, showExpired } = dataQuery;
-                let dFrom = dateCreateFrom + " 00:00:00";
-                let dTo = dateCreateTo + " 23:59:59";
-                const dateNow = new Date();
-                const result = await tableName.findAndCountAll({
-                    attributes: [
-                        [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
-                        "subscribedPlan",
-                        "expireAt",
-                        "imgCompany",
-                        "id",
-                        "dbName",
-                    ],
-                    where: {
-                        dbName: {
-                            [Op.ne]: DB_NAME
-                        },
-                        createdAt: {
-                            [Op.gte]: dFrom,
-                            [Op.lte]: dTo,
-                        },
-                        expireAt: {
-                            [Op.gte]: (showExpired === "0") ? dateNow : "1980-01-01 00:00:00",
-                        },
-                    },
-                    order: [["nameCompany", "asc"]],
-                });
-                const companies = result.rows;
-                // Agrego el usuario principal al objeto de empresas:
-                let processedCompanies = new Set();
-                let compOut = [];
-                let firstUsr = "";
-                let countTot = 0;
-                for (const company of companies) {
-                    if (!processedCompanies.has(company.nameCompany)) { // verifico si existe antes de agregarlo a dataOut
-                        const { conn, User } = await connectDB(company.dbName);
-                        await conn.sync();
-                        const userFound = await User.findOne({  // User
-                            attributes: [
-                                "first",
-                                "userName",
-                            ],
-                            where: { first: '1' },
-                        });
-                        if (userFound) {
-                            firstUsr = userFound.userName;
-                        } else {
-                            firstUsr = "{no encontrado}";
-                        }
-                        await conn.close();
-
-                        dataOut = {
-                            nameCompany: company.nameCompany,
-                            subscribedPlan: company.subscribedPlan,
-                            expireAt: company.expireAt,
-                            imgCompany: company.imgCompany,
-                            firstUser: firstUsr,
-                        };
-                        compOut.push(dataOut);
-                        processedCompanies.add(company.nameCompany);
-                        countTot++;
-                    }
-                }
-                return { count: countTot, rows: compOut };
-            case "PriceHistory":
-                
-                const { branchId, productCode: prodID } = dataQuery;
-                reg = await tableName.findAndCountAll({ //PriceHistory
-                    attributes: [
-                        ["createdAt", "date"],
-                        "price",
-                    ],
-                    where: { prodId: prodID, branchId: branchId },
-                    order: [["createdAt", "DESC"]],
-                });
-                break;
             case "Insumos":
                 const {
                     productName,
@@ -108,16 +31,18 @@ const getReg = async (dataInc) => {
                     productCode,
                     supplier,
                     attribute: attr,
-                } = tableName4;
-                const { count, rows: products } = await tableName.findAndCountAll({ // Product
+                } = dataQuery;
+
+                const resultPr = await tableName.findAndCountAll({
+
+                    //const { count, rows: products } = await tableName.findAndCountAll({ // Product
                     attributes: [
+                        [conn.fn('DISTINCT', conn.col('productCode')), 'productCode'],
                         "productName",
                         "description",
                         "supplier",
                         "amount",
-                        "productCode",
                     ],
-                    distinct: true,
                     where: {
                         [Op.and]: [
                             // Filtro por sede:
@@ -134,12 +59,14 @@ const getReg = async (dataInc) => {
                             description !== "" ? { description: { [Op.iLike]: `%${description}%` } } : {},
                         ].filter(Boolean), // elimina los filtros nulos o vacíos
                     },
-                    order: [["code", ord]],
+                    order: [["productCode", ord]],
                     limit: sze,
                     offset: sze * pg,
                 });
-                // Agrego el precio al objeto de producto:
+                // Agrego el precio al objeto de productos:
+                const products = resultPr.rows;
                 let prodOut = [];
+                let countPrTot = 0;
                 for (const product of products) {
                     const latestPriceHistory = await tableName3.findOne({  // PriceHistory
                         where: { prodId: product.productCode, branchId: brnchId },
@@ -154,8 +81,85 @@ const getReg = async (dataInc) => {
                         amount: product.amount,
                     };
                     prodOut.push(dataOut);
+                    countPrTot++;
                 }
-                return { count, products: prodOut };
+                return { count: countPrTot, products: prodOut };
+            case "Company":
+                const { dateCreateFrom, dateCreateTo, showExpired, page: pgg = 0, size: szee = 10 } = dataQuery;
+                let dFrom = dateCreateFrom + " 00:00:00";
+                let dTo = dateCreateTo + " 23:59:59";
+                const dateNow = new Date();
+                const result = await tableName.findAndCountAll({
+                    attributes: [
+                        [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
+                        "subscribedPlan",
+                        "expireAt",
+                        "imgCompany",
+                        "dbName",
+                    ],
+                    where: {
+                        dbName: {
+                            [Op.ne]: DB_NAME
+                        },
+                        createdAt: {
+                            [Op.gte]: dFrom,
+                            [Op.lte]: dTo,
+                        },
+                        expireAt: {
+                            [Op.gte]: (showExpired === "0") ? dateNow : "1980-01-01 00:00:00",
+                        },
+                    },
+                    order: [["nameCompany", "asc"]],
+                    limit: szee, //cuántas filas se mostrarán por página.
+                    // pgg: página actual que se está visualizando
+                    offset: szee * pgg, //cuántas filas se deben omitir antes de comenzar a recuperar las filas para la página actual
+                });
+                const companies = result.rows;
+                // Agrego el usuario principal al objeto de empresas:
+                //let processedCompanies = new Set();
+                let compOut = [];
+                let firstUsr = "";
+                let countTot = 0;
+                for (const company of companies) {
+                    const { conn, User } = await connectDB(company.dbName);
+                    await conn.sync();
+                    const userFound = await User.findOne({  // User
+                        attributes: [
+                            "first",
+                            "userName",
+                        ],
+                        where: { first: '1' },
+                    });
+                    if (userFound) {
+                        firstUsr = userFound.userName;
+                    } else {
+                        firstUsr = "{no encontrado}";
+                    }
+                    await conn.close();
+
+                    dataOut = {
+                        nameCompany: company.nameCompany,
+                        subscribedPlan: company.subscribedPlan,
+                        expireAt: company.expireAt,
+                        imgCompany: company.imgCompany,
+                        firstUser: firstUsr,
+                    };
+                    compOut.push(dataOut);
+                    //processedCompanies.add(company.nameCompany);
+                    countTot++;
+                }
+                return { count: countTot, rows: compOut };
+            case "PriceHistory":
+                const { branchId, productCode: prodID } = dataQuery;
+                reg = await tableName.findAndCountAll({ //PriceHistory
+                    attributes: [
+                        ["createdAt", "date"],
+                        "price",
+                    ],
+                    where: { prodId: prodID, branchId: branchId },
+                    order: [["createdAt", "DESC"]],
+                });
+                break;
             case "Specialists":
                 const { branchWorking } = dataQuery;
                 reg = await tableName.findAll({
