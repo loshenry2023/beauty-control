@@ -63,9 +63,6 @@ const SSadminNavBar = () => {
         
       >
         <div className="flex flex-row items-center gap-5">
-          
-
-            <Link to={HOME}>
               <img
                 className="hidden sm:flex w-24"
                 src={
@@ -73,12 +70,11 @@ const SSadminNavBar = () => {
                 }
                 alt="logo"
               />
-            </Link>
         </div>
         <div className="flex gap-4 ml:10 sm:ml-28 items-center pointer-events:auto ">
-          <span className=" text-center font-extrabold sm:text-lg">
+          <span className=" text-center font-fontTitle font-extrabold tracking-wider sm:text-2xl">
             {" "}
-            Control de Empresas
+            Control de empresas
           </span>
         </div>
         <div className="flex gap-4 items-center pointer-events:auto">

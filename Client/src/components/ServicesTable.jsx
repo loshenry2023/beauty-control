@@ -166,7 +166,7 @@ const ServicesTable = () => {
                         <td className="px-4 py-4">${fila.price}</td>
                         <td className="px-4 py-4">
                           <img
-                            className="h-8 w-8"
+                            className="h-8 w-8 rounded-2xl"
                             src={fila.ImageService}
                             alt={fila.serviceName}
                           />
