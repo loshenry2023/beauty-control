@@ -33,16 +33,16 @@ const getReg = async (dataInc) => {
                     attribute: attr,
                 } = dataQuery;
 
-                const resultPr = await tableName.findAndCountAll({
-
-                    //const { count, rows: products } = await tableName.findAndCountAll({ // Product
+                const { count, rows } = await tableName.findAndCountAll({
                     attributes: [
-                        [conn.fn('DISTINCT', conn.col('productCode')), 'productCode'],
+                        //[conn.fn('DISTINCT', conn.col('productCode')), 'productCode'],
+                        "productCode",
                         "productName",
                         "description",
                         "supplier",
                         "amount",
                     ],
+                    distinct: true,
                     where: {
                         [Op.and]: [
                             // Filtro por sede:
@@ -64,7 +64,7 @@ const getReg = async (dataInc) => {
                     offset: sze * pg,
                 });
                 // Agrego el precio al objeto de productos:
-                const products = resultPr.rows;
+                const products = rows;
                 let prodOut = [];
                 let countPrTot = 0;
                 for (const product of products) {
@@ -83,20 +83,30 @@ const getReg = async (dataInc) => {
                     prodOut.push(dataOut);
                     countPrTot++;
                 }
-                return { count: countPrTot, products: prodOut };
+                return { count: count, products: prodOut };
+
+
+
+
             case "Company":
                 const { dateCreateFrom, dateCreateTo, showExpired, page: pgg = 0, size: szee = 10 } = dataQuery;
                 let dFrom = dateCreateFrom + " 00:00:00";
                 let dTo = dateCreateTo + " 23:59:59";
                 const dateNow = new Date();
-                const result = await tableName.findAndCountAll({
+
+
+
+                //const result = await tableName.findAndCountAll({
+                const { count: countC, rows: rowsC } = await tableName.findAndCountAll({
                     attributes: [
-                        [conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
+                        //[conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
+                        "nameCompany",
                         "subscribedPlan",
                         "expireAt",
                         "imgCompany",
                         "dbName",
                     ],
+                    distinct: true,
                     where: {
                         dbName: {
                             [Op.ne]: DB_NAME
@@ -114,7 +124,8 @@ const getReg = async (dataInc) => {
                     // pgg: página actual que se está visualizando
                     offset: szee * pgg, //cuántas filas se deben omitir antes de comenzar a recuperar las filas para la página actual
                 });
-                const companies = result.rows;
+                const companies = rowsC;
+
                 // Agrego el usuario principal al objeto de empresas:
                 //let processedCompanies = new Set();
                 let compOut = [];
@@ -148,7 +159,7 @@ const getReg = async (dataInc) => {
                     //processedCompanies.add(company.nameCompany);
                     countTot++;
                 }
-                return { count: countTot, rows: compOut };
+                return { count: countC, rows: compOut };
             case "PriceHistory":
                 const { branchId, productCode: prodID } = dataQuery;
                 reg = await tableName.findAndCountAll({ //PriceHistory
