@@ -100,9 +100,6 @@ function Consumables() {
 
 
     const totalPages = products && products.count ? Math.ceil(products.count / size) : 0;
-    //const totPages = Math.ceil(allVideogames / videogamePerPage);
-    //const totPages = Math.ceil(totRegistros / cantPorPagina);
-
 
     console.log(totalPages)
 

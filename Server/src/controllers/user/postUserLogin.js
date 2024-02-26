@@ -40,6 +40,8 @@ const postUserLogin = async (req, res) => {
             const userDataCompany = {
                 id: existingUserCompany.id,
                 userName: existingUserCompany.userName,
+                name: "Beauty",
+                lastName: "Control",
                 role: "superSuperAdmin",
                 firstLogin: isFirst,
                 createdAt: existingUserCompany.createdAt,
