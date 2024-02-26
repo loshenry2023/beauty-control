@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import SSadminNavBar from '../components/SSadminNavBar'
 import ControlCompany from '../components/ControleCompany'
 

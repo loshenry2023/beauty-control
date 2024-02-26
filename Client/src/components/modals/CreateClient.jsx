@@ -247,6 +247,7 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
                                 type="date"
                                 name="birthday"
                                 value={client.birthday}
+                                onKeyDown={(e) => e.preventDefault()}
                             />
                             {errors.birthday && <p className=" text-red-500">{errors.birthday}</p>}
                         </div>

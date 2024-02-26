@@ -135,7 +135,7 @@ const SpecialistMonitoring = () => {
                 </h1>
               </div>
               <div className="flex flex-col gap-5 md:flex-row">
-                <div className="flex  gap-2">
+                <div className="flex gap-2">
                   <label className="hidden md:inline dark:text-darkText">
                     Fecha inicial
                   </label>

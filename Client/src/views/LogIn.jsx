@@ -158,8 +158,8 @@ const LogIn = () => {
 
   return (
     <section className="mx-auto">
-      <div className="bg-[url('https://res.cloudinary.com/doyafxwje/image/upload/v1703630993/LogIn/osoq2vut2vy2fivyauxm.jpg')] bg-cover bg-center flex flex-col items-center justify-center h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow-xl shadow-black max-w-sm">
+      <div className="bg-[url(https://images.unsplash.com/photo-1612538498456-e861df91d4d0?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] bg-cover bg-center flex flex-col items-center justify-center h-screen lg:py-0">
+        <div className="w-full bg-white rounded-lg shadow-sm shadow-black max-w-sm">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex justify-between">
               <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 ">

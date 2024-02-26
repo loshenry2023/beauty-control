@@ -121,8 +121,6 @@ const CreateCompanyModal = ({
           token: token,
         };
 
-        console.log(data, "enviando al back")
-
         const response = await axios.post(`${API_URL_BASE}/v1/companyadmin`, data);
 
         if (response.data.created === "ok") {
@@ -149,7 +147,7 @@ const CreateCompanyModal = ({
       } catch (error) {
         setDisableSubmit(false);
         setSubmitLoader(false);
-        toast.error(`Hubo un problema con la creacion. ${error}`);
+        toast.error(`Hubo un problema con la creacion. ${error.response.data}`);
       }
     }
   };
@@ -169,8 +167,6 @@ const CreateCompanyModal = ({
   }, [company]);
 
   const plans = [{name: "básico"}]
-
-  console.log(company)
 
   return (
     <>
@@ -261,7 +257,7 @@ const CreateCompanyModal = ({
                   <button
                     type="submit"
                     disabled={disableSubmit}
-                    className="mt-2 px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                    className="px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary dark:hover:bg-zinc-800"
                   >
                     Crear nueva Empresa
                   </button>

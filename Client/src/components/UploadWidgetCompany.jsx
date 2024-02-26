@@ -32,7 +32,7 @@ export const UploadWidgetCompany = ({ setCompany }) => {
 
   return (
     <span
-      className="flex items-center cursor-pointer shadow shadow-black bg-primaryPink text-black rounded-md px-2 hover:bg-primaryColor hover:text-white transition-colors duration-700 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary dark:hover:bg-zinc-800"
+      className="px-10 py-2 flex items-center cursor-pointer shadow shadow-black bg-primaryPink text-black rounded-md hover:bg-primaryColor hover:text-white transition-colors duration-700 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary dark:hover:bg-zinc-800"
       onClick={() => widgetRef.current.open()}
     >
       Subir Imagen
