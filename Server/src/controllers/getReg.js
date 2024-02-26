@@ -32,17 +32,47 @@ const getReg = async (dataInc) => {
                     supplier,
                     attribute: attr,
                 } = dataQuery;
-
-                const { count, rows } = await tableName.findAndCountAll({
+                // Primero obtengo el total de registros sin repetir y sin paginar:
+                const resultConTotPr = await tableName.findAndCountAll({
                     attributes: [
-                        //[conn.fn('DISTINCT', conn.col('productCode')), 'productCode'],
-                        "productCode",
+                        [conn.fn('DISTINCT', conn.col('productCode')), 'productCode'],
                         "productName",
                         "description",
                         "supplier",
                         "amount",
                     ],
-                    distinct: true,
+                    where: {
+                        [Op.and]: [
+                            // Filtro por sede:
+                            { branchId: brnchId },
+                            // Filtro por nombre de producto:
+                            { productName: { [Op.iLike]: `%${productName}%` } },
+                            // Filtro por proveedor:
+                            { supplier: { [Op.iLike]: `%${supplier}%` } },
+                            // Filtro por cantidad:
+                            amount !== null ? { amount: amount } : {},
+                            // Filtro por código de producto:
+                            productCode !== "" ? { productCode: { [Op.iLike]: `%${productCode}%` } } : {},
+                            // Filtro por descripción:
+                            description !== "" ? { description: { [Op.iLike]: `%${description}%` } } : {},
+                        ].filter(Boolean), // elimina los filtros nulos o vacíos
+                    },
+                });
+                const productsCntTotC = resultConTotPr.rows;
+                // Cuento la cantidad real de registros encontrados:
+                let countTotalP = 0;
+                for (const prod of productsCntTotC) {
+                    countTotalP++;
+                }
+                // Ahora obtengo el total con la paginación solicitada. Repito la consulta casi igual, pero es porque me fallaba el contador original si se lo delegaba al control del count:
+                const resultPr = await tableName.findAndCountAll({
+                    attributes: [
+                        [conn.fn('DISTINCT', conn.col('productCode')), 'productCode'],
+                        "productName",
+                        "description",
+                        "supplier",
+                        "amount",
+                    ],
                     where: {
                         [Op.and]: [
                             // Filtro por sede:
@@ -63,10 +93,10 @@ const getReg = async (dataInc) => {
                     limit: sze,
                     offset: sze * pg,
                 });
+                const products = resultPr.rows;
                 // Agrego el precio al objeto de productos:
-                const products = rows;
                 let prodOut = [];
-                let countPrTot = 0;
+                let countParcialP = 0;
                 for (const product of products) {
                     const latestPriceHistory = await tableName3.findOne({  // PriceHistory
                         where: { prodId: product.productCode, branchId: brnchId },
@@ -81,32 +111,39 @@ const getReg = async (dataInc) => {
                         amount: product.amount,
                     };
                     prodOut.push(dataOut);
-                    countPrTot++;
+                    countParcialP++;
                 }
-                return { count: count, products: prodOut };
-
-
-
-
+                return { countTotsl: countTotalP, countParcial: countParcialP, products: prodOut };
             case "Company":
                 const { dateCreateFrom, dateCreateTo, showExpired, page: pgg = 0, size: szee = 10 } = dataQuery;
                 let dFrom = dateCreateFrom + " 00:00:00";
                 let dTo = dateCreateTo + " 23:59:59";
                 const dateNow = new Date();
-
-
-
-                //const result = await tableName.findAndCountAll({
-                const { count: countC, rows: rowsC } = await tableName.findAndCountAll({
-                    attributes: [
-                        //[conn.fn('DISTINCT', conn.col('nameCompany')), 'nameCompany'],
-                        "nameCompany",
-                        "subscribedPlan",
-                        "expireAt",
-                        "imgCompany",
-                        "dbName",
-                    ],
-                    distinct: true,
+                // Primero obtengo el total de registros sin repetir y sin paginar:
+                const resultConTotC = await tableName.findAndCountAll({
+                    attributes: [conn.fn('DISTINCT', conn.col('nameCompany')), "nameCompany", "subscribedPlan", "expireAt", "imgCompany", "dbName"],
+                    where: {
+                        dbName: {
+                            [Op.ne]: DB_NAME
+                        },
+                        createdAt: {
+                            [Op.gte]: dFrom,
+                            [Op.lte]: dTo,
+                        },
+                        expireAt: {
+                            [Op.gte]: (showExpired === "0") ? dateNow : "1980-01-01 00:00:00",
+                        },
+                    },
+                });
+                const companiesCntTotC = resultConTotC.rows;
+                // Cuento la cantidad real de registros encontrados:
+                let countTotalC = 0;
+                for (const company of companiesCntTotC) {
+                    countTotalC++;
+                }
+                // Ahora obtengo el total con la paginación solicitada. Repito la consulta casi igual, pero es porque me fallaba el contador original si se lo delegaba al control del count:
+                const result = await tableName.findAndCountAll({
+                    attributes: [conn.fn('DISTINCT', conn.col('nameCompany')), "nameCompany", "subscribedPlan", "expireAt", "imgCompany", "dbName"],
                     where: {
                         dbName: {
                             [Op.ne]: DB_NAME
@@ -124,13 +161,12 @@ const getReg = async (dataInc) => {
                     // pgg: página actual que se está visualizando
                     offset: szee * pgg, //cuántas filas se deben omitir antes de comenzar a recuperar las filas para la página actual
                 });
-                const companies = rowsC;
-
+                const companies = result.rows;
                 // Agrego el usuario principal al objeto de empresas:
                 //let processedCompanies = new Set();
                 let compOut = [];
                 let firstUsr = "";
-                let countTot = 0;
+                let countParcial = 0;
                 for (const company of companies) {
                     const { conn, User } = await connectDB(company.dbName);
                     await conn.sync();
@@ -147,7 +183,6 @@ const getReg = async (dataInc) => {
                         firstUsr = "{no encontrado}";
                     }
                     await conn.close();
-
                     dataOut = {
                         nameCompany: company.nameCompany,
                         subscribedPlan: company.subscribedPlan,
@@ -157,9 +192,9 @@ const getReg = async (dataInc) => {
                     };
                     compOut.push(dataOut);
                     //processedCompanies.add(company.nameCompany);
-                    countTot++;
+                    countParcial++;
                 }
-                return { count: countC, rows: compOut };
+                return { countTotal: countTotalC, countParcial: countParcial, rows: compOut };
             case "PriceHistory":
                 const { branchId, productCode: prodID } = dataQuery;
                 reg = await tableName.findAndCountAll({ //PriceHistory

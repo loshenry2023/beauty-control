@@ -15,8 +15,6 @@ async function getListDBs() {
             }
         });
         const dbNames = existingCompanies.map(company => company.dbName);
-
-        //showLog(dbNames);
         return { result: "ok", dbNames: dbNames };
     }
     catch (error) {
