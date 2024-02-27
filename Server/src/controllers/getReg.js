@@ -113,7 +113,7 @@ const getReg = async (dataInc) => {
                     prodOut.push(dataOut);
                     countParcialP++;
                 }
-                return { countTotsl: countTotalP, countParcial: countParcialP, products: prodOut };
+                return { countTotal: countTotalP, countParcial: countParcialP, products: prodOut };
             case "Company":
                 const { dateCreateFrom, dateCreateTo, showExpired, page: pgg = 0, size: szee = 10 } = dataQuery;
                 let dFrom = dateCreateFrom + " 00:00:00";
