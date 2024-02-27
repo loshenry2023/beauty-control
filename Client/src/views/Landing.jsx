@@ -9,7 +9,7 @@ import { setLogout } from "../redux/actions.js";
 
 //Variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
-const { LOGIN, HOME, AGENDA, ROOT, DEVELOPEDBY } = getParamsEnv();
+const { LOGIN, HOME, AGENDA, ROOT, DEVELOPEDBY, SSADMIN } = getParamsEnv();
 
 // assets and icons
 import { FaArrowRight } from "react-icons/fa";
@@ -39,9 +39,10 @@ const Landing = () => {
 
   const handleLogin = () => {
     if (hayUser) {
-      // Hay un usuario registrado desde antes, no lo hago loguear:
       if (user.role === "superAdmin") {
         navigate(HOME);
+      } if (user.role === "superSuperAdmin"){
+        navigate(SSADMIN)
       } else {
         navigate(AGENDA);
       }
