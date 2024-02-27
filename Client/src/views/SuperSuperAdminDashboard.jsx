@@ -11,7 +11,7 @@ const SuperSuperAdminDashboard = () => {
     <>
       <div className='w-full h-screen dark:bg-darkBackground'>
       <SSadminNavBar />
-      <div className='w-2/3 m-auto pt-20'>
+      <div className='w-full pt-20'>
         <ControlCompany />
       </div>
       </div>

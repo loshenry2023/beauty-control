@@ -19,6 +19,7 @@ import { MdEdit } from "react-icons/md";
 
 //variables de entorno
 import getParamsEnv from "../functions/getParamsEnv";
+import Pagination from "./Pagination";
 const { API_URL_BASE } = getParamsEnv();
 
 const ControlCompany = () => {
@@ -43,7 +44,9 @@ const ControlCompany = () => {
   const actualDate = `${year}-${month}-${day}`;
   const startingDate = `${year}-01-01`;
   const [size, setSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
+
   const [data, setData] = useState({
     dateCreateFrom: startingDate,
     dateCreateTo: actualDate,
@@ -53,6 +56,7 @@ const ControlCompany = () => {
     token: token,
   });
 
+
   let requestMade = false;
   useEffect(() => {
     if (!requestMade) {
@@ -61,6 +65,7 @@ const ControlCompany = () => {
         .post(`${API_URL_BASE}/v1/companyadminlist`, data)
         .then((response) => {
           setCompanies(response.data);
+          setTotalCount(response.data.countTotal)
           setIsLoading(false);
         })
         .catch((error) => {
@@ -85,6 +90,17 @@ const ControlCompany = () => {
         });
     }
   }, [aux, data]);
+
+  useEffect(() => {
+    if (!requestMade) {
+    setData(prevData => ({
+      ...prevData,
+      size: size,
+      page: page
+    }))}
+    setIsLoading(true)
+  }, [size, page])
+ 
 
   const handleDelete = async () => {
     try {
@@ -137,6 +153,7 @@ const ControlCompany = () => {
       ...prevInfo,
       [name]: value,
     }));
+    setIsLoading(true)
   };
 
   const confirmExtendPlan = (fila) => {
@@ -185,7 +202,7 @@ const ControlCompany = () => {
     return (
       <>
         <div>
-          <section className="flex flex-col gap-2 w-full sm:flex sm:flex-row sm:gap-2 mb-10">
+          <section className="flex flex-col gap-2 w-4/5 mx-auto sm:flex sm:flex-row sm:gap-2 mb-5">
             <div className="flex flex-col gap-1">
               <label className="hidden md:inline dark:text-darkText">
                 Filtrado por fecha de creación de empresa
@@ -213,6 +230,7 @@ const ControlCompany = () => {
               <select
                 onChange={handleData}
                 name="showExpired"
+                value={data.showExpired}
                 className="border border-black w-full rounded-md text-center px-2 dark:text-darkText dark:bg-darkPrimary sm:w-40 h-fit"
               >
                 <option value="1" className="text-center sm:text-left">
@@ -224,7 +242,7 @@ const ControlCompany = () => {
               </select>
             </div>
           </section>
-          <div className=" overflow-auto max-h-[700px] relative overflow-x-auto shadow-md sm:rounded-lg ">
+          <div className=" overflow-auto max-h-[700px] w-4/5 mx-auto relative overflow-x-auto shadow-md sm:rounded-lg ">
             <table className="w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige dark:border">
               <thead className="bg-controlColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                 <tr>
@@ -350,6 +368,7 @@ const ControlCompany = () => {
             </table>
           </div>
         </div>
+        <Pagination page={page} setPage={setPage} size={size} setSize={setSize} count={totalCount} data={data}/>
         {showCreateCompanyModal && (
           <CreateCompanyModal
             aux={aux}
