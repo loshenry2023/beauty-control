@@ -64,7 +64,6 @@ async function editRegProduct(dataMain) {
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
         if (!price || !brnchId || !productName || !description || !supplier || !amount) { throw Error("Faltan datos"); }
-
         // Verifico que la sede del insumo exista:
         const productBranch = await Branch.findByPk(brnchId);
         if (!productBranch) {
@@ -267,24 +266,24 @@ async function editRegClient(dataMain) {
             throw Error("Cliente no encontrado");
         }
         // No permito un cliente repetido:
-        const clntNameLowercase = name.toLowerCase();
-        const clntLastNameLowercase = lastName.toLowerCase();
-        const clnteMailLowercase = email.toLowerCase();
-        const existingClnt = await Client.findOne({
-            where: {
-                name: { [Op.iLike]: clntNameLowercase },
-                lastName: { [Op.iLike]: clntLastNameLowercase },
-                email: { [Op.iLike]: clnteMailLowercase }
-            },
-        });
-        if (existingClnt) {
-            throw Error("El cliente ya existe");
-        }
+        // const clntNameLowercase = name.toLowerCase();
+        // const clntLastNameLowercase = lastName.toLowerCase();
+        // const clnteMailLowercase = email.toLowerCase();
+        // const existingClnt = await Client.findOne({
+        //     where: {
+        //         name: { [Op.iLike]: clntNameLowercase },
+        //         lastName: { [Op.iLike]: clntLastNameLowercase },
+        //         email: { [Op.iLike]: clnteMailLowercase }
+        //     },
+        // });
+        // if (existingClnt) {
+        //     throw Error("El cliente ya existe");
+        // }
         // Inicio la transacción:
         transaction = await conn.transaction();
-        existingClient.name = name;
-        existingClient.lastName = lastName;
-        existingClient.email = email;
+        // existingClient.name = name;
+        // existingClient.lastName = lastName;
+        // existingClient.email = email;
         existingClient.id_pers = id_pers || null;
         existingClient.phoneNumber1 = phone1;
         existingClient.phoneNumber2 = phone2 || null;
@@ -370,7 +369,7 @@ async function editRegBranch(dataMain) {
         existingBranch.workingDays = workingDays;
         existingBranch.linkFb = linkFb;
         existingBranch.linkIg = linkIg;
-        existingBranch.workingDays = linkTk;
+        existingBranch.linkTk = linkTk;
         await existingBranch.save();
         logData({ op: "U", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Branch ${branchName} ${id} was modified` });
         return;
