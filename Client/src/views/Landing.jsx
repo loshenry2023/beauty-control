@@ -221,7 +221,7 @@ const Landing = () => {
                         {" "}
                         controlar inventarios, gestionar citas, dar de alta
                         clientes o empleados, ver ingresos diarios o mensuales,
-                        etc.
+                        etc. 
                       </strong>
                       Buscamos agilizar procesos para que los empresarios y sus
                       equipos puedan dedicar{" "}
@@ -230,7 +230,7 @@ const Landing = () => {
                         más atención a sus clientes y empleados, fortaleciendo
                         así las relaciones humanas
                       </strong>{" "}
-                      que son el corazón de cualquier negocio exitoso .
+                      que son el corazón de cualquier negocio exitoso.
                       <br />
                       El servicio busca generar oportunidades y transformar la
                       manera en que se conducen los negocios.
