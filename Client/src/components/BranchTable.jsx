@@ -99,6 +99,8 @@ const BranchTable = ({ branches }) => {
     setFilaBranch(filaBranch);
   };
 
+  console.log(branches)
+
   if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return (
       <ErrorToken error={tokenError} />
@@ -120,6 +122,12 @@ const BranchTable = ({ branches }) => {
                     </th>
                     <th scope="col" className="px-4 py-3">
                       Teléfono
+                    </th>
+                    <th scope="col" className="px-4 py-3">
+                      Horario de apertura
+                    </th>
+                    <th scope="col" className="px-4 py-3">
+                      Horario de cierre
                     </th>
   
                     <th scope="col" className="px-4 py-3">
@@ -144,6 +152,8 @@ const BranchTable = ({ branches }) => {
                         <td className="px-4 py-4">{fila.branchName}</td>
                         <td className="px-4 py-4">{fila.address}</td>
                         <td className="px-4 py-4">{fila.phoneNumber}</td>
+                        {fila.openningHours ? <td className="px-4 py-4">{fila.openningHours} hs.</td> : <td className="px-4 py-4">-</td>}
+                        {fila.clossingHours ? <td className="px-4 py-4">{fila.clossingHours} hs.</td> : <td className="px-4 py-4">-</td>}
                         <td className="px-4 py-4">
                           <button
                             className="hover:bg-blue-700 text-black px-2 py-1 rounded mr-2"
@@ -190,7 +200,7 @@ const BranchTable = ({ branches }) => {
                 }`}
               >
                 <p className="mb-4  sm:text-base">
-                  ¿Estás seguro de que deseas eliminar esta cita?
+                  ¿Estás seguro de que deseas eliminar esta sede?
                 </p>
                 <div className="flex justify-center space-x-4">
                   <button

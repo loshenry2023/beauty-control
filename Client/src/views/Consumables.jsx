@@ -19,6 +19,7 @@ import "./loading.css";
 import ToasterConfig from "../components/Toaster";
 import { toast } from "react-hot-toast";
 import Restricted from "./Restricted";
+import Pagination from "../components/Pagination"; // Importar el componente de paginación
 
 function Consumables() {
     const dispatch = useDispatch();
@@ -34,45 +35,48 @@ function Consumables() {
 
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
+    const [totalCount, setTotalCount] = useState(0)
 
     const user = useSelector((state) => state?.user);
     const branches = user.branches;
     const [selectedBranch, setSelectedBranch] = useState("");
     const token = useSelector((state) => state?.token);
     const tokenError = useSelector((state) => state?.tokenError);
-    const [products, setProducts] = useState(null)
+    const [products, setProducts] = useState(null);
     const workingBranch = useSelector((state) => state?.workingBranch);
 
     const count = useSelector((state) => state?.count);
-    const [aux, setAux] = useState(false)
+    const [aux, setAux] = useState(false);
 
-
+    let requestMade = false;
     useEffect(() => {
-        /*  //! PENDIENTE - No usar dispach que en actions llamen a Axios porque no se puede controlar el asincronismo
-         if (selectedBranch) {
-           dispatch(
-             getProducts(token, productName, selectedBranch, page, size, description)
-           ).then(() => {
-             setLoading(false);
-           });
-         } */
-
-        const getProducts = async () => {
-            try {
-                const data = {
-                    token, productName, branchId: workingBranch.id, page, size, description
+        if (!requestMade) {
+            requestMade = true;
+            const getProducts = async () => {
+                try {
+                    const data = {
+                        token,
+                        productName,
+                        branchId: workingBranch.id,
+                        page,
+                        size,
+                        description,
+                    };
+                    const response = await axios.post(
+                        `${API_URL_BASE}/v1/products`,
+                        data
+                    );
+                    setTotalCount(response.data.countTotal)
+                    setProducts(response.data);
+                } catch (error) {
+                    console.log(error);
+                    toast.error("Hubo un error en la creación.");
                 }
-                const response = await axios.post(`${API_URL_BASE}/v1/products`, data)
-                setProducts(response.data)
-                console.log(response.data)
-            } catch (error) {
-                console.log(error)
-                toast.error("Hubo un error en la creación.")
-            }
-        }
+                setLoading(false);
+            };
 
-        getProducts()
-        setLoading(false)
+            getProducts();
+        }
     }, [
         productName,
         selectedBranch,
@@ -82,7 +86,7 @@ function Consumables() {
         newProductAdded,
         editedProduct,
         token,
-        aux
+        aux,
     ]);
 
     const handleShowNewConsumableModal = () => {
@@ -97,11 +101,8 @@ function Consumables() {
         setEditedProduct(!editedProduct);
     };
 
-
-
-    const totalPages = products && products.count ? Math.ceil(products.count / size) : 0;
-
-    console.log(totalPages)
+    const totalPages =
+        products && products.count ? Math.ceil(products.count / size) : 0;
 
     const handlePageChange = (newPage) => {
         if (newPage >= 0 && newPage < totalPages) {
@@ -110,9 +111,7 @@ function Consumables() {
     };
 
     if (tokenError === 401 || tokenError === 403) {
-        return (
-            <ErrorToken error={tokenError} />
-        );
+        return <ErrorToken error={tokenError} />;
     } else {
         return (
             <>
@@ -129,7 +128,7 @@ function Consumables() {
                                         Control de insumos
                                     </h1>
 
-                                    {user?.role !== "admin" && ( // Renderiza el botón solo si el rol no es admin
+                                    {user?.role !== "admin" && (
                                         <div className="flex justify-center md:ml-auto">
                                             <button
                                                 onClick={handleShowNewConsumableModal}
@@ -189,27 +188,15 @@ function Consumables() {
                                         />
                                     </section>
 
-                                    <div className="flex items-center justify-center mt-4">
-                                        <button
-                                            onClick={() => handlePageChange(page - 1)}
-                                            disabled={page === 0}
-                                            className="dark:text-darkText cursor-pointer"
-                                        >
-                                            {"<"}
-                                        </button>
-                                        <p className="dark:text-darkText px-2">
-                                            Página{" "}
-                                            {totalPages === 0
-                                                ? `${page} de ${totalPages}`
-                                                : `${page + 1} de ${totalPages}`}
-                                        </p>
-                                        <span
-                                            onClick={() => handlePageChange(page + 1)}
-                                            disabled={page === totalPages - 1}
-                                            className="dark:text-darkText cursor-pointer"
-                                        >
-                                            {">"}
-                                        </span>
+                                    <div>
+                                        <Pagination
+                                            page={page}
+                                            setPage={setPage}
+                                            totalPages={totalPages}
+                                            handlePageChange={handlePageChange}
+                                            count={totalCount}
+                                            size={size}
+                                        />
                                     </div>
                                 </div>
                             )
@@ -223,4 +210,5 @@ function Consumables() {
         );
     }
 }
+
 export default Consumables;

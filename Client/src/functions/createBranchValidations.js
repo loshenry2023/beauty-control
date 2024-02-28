@@ -1,5 +1,3 @@
-
-
 function branchValidation(branch) {
     const errors = {};
 
@@ -21,14 +19,38 @@ function branchValidation(branch) {
     } else if (isNaN(branch.phone) || branch.phone.length < 10 || branch.phone.length > 15) {
         errors.phone = "El teléfono debe ser un número válido entre 10 y 15 dígitos";
     }
-   // Validación de coordenadas
-   if (!branch.coordinates || typeof branch.coordinates !== 'string') {
-    errors.coordinates = "El enlace de coordenadas no es válido";
+
+    /* // Validación de coordenadas
+    if (!branch.coordinates || typeof branch.coordinates !== 'string') {
+        errors.coordinates = "El enlace de coordenadas no es válido";
+    } */
+
+    // Validación de hora de apertura
+    if (!branch.openningHours) {
+        errors.openingHours = "La hora de apertura no puede estar vacía";
+    }
+
+    // Validación de hora de cierre
+    if (!branch.clossingHours) {
+        errors.closingHours = "La hora de cierre no puede estar vacía";
+    }
+
+    // Validación de enlace de Instagram
+   /*  if (!branch.instagramLink) {
+        errors.instagramLink = "El enlace de Instagram no puede estar vacío";
+    }
+
+    // Validación de enlace de Facebook
+    if (!branch.facebookLink) {
+        errors.facebookLink = "El enlace de Facebook no puede estar vacío";
+    }
+
+    // Validación de enlace de TikTok
+    if (!branch.tiktokLink) {
+        errors.tiktokLink = "El enlace de TikTok no puede estar vacío";
+    }
+ */
+    return errors;
 }
-
-return errors;
-}
-
-
 
 export default branchValidation;

@@ -71,8 +71,8 @@ function EditConsumableForm({
   };
 
   const handleUpdate = async (e) => {
-
-    e.preventDefault()
+    e.preventDefault();
+  
     const resetFields = () => {
       setProduct({
         ...product,
@@ -84,6 +84,19 @@ function EditConsumableForm({
       });
       setErrors({});
     };
+  
+    // Verificar si se han realizado modificaciones en los campos
+    const isUnmodified =
+      product.productName === productData.productName &&
+      product.description === productData.description &&
+      product.supplier === productData.supplier &&
+      product.amount === productData.amount &&
+      parseFloat(product.newPrice) === parseFloat(productData.price);
+  
+    if (isUnmodified) {
+      toast.error("Ningún campo fue modificado.");
+      return;
+    }
   
     const fieldErrors = editConsumableValidation(
       product.productName,
@@ -108,19 +121,8 @@ function EditConsumableForm({
       setErrors({});
     }
   
-    if (
-      product.productName === productData.productName &&
-      product.description === productData.description &&
-      product.supplier === productData.supplier &&
-      product.amount === productData.amount &&
-      parseFloat(product.newPrice) === parseFloat(productData.priceHistory)
-    ) {
-      toast.error("No se realizaron modificaciones.");
-      return;
-    }
-
-    setSubmitLoader(true)
-    
+    setSubmitLoader(true);
+  
     const data = {
       price: product.newPrice,
       branchId: workingBranch.id,
@@ -128,30 +130,30 @@ function EditConsumableForm({
       description: product.description,
       supplier: product.supplier,
       amount: product.amount,
-      token
-    }
-  
+      token,
+    };
   
     try {
-      const response = await axios.put(`${API_URL_BASE}/v1/products/${product.productCode}`, data)
-
+      const response = await axios.put(
+        `${API_URL_BASE}/v1/products/${product.productCode}`,
+        data
+      );
+  
       if (response.data.updated === "ok") {
-        setSubmitLoader(false)
-        toast.success("Producto modificado correctamente")
+        setSubmitLoader(false);
+        toast.success("Producto modificado correctamente");
         setTimeout(() => {
-          setEditConsumableModal(false)
+          setEditConsumableModal(false);
           resetFields();
-          setAux(!aux)
-        },3000)
+          setAux(!aux);
+        }, 3000);
       }
-
     } catch (error) {
-      setSubmitLoader(false)
+      setSubmitLoader(false);
       console.error("Error al editar el producto:", error.message);
       toast.error("Hubo un problema al editar el producto.");
     }
   };
-  
 
   return (
     <>

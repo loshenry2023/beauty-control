@@ -224,7 +224,7 @@ const ServicesTable = () => {
                 }`}
               >
                 <p className="mb-4  sm:text-base">
-                  ¿Estás seguro de que deseas eliminar esta cita?
+                  ¿Estás seguro de que deseas eliminar este procedimiento?
                 </p>
                 <div className="flex justify-center space-x-4">
                   <button

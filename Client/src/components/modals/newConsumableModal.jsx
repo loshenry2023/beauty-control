@@ -9,7 +9,7 @@ import Loader from "../Loader";
 
 const { API_URL_BASE, CONSUMABLES } = getParamsEnv();
 
-function NewConsumableModal({ onClose, token, setEditConsumableModal }) {
+function NewConsumableModal({ onClose, token }) {
   const dispatch = useDispatch();
   const [submitLoader, setSubmitLoader] = useState(false);
   const user = useSelector((state) => state?.user);
@@ -66,9 +66,11 @@ function NewConsumableModal({ onClose, token, setEditConsumableModal }) {
 
     setSubmitLoader(true);
 
+   
+
     const data = {
       amount: newConsumable.amount,
-      brnchId: newConsumable.brnchId,
+      branchId: newConsumable.brnchId,
       description: newConsumable.description,
       price: newConsumable.price,
       productCode: newConsumable.productCode,
@@ -76,6 +78,8 @@ function NewConsumableModal({ onClose, token, setEditConsumableModal }) {
       supplier: newConsumable.supplier,
       token,
     };
+
+    console.log(data)
 
     try {
       const response = await axios.post(
@@ -85,7 +89,7 @@ function NewConsumableModal({ onClose, token, setEditConsumableModal }) {
 
       if (response.data.created === "ok") {
         setSubmitLoader(false);
-        setEditConsumableModal(false)
+       
         setIsCodeInUse(false);
         toast.success("Producto creado con éxito");
         onClose();
