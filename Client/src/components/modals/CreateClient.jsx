@@ -145,7 +145,7 @@ const CreateClient = ({setShowClientCreateModal, setActivarNuevoCliente,activarN
     } catch (error) {
         setDisableSubmit(false)
         setSubmitLoader(false)
-        toast.error(`Hubo un problema con la creacion. ${error.response.data}`)
+        toast.error(`Hubo un problema con la creación. ${error.response.data}`)
       }
     }
 }

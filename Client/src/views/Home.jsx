@@ -50,7 +50,7 @@ const Home = () => {
         })
         .catch(error => { 
           if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
-              setLoading(false)
+             setLoading(false)
              dispatch(setTokenError(error.request.status))
           } else {
             let errorMessage= ""     
