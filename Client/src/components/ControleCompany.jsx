@@ -46,7 +46,8 @@ const ControlCompany = () => {
   const actualDate = `${year}-${month}-${day}`;
   const startingDate = `${year}-01-01`;
   const [size, setSize] = useState(10);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(10);
+  const [countParcial, setCountParcial] = useState(10);
   const [page, setPage] = useState(0);
 
   const [data, setData] = useState({
@@ -67,6 +68,7 @@ const ControlCompany = () => {
         .then((response) => {
           setCompanies(response.data);
           setTotalCount(response.data.countTotal);
+          setCountParcial(response.data.countParcial)
           setIsLoading(false);
         })
         .catch((error) => {
@@ -210,8 +212,8 @@ const ControlCompany = () => {
       return (
         <>
           <div
-            className="flex flex-col"
-            style={{ height: `calc(100vh - 100px)` }}
+            className="flex flex-col gap-1"
+            style={countParcial == 10 ? { height: "100vh" } : { height: `calc(100vh - 100px)` }}
           >
             <section className="flex flex-col w-4/5 gap-2 mx-auto sm:flex-row sm:justify-between sm:items-center mb-5">
               <div className="flex flex-col gap-1">
@@ -237,7 +239,7 @@ const ControlCompany = () => {
                   />
                 </div>
               </div>
-              <div className="my-auto font-bold shadow-sm shadow-black border-black p-2 text-xl rounded-xl text-center dark:text-darkText dark:shadow-darkText">
+              <div className="mr-40 font-bold shadow-sm shadow-black border-black p-2 text-xl rounded-xl text-center dark:text-darkText dark:shadow-darkText">
                 Total empresas: {totalCount}
               </div>
               <div className="flex justify-end">
@@ -256,7 +258,7 @@ const ControlCompany = () => {
                 </select>
               </div>
             </section>
-            <div className=" w-4/5 mx-auto relative overflow-x-auto sm:rounded-lg "> //h-full
+            <div className=" w-4/5  mx-auto relative overflow-x-auto sm:rounded-lg"> 
               <table className="w-full text-left text-black dark:text-beige dark:border-beige dark:border">
                 <thead className="bg-controlColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-secondaryColor">
                   <tr>
@@ -388,7 +390,7 @@ const ControlCompany = () => {
                 </tbody>
               </table>
             </div>
-            <div>
+            <div className="mt-[-30px]">
               <Pagination
                 page={page}
                 setPage={setPage}
