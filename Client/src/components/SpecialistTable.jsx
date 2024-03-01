@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
+import divideArray from "../functions/divideArray"
 
-const SpecialistTable = ({ specialistData, count }) => {
+const SpecialistTable = ({ specialistData, count, size, setSize }) => {
   let valorTotal = 0;
   let valorAPagar = 0;
 
   const formatNumber = (number) => {
     return number.toLocaleString("es-CO");
   };
+
+  const [page, setPage] = useState(0)
+  const totalPages = Math.floor(count / size);
+  const arraysDvided = divideArray(specialistData, size)
+
 
   return (
     <>
@@ -33,7 +39,7 @@ const SpecialistTable = ({ specialistData, count }) => {
               </tr>
             </thead>
             <tbody>
-              {specialistData.map((specialist, index) => (
+              {arraysDvided[page].map((specialist, index) => (
                 <tr
                   key={index}
                   className=" border border-secondaryColor hover:bg-gray-200 transition-colors duration-700 dark:hover:bg-gray-200 dark:hover:text-black"
@@ -80,6 +86,82 @@ const SpecialistTable = ({ specialistData, count }) => {
           No hay coincidencias
         </h2>
       )}
+      <section className="flex flex-col items-center gap-2 mt-10">
+        {specialistData.rows ? (
+          <select
+            name=""
+            id=""
+            value={size}
+            onChange={(e) => {
+              setSize(e.target.value);
+            }}
+            className="shadow shadow-black rounded-md dark:text-darkText dark:bg-darkPrimary"
+          >
+            {" "}
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+            <option value={6}>6</option>
+            <option value={7}>7</option>
+            <option value={8}>8</option>
+            <option value={9}>9</option>
+            <option value={10}>10</option>
+          </select>
+        ) : (
+          <select
+            name=""
+            id=""
+            value={size}
+            onChange={(e) => {
+              setSize(e.target.value);
+            }}
+            className="shadow shadow-black rounded-md dark:text-darkText dark:bg-darkPrimary"
+          >
+            {" "}
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+            <option value={6}>6</option>
+            <option value={7}>7</option>
+            <option value={8}>8</option>
+            <option value={9}>9</option>
+            <option value={10}>10</option>
+          </select>
+        )}
+        <div>
+        <button
+          onClick={
+            page
+              ? () => {
+                setPage(page - 1);
+              }
+              : null
+          }
+          className="dark:text-darkText"
+        >
+          {" "}
+          {"<"}
+        </button>
+        <span className="dark:text-darkText"> Página {totalPages === 0 ? `${1} de ${1}` : `${page + 1} de ${totalPages}`} </span>
+        <button
+          onClick={
+            page < totalPages - 1
+              ? () => {
+                setPage(page + 1);
+              }
+              : null
+          }
+          className="dark:text-darkText"
+        >
+          {">"}
+        </button>
+        </div>
+      </section>
+      
     </>
   );
 };

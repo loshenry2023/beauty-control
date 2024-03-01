@@ -24,10 +24,11 @@ const { API_URL_BASE } = getParamsEnv();
 import { isEqual } from "../functions/isEqual";
 
 const SpecialistMonitoring = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const testData = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
   const [specialistData, setSpecialist] = useState({});
   const [loading, setLoading] = useState(true);
+  const [size, setSize] = useState(10);
   const count = specialistData.count;
   const user = useSelector((state) => state?.user);
   const token = useSelector((state) => state?.token);
@@ -49,11 +50,9 @@ const SpecialistMonitoring = () => {
   });
 
   const handleDate = (e) => {
-    if (e.target.name === "dateFrom" && testData.test(e.target.value)){
-      if (
-        e.target.value > filterDate.dateTo
-      ) {
-        const newDate = filterDate.dateTo
+    if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
+      if (e.target.value > filterDate.dateTo) {
+        const newDate = filterDate.dateTo;
         setFitlerDate({
           ...filterDate,
           dateFrom: newDate,
@@ -67,12 +66,10 @@ const SpecialistMonitoring = () => {
         });
       }
     }
-    
-    if (e.target.name === "dateTo" && testData.test(e.target.value) ){
-      if (
-        e.target.value < filterDate.dateFrom
-      ) {
-        const newDate = filterDate.dateFrom
+
+    if (e.target.name === "dateTo" && testData.test(e.target.value)) {
+      if (e.target.value < filterDate.dateFrom) {
+        const newDate = filterDate.dateFrom;
         setFitlerDate({
           ...filterDate,
           dateTo: newDate,
@@ -90,31 +87,39 @@ const SpecialistMonitoring = () => {
 
   let requestMade = false;
   useEffect(() => {
-        if(!requestMade){
-          requestMade = true
-          axios.post(`${API_URL_BASE}/v1/getbalance`,filterDate)
-          .then(respuesta => {
-            if (!isEqual(respuesta.data, specialistData)) {
-              setSpecialist(respuesta.data); 
-              setLoading(false);
-            }
-          })
-          .catch(error => { 
-            if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
-                setLoading(false)
-               dispatch(setTokenError(error.request.status))
+    if (!requestMade) {
+      requestMade = true;
+      axios
+        .post(`${API_URL_BASE}/v1/getbalance`, filterDate)
+        .then((respuesta) => {
+          if (!isEqual(respuesta.data, specialistData)) {
+            setSpecialist(respuesta.data);
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          if (
+            error.request.status === 401 ||
+            error.request.status === 402 ||
+            error.request.status === 403
+          ) {
+            setLoading(false);
+            dispatch(setTokenError(error.request.status));
+          } else {
+            let errorMessage = "";
+            if (!error.response) {
+              errorMessage = error.message;
             } else {
-              let errorMessage= ""     
-              if (!error.response) {
-                errorMessage = error.message;
-              } else {
-                errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
-              }
-              toast.error(errorMessage);
+              errorMessage = `${error.response.status} ${
+                error.response.statusText
+              } - ${error.response.data.split(":")[1]}`;
             }
-          });
-        }
-  }), [tokenError];
+            toast.error(errorMessage);
+          }
+        });
+    }
+  }),
+    [tokenError];
 
   if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
@@ -167,6 +172,8 @@ const SpecialistMonitoring = () => {
               <SpecialistTable
                 count={count}
                 specialistData={specialistData.rows}
+                size={size}
+                setSize={setSize}
               />
             </div>
           ) : (
