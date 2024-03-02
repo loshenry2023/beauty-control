@@ -42,6 +42,9 @@ const SpecialistMonitoring = () => {
     day < 10 ? "0" + day : day
   }`;
 
+  const [dateFrom, setDateFrom] = useState(formattedDate)
+  const [dateTo, setDateTo] = useState(formattedDate)
+
   const [filterDate, setFitlerDate] = useState({
     branchName: workingBranch.branchName,
     dateFrom: formattedDate,
@@ -50,39 +53,67 @@ const SpecialistMonitoring = () => {
   });
 
   const handleDate = (e) => {
-    if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
-      if (e.target.value > filterDate.dateTo) {
-        const newDate = filterDate.dateTo;
-        setFitlerDate({
-          ...filterDate,
-          dateFrom: newDate,
-        });
-        toast.error("La fecha inicial no puede ser mayor a la fecha final");
-        document.getElementById("dateFrom").value = newDate;
-      } else {
-        setFitlerDate({
-          ...filterDate,
-          [e.target.name]: e.target.value,
-        });
-      }
+    if (e.target.name === "dateFrom"){
+      const newDate = e.target.value
+      setDateFrom(newDate)
+      document.getElementById("dateFrom").value = newDate;
     }
 
-    if (e.target.name === "dateTo" && testData.test(e.target.value)) {
-      if (e.target.value < filterDate.dateFrom) {
-        const newDate = filterDate.dateFrom;
-        setFitlerDate({
-          ...filterDate,
-          dateTo: newDate,
-        });
-        toast.error("La fecha final no puede ser menor a la fecha inicial");
+    if (e.target.name === "dateTo") {
+        const newDate = e.target.value
+        setDateTo(newDate)
         document.getElementById("dateTo").value = newDate;
-      } else {
-        setFitlerDate({
-          ...filterDate,
-          [e.target.name]: e.target.value,
-        });
+      } 
+  }
+
+  // const handleDate = (e) => {
+  //   if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
+  //     if (e.target.value > filterDate.dateTo) {
+  //       const newDate = filterDate.dateTo;
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         dateFrom: newDate,
+  //       });
+  //       toast.error("La fecha inicial no puede ser mayor a la fecha final");
+  //       document.getElementById("dateFrom").value = newDate;
+  //     } else {
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
+
+  //   if (e.target.name === "dateTo" && testData.test(e.target.value)) {
+  //     if (e.target.value < filterDate.dateFrom) {
+  //       const newDate = filterDate.dateFrom;
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         dateTo: newDate,
+  //       });
+  //       toast.error("La fecha final no puede ser menor a la fecha inicial");
+  //       document.getElementById("dateTo").value = newDate;
+  //     } else {
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
+  // };
+
+  const buscarFecha = () => {
+      if(dateFrom > dateTo){
+        toast.error("La fecha inicial no puede ser mayor a la fecha final");
+        return
       }
-    }
+
+      setFitlerDate({
+        branchName: workingBranch.branchName,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        token,
+    });
   };
 
   let requestMade = false;
@@ -98,6 +129,7 @@ const SpecialistMonitoring = () => {
           }
         })
         .catch((error) => {
+          console.log(error)
           if (
             error.request.status === 401 ||
             error.request.status === 402 ||
@@ -119,7 +151,7 @@ const SpecialistMonitoring = () => {
         });
     }
   }),
-    [tokenError];
+    [tokenError, filterDate];
 
   if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
@@ -168,6 +200,9 @@ const SpecialistMonitoring = () => {
                     onKeyDown={(e) => e.preventDefault()}
                   />
                 </div>
+                <button onClick={buscarFecha} className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText">
+                    Buscar fecha
+                </button>
               </div>
               <SpecialistTable
                 count={count}

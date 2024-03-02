@@ -32,6 +32,9 @@ const Balance = ({ specialists, services, payMethods }) => {
   const [showAdditionalCharts, setShowAdditionalCharts] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
+  const [dateFrom, setDateFrom] = useState(formattedDate)
+  const [dateTo, setDateTo] = useState(formattedDate)
+
   const [fetchDataBalance, setFetchDataBalance] = useState({
     branchName: workingBranch.branchName,
     dateFrom: formattedDate,
@@ -127,41 +130,71 @@ const Balance = ({ specialists, services, payMethods }) => {
     }
   }, [fetchDataBalance, specialists, services, payMethods, tokenError]);
 
+  // const handleDate = (e) => {
+  //   if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
+  //     if (e.target.value > fetchDataBalance.dateTo) {
+  //       const newDate = fetchDataBalance.dateTo;
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         dateFrom: newDate,
+  //       });
+  //       toast.error("La fecha inicial no puede ser mayor a la fecha final");
+  //       document.getElementById("dateFrom").value = newDate;
+  //     } else {
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
+
+  //   if (e.target.name === "dateTo" && testData.test(e.target.value)) {
+  //     if (e.target.value < fetchDataBalance.dateFrom) {
+  //       const newDate = fetchDataBalance.dateFrom;
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         dateTo: newDate,
+  //       });
+  //       toast.error("La fecha final no puede ser menor a la fecha inicial");
+  //       document.getElementById("dateTo").value = newDate;
+  //     } else {
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
+  // };
+
   const handleDate = (e) => {
-    if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
-      if (e.target.value > fetchDataBalance.dateTo) {
-        const newDate = fetchDataBalance.dateTo;
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          dateFrom: newDate,
-        });
-        toast.error("La fecha inicial no puede ser mayor a la fecha final");
-        document.getElementById("dateFrom").value = newDate;
-      } else {
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          [e.target.name]: e.target.value,
-        });
-      }
+    if (e.target.name === "dateFrom"){
+      const newDate = e.target.value
+      setDateFrom(newDate)
+      document.getElementById("dateFrom").value = newDate;
     }
 
-    if (e.target.name === "dateTo" && testData.test(e.target.value)) {
-      if (e.target.value < fetchDataBalance.dateFrom) {
-        const newDate = fetchDataBalance.dateFrom;
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          dateTo: newDate,
-        });
-        toast.error("La fecha final no puede ser menor a la fecha inicial");
+    if (e.target.name === "dateTo") {
+        const newDate = e.target.value
+        setDateTo(newDate)
         document.getElementById("dateTo").value = newDate;
-      } else {
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          [e.target.name]: e.target.value,
-        });
-      }
+      } 
+  }
+
+  const buscarFecha = () => {
+    console.log(dateFrom)
+    console.log(dateTo)
+    if(dateFrom > dateTo){
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return
     }
-  };
+
+    setFetchDataBalance({
+      branchName: workingBranch.branchName,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      token,
+  });
+};
 
   const handleDataToFetch = (e) => {
     setFetchDataBalance((prevData) => {
@@ -282,6 +315,9 @@ const Balance = ({ specialists, services, payMethods }) => {
                   onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
+              <button onClick={buscarFecha} className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText">
+                    Buscar fecha
+                </button>
             </section>
             <section className="flex flex-col gap-6 md:flex-wrap xl:flex-row">
               <div className="flex gap-2 w-full xl:w-fit">

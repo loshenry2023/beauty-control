@@ -150,7 +150,7 @@ const Landing = () => {
               </p>
             </div>
           </div>
-          <div className="p-4">
+          {/* <div className="p-4">
             <div className="relative p-0">
             <div
                 className="transition-all h-full duration-3000 ease-out"
@@ -263,7 +263,7 @@ const Landing = () => {
                 </li>
               </ul>
             </div>
-          </div>
+          </div> */}
         </section>
         <Link
             to={DEVELOPEDBY}
