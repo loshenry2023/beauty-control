@@ -10,6 +10,5 @@ export default function divideArray(arr, divisionSize) {
         remainingElements -= currentDivisionSize;
     }
 
-    console.log(divisions);
     return divisions;
 }

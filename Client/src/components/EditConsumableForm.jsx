@@ -27,12 +27,14 @@ function EditConsumableForm({
     productCode: productData.productCode || "",
     supplier: productData.supplier || "",
     amount: productData.amount || "",
+    fisrtAmount: productData.amount || "",
     newPrice: Math.floor(productData.price) || "",
     priceHistory: [],
     adjustmentValue: 0,
     updatedAmount: 0
   });
 
+  const [adjustDone, setAdjustDone] = useState(false)
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -46,29 +48,40 @@ function EditConsumableForm({
   }, [setEditConsumableModal]);
 
   const handleAdjustAmount = (operation) => {
-    let updatedAmount = parseInt(product.amount, 10);
-    let amountToAddOrSubtract = parseInt(product.adjustmentValue, 10);
-
-    if (isNaN(amountToAddOrSubtract) || amountToAddOrSubtract <= 0) {
-      return;
-    }
-
-    if (operation === "add") {
-      updatedAmount += amountToAddOrSubtract;
-    } else if (operation === "subtract") {
-      const result = updatedAmount - amountToAddOrSubtract;
-      if (result < 0) {
-        setErrors({
-          amountError: `La cantidad resultante no puede ser ${result}.`,
-        });
+    if(!adjustDone) {
+      let updatedAmount = parseInt(product.amount, 10);
+      let amountToAddOrSubtract = parseInt(product.adjustmentValue, 10);
+  
+      if (isNaN(amountToAddOrSubtract) || amountToAddOrSubtract <= 0) {
         return;
       }
-      updatedAmount = result;
-      setErrors({});
+  
+      if (operation === "add") {
+        updatedAmount += amountToAddOrSubtract;
+      } else if (operation === "subtract") {
+        const result = updatedAmount - amountToAddOrSubtract;
+        if (result < 0) {
+          setErrors({
+            amountError: `La cantidad resultante no puede ser ${result}.`,
+          });
+          return;
+        }
+        updatedAmount = result;
+        setErrors({});
+      }
+  
+      setProduct({ ...product, amount: updatedAmount });
+      setAdjustDone(true)
+    } else {
+      return
     }
-
-    setProduct({ ...product, amount: updatedAmount });
+    
   };
+
+  const handleCancelAdjustAmount = () =>  {
+    setProduct({ ...product, amount: product.fisrtAmount });
+    setAdjustDone(false)
+  }
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -150,8 +163,8 @@ function EditConsumableForm({
       }
     } catch (error) {
       setSubmitLoader(false);
-      console.error("Error al editar el producto:", error.message);
-      toast.error("Hubo un problema al editar el producto.");
+      console.error(error);
+      toast.error(error.response.data ? error.response.data : `${error}`);
     }
   };
 
@@ -277,6 +290,13 @@ function EditConsumableForm({
                         onClick={() => handleAdjustAmount("add")}
                       >
                         Agregar
+                      </button>
+                      <button
+                        type="button"
+                        className="focus:ring-2 ring-blue-600 border border-black p-1 rounded font-bold dark:text-darkText dark:border-darkText ml-2"
+                        onClick={() => handleCancelAdjustAmount()}
+                      >
+                        <IoClose />
                       </button>
                     </div>
                   </div>

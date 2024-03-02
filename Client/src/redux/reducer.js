@@ -67,7 +67,6 @@ const rootReducer = (
   state = initialState,
   { type, payload, count, error, idDelete, countClient }
 ) => {
-  console.log(type)
   switch (type) {
     //! Trae token
     case TOKEN:

@@ -18,8 +18,6 @@ const ConsumablesTable = ({ products, user, onClose, workingBranch, aux, setAux 
   const navigate = useNavigate();
   const [productData, setProductData] = useState(products);
 
-  console.log(products, "productos")
-
   const [showEditConsumableModal, setEditConsumableModal] = useState(false);
 
   const handleShowEditModal = (fila) => {

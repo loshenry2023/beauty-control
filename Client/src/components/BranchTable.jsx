@@ -99,7 +99,7 @@ const BranchTable = ({ branches }) => {
     setFilaBranch(filaBranch);
   };
 
-  console.log(branches)
+
 
   if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return (

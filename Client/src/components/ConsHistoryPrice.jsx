@@ -12,6 +12,7 @@ import Restricted from "../views/Restricted";
 import ErrorToken from "../views/ErrorToken";
 import axios from "axios";
 import getParamsEnv from "../functions/getParamsEnv";
+import { useRef } from "react";
 
 const { API_URL_BASE } = getParamsEnv()
 
@@ -27,35 +28,37 @@ const ConsHistoryPrice = () => {
   const [historic, setHistoric] = useState(null)
   const [prices, setPrices] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const isRequestMade = useRef(false); // Utilizando useRef para mantener una referencia mutable
 
   useEffect(() => {
-    let requestMade = false; // Se inicializa la referencia mutable
-    
-    if (!requestMade) {
-      const fetchData = async () => {
-        try {
-          requestMade = true; // Se marca la solicitud como realizada
-          const data = {
-            branchId: workingBranch.id,
-            productCode: productId,
-            token
-          };
-          console.log(data);
-          const response = await axios.post(`${API_URL_BASE}/v1/productsHist`, data);
-          console.log(response);
-          setHistoric(response.data);
-    
-          let historicPrices = [];
-          response.data?.rows?.forEach((history) => {
-            historicPrices.push(Math.floor(history.price));
+    if (!isRequestMade.current) {
+      const fetchData = () => {
+        isRequestMade.current = true;
+
+        const data = {
+          branchId: workingBranch.id,
+          productCode: productId,
+          token
+        };
+
+       
+
+        return axios.post(`${API_URL_BASE}/v1/productsHist`, data)
+          .then(response => {
+            setHistoric(response.data);
+
+            let historicPrices = [];
+            response.data?.rows?.forEach((history) => {
+              historicPrices.push(Math.floor(history.price));
+            });
+            setPrices(historicPrices);
+            setIsLoading(false);
+          })
+          .catch(error => {
+            console.error("Error fetching data:", error);
           });
-          setPrices(historicPrices);
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
       };
-  
+
       fetchData();
     }
   }, []);
