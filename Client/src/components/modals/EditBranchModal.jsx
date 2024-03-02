@@ -24,6 +24,9 @@ const EditBranchModal = ({
     openningHours: filaBranch.openningHours || "",
     clossingHours: filaBranch.clossingHours || "",
     workingDays: filaBranch.workingDays || "",
+    linkFb: filaBranch.linkFb || "",
+    linkIg: filaBranch.linkIg || "",
+    linkTk: filaBranch.linkTk || "",
   });
 
   const [errors, setErrors] = useState({});
@@ -129,8 +132,7 @@ const EditBranchModal = ({
     } catch (error) {
       setDisableSubmit(false);
       setSubmitLoader(false);
-  
-      toast.error(`Hubo un problema con la edición. ${error}`);
+      toast.error(error.response.data ? error.response.data : `Hubo un problema con la edición. ${error}`);
     }
   };
   useEffect(() => {
@@ -278,7 +280,7 @@ const EditBranchModal = ({
                   onChange={handleChange}
                   type="text"
                   name="instagramLink"
-                  value={newBranch.instagramLink}
+                  value={newBranch.linkIg}
                   placeholder="Link de Instagram"
                   className={`border border-black p-2 rounded w-full ${
                     errors.instagramLink !== undefined &&
@@ -297,7 +299,7 @@ const EditBranchModal = ({
                   onChange={handleChange}
                   type="text"
                   name="facebookLink"
-                  value={newBranch.facebookLink}
+                  value={newBranch.linkFb}
                   placeholder="Link de Facebook"
                   className={`border border-black p-2 rounded w-full ${
                     errors.facebookLink !== undefined &&
@@ -318,7 +320,7 @@ const EditBranchModal = ({
                   onChange={handleChange}
                   type="text"
                   name="tiktokLink"
-                  value={newBranch.tiktokLink}
+                  value={newBranch.linkTk}
                   placeholder="Link de TikTok"
                   className={`border border-black p-2 rounded w-full ${
                     errors.tiktokLink !== undefined &&

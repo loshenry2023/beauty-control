@@ -79,8 +79,6 @@ function NewConsumableModal({ onClose, token }) {
       token,
     };
 
-    console.log(data)
-
     try {
       const response = await axios.post(
         API_URL_BASE + "/v1/productsCreate",
@@ -98,7 +96,6 @@ function NewConsumableModal({ onClose, token }) {
       }
     } catch (error) {
       setSubmitLoader(false);
-      console.log(error)
       toast.error(error.response ? error.response.data : error);
     }
   };

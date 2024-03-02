@@ -14,8 +14,8 @@ const CreateBranchModal = ({ aux, setAux, setShowCreateBranchModal, token }) => 
     address: "",
     phone: "",
     coordinates: "",
-    openningHours: "",
-    clossingHours: "",
+    openningHours: "08:00",
+    clossingHours: "20:00",
     instagramLink: "",
     facebookLink: "",
     tiktokLink: "", // Nuevo campo para el enlace de TikTok
@@ -51,11 +51,7 @@ const CreateBranchModal = ({ aux, setAux, setShowCreateBranchModal, token }) => 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("holaaa")
-
     const validationErrors = branchValidation(newBranch);
-
-    console.log(validationErrors)
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -73,9 +69,9 @@ const CreateBranchModal = ({ aux, setAux, setShowCreateBranchModal, token }) => 
         coordinates: newBranch.coordinates || "",
         openningHours: newBranch.openningHours || "",
         clossingHours: newBranch.clossingHours || "",
-        instagramLink: newBranch.instagramLink || "",
-        facebookLink: newBranch.facebookLink || "",
-        tiktokLink: newBranch.tiktokLink || "", // Nuevo campo para el enlace de TikTok
+        linkIg: newBranch.instagramLink || "",
+        linkFb: newBranch.facebookLink || "",
+        linkTk: newBranch.tiktokLink || "", // Nuevo campo para el enlace de TikTok
         token: token,
         workingDays: ""
       };

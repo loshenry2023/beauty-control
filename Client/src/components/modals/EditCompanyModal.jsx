@@ -25,8 +25,6 @@ const EditCompanyModal = ({
 }) => {
   const dispatch = useDispatch();
 
-  console.log(filaCompany);
-
   const [company, SetCompany] = useState({
     userName: filaCompany.userName || "",
     name: filaCompany.nameCompany || "",
@@ -87,10 +85,7 @@ const EditCompanyModal = ({
         token: token,
       };
 
-      console.log(data, "enviando al back");
-
       const response = await axios.put(`${API_URL_BASE}/v1/companyadmin`, data);
-      console.log(response);
 
       if (response.data.updated === "ok") {
         setSubmitLoader(false);

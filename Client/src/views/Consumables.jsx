@@ -69,7 +69,6 @@ function Consumables() {
                     setTotalCount(response.data.countTotal)
                     setProducts(response.data);
                 } catch (error) {
-                    console.log(error);
                     toast.error("Hubo un error en la creación.");
                 }
                 setLoading(false);
@@ -196,6 +195,7 @@ function Consumables() {
                                             handlePageChange={handlePageChange}
                                             count={totalCount}
                                             size={size}
+                                            setSize={(setSize)}
                                         />
                                     </div>
                                 </div>
