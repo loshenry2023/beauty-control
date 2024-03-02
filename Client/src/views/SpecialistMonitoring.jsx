@@ -24,8 +24,8 @@ const { API_URL_BASE } = getParamsEnv();
 import { isEqual } from "../functions/isEqual";
 
 const SpecialistMonitoring = () => {
+
   const dispatch = useDispatch();
-  const testData = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
   const [specialistData, setSpecialist] = useState({});
   const [loading, setLoading] = useState(true);
   const [size, setSize] = useState(10);
@@ -42,8 +42,8 @@ const SpecialistMonitoring = () => {
     day < 10 ? "0" + day : day
   }`;
 
-  const [dateFrom, setDateFrom] = useState(formattedDate)
-  const [dateTo, setDateTo] = useState(formattedDate)
+  const [dateFrom, setDateFrom] = useState(formattedDate);
+  const [dateTo, setDateTo] = useState(formattedDate);
 
   const [filterDate, setFitlerDate] = useState({
     branchName: workingBranch.branchName,
@@ -53,18 +53,16 @@ const SpecialistMonitoring = () => {
   });
 
   const handleDate = (e) => {
-    if (e.target.name === "dateFrom"){
-      const newDate = e.target.value
-      setDateFrom(newDate)
-      document.getElementById("dateFrom").value = newDate;
+    if (e.target.name === "dateFrom") {
+      const newDate = e.target.value;
+      setDateFrom(newDate);
     }
 
     if (e.target.name === "dateTo") {
-        const newDate = e.target.value
-        setDateTo(newDate)
-        document.getElementById("dateTo").value = newDate;
-      } 
-  }
+      const newDate = e.target.value;
+      setDateTo(newDate);
+    }
+  };
 
   // const handleDate = (e) => {
   //   if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
@@ -103,17 +101,19 @@ const SpecialistMonitoring = () => {
   // };
 
   const buscarFecha = () => {
-      if(dateFrom > dateTo){
-        toast.error("La fecha inicial no puede ser mayor a la fecha final");
-        return
-      }
+    if (dateFrom > dateTo) {
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return;
+    }
 
-      setFitlerDate({
-        branchName: workingBranch.branchName,
-        dateFrom: dateFrom,
-        dateTo: dateTo,
-        token,
+    setFitlerDate({
+      branchName: workingBranch.branchName,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      token,
     });
+
+    setLoading(true)
   };
 
   let requestMade = false;
@@ -125,11 +125,11 @@ const SpecialistMonitoring = () => {
         .then((respuesta) => {
           if (!isEqual(respuesta.data, specialistData)) {
             setSpecialist(respuesta.data);
-            setLoading(false);
           }
+          setLoading(false);
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error);
           if (
             error.request.status === 401 ||
             error.request.status === 402 ||
@@ -150,8 +150,7 @@ const SpecialistMonitoring = () => {
           }
         });
     }
-  }),
-    [tokenError, filterDate];
+  }, [tokenError, filterDate])
 
   if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
@@ -180,7 +179,7 @@ const SpecialistMonitoring = () => {
                     id="dateFrom"
                     name="dateFrom"
                     type="date"
-                    defaultValue={formattedDate}
+                    value={dateFrom}
                     onChange={handleDate}
                     className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
                     onKeyDown={(e) => e.preventDefault()}
@@ -194,14 +193,17 @@ const SpecialistMonitoring = () => {
                     id="dateTo"
                     name="dateTo"
                     type="date"
-                    defaultValue={formattedDate}
+                    value={dateTo}
                     onChange={handleDate}
                     className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
                     onKeyDown={(e) => e.preventDefault()}
                   />
                 </div>
-                <button onClick={buscarFecha} className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText">
-                    Buscar fecha
+                <button
+                  onClick={buscarFecha}
+                  className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText"
+                >
+                  Buscar fecha
                 </button>
               </div>
               <SpecialistTable
