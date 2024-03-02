@@ -16,6 +16,7 @@ import { IoPersonAddOutline } from "react-icons/io5";
 import CreateClient from '../components/modals/CreateClient';
 import ClientFilters from "../components/ClientFilters";
 import Pagination from "../components/Pagination";
+import toast from "react-hot-toast";
 
 
 
@@ -76,13 +77,26 @@ const ClientsProfiles = () => {
     order,
     page,
     size,
-    createDateEnd,
-    createDateStart,
     token,
     activarNuevoCliente,
     birthdaysMonth,
     tokenError
   ]);
+
+  const buscarFecha = () => {
+    if (createDateStart > createDateEnd) {
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return
+    }
+
+    else {
+      axios.post(API_URL_BASE + `/v1/getclients?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}&birthdaysMonth=${birthdaysMonth}`, {token})
+      .then(respuesta => {
+        dispatch(getClients(respuesta.data))
+      })
+    }
+   
+  }
 
   if (tokenError === 401 || tokenError === 403) {
     return (
@@ -107,7 +121,7 @@ const ClientsProfiles = () => {
                   <IoPersonAddOutline className='h-6 w-6 mt-2.5 cursor-pointer dark:text-darkText' onClick={handleClientFormModal} /> : null
                 }
               </div>
-              <ClientFilters setNameOrLastName={setNameOrLastName} nameOrLastName={nameOrLastName} setAttribute={setAttribute} setOrder={setOrder} setPage={setPage} setSize={setSize} setBirthdaysMonth={setBirthdaysMonth} setCreateDateStart={setCreateDateStart} setCreateDateEnd={setCreateDateEnd} createDateStart={createDateStart} createDateEnd={createDateEnd} />
+              <ClientFilters buscarFecha={buscarFecha} setNameOrLastName={setNameOrLastName} nameOrLastName={nameOrLastName} setAttribute={setAttribute} setOrder={setOrder} setPage={setPage} setSize={setSize} setBirthdaysMonth={setBirthdaysMonth} setCreateDateStart={setCreateDateStart} setCreateDateEnd={setCreateDateEnd} createDateStart={createDateStart} createDateEnd={createDateEnd} />
               <ClientsTable count={count} clients={clients} />
               <Pagination page={page} setPage={setPage} size={size} setSize={setSize} count={count} />
             </div>

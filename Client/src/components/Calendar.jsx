@@ -456,11 +456,11 @@ const Calendar = ({
                     ))}
                   </select>
                   {!showEditAppointment && aux && (
-                    <div class="mt-2 flex items-center text-md dark:text-darkText">
+                    <div className="mt-2 flex items-center text-md dark:text-darkText">
                     <div role="status">
                       <svg
                         aria-hidden="true"
-                        class="w-4 h-4 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
+                        className="w-4 h-4 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
                         viewBox="0 0 100 101"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -474,7 +474,7 @@ const Calendar = ({
                           fill="currentFill"
                         />
                       </svg>
-                      <span class="sr-only">Loading...</span>
+                      <span className="sr-only">Loading...</span>
                     </div>
                     <span>
                     Cargando...
@@ -486,11 +486,11 @@ const Calendar = ({
             </div>
 
             {loading ? (
-              <div class="mt-2 flex items-center text-xl dark:text-darkText">
+              <div className="mt-2 flex items-center text-xl dark:text-darkText">
                 <div role="status">
                   <svg
                     aria-hidden="true"
-                    class="w-6 h-6 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
+                    className="w-6 h-6 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -504,7 +504,7 @@ const Calendar = ({
                       fill="currentFill"
                     />
                   </svg>
-                  <span class="sr-only">Loading...</span>
+                  <span className="sr-only">Loading...</span>
                 </div>
                 <span>
                 Cargando la agenda...

@@ -11,6 +11,7 @@ import EditCompanyModal from "./modals/EditCompanyModal";
 import ErrorToken from "../views/ErrorToken";
 import ToasterConfig from "./Toaster";
 import Loader from "./Loader";
+import PaginationSuperSuperAdmin from "./PaginationSuperSuperAdmin";
 
 //icons
 import { MdDeleteForever } from "react-icons/md";
@@ -20,7 +21,6 @@ import { MdEdit } from "react-icons/md";
 
 //variables de entorno
 import getParamsEnv from "../functions/getParamsEnv";
-import Pagination from "./Pagination";
 const { API_URL_BASE } = getParamsEnv();
 
 const ControlCompany = () => {
@@ -49,6 +49,9 @@ const ControlCompany = () => {
   const [totalCount, setTotalCount] = useState(10);
   const [countParcial, setCountParcial] = useState(10);
   const [page, setPage] = useState(0);
+  
+  const [dateCreateFrom, setDateCreateFrom] = useState(startingDate)
+  const [dateCreateTo, setDateCreateTo] = useState(actualDate)
 
   const [data, setData] = useState({
     dateCreateFrom: startingDate,
@@ -152,12 +155,40 @@ const ControlCompany = () => {
 
   const handleData = (e) => {
     const { name, value } = e.target;
+    if(name == "dateCreateFrom"){
+      setDateCreateFrom(value)
+      return
+    }
+    if(name == "dateCreateTo"){
+      setDateCreateTo(value)
+      return
+    }
+    else{
+      setData((prevInfo) => ({
+        ...prevInfo,
+        [name]: value,
+      }))
+      setIsLoading(true)
+    }
+  };
+
+  const buscarFecha = () => {
+    console.log(dateCreateFrom)
+    console.log(dateCreateTo)
+    if(dateCreateFrom > dateCreateTo){
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return
+    }
+
     setData((prevInfo) => ({
       ...prevInfo,
-      [name]: value,
-    }));
-    setIsLoading(true);
-  };
+      dateCreateFrom,
+      dateCreateTo
+    }))
+
+    setIsLoading(true)
+  }
+
 
   const confirmExtendPlan = (fila) => {
     setFila(fila);
@@ -225,7 +256,7 @@ const ControlCompany = () => {
                     name="dateCreateFrom"
                     onChange={handleData}
                     type="date"
-                    defaultValue={startingDate}
+                    value={dateCreateFrom}
                     className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
                     onKeyDown={(e) => e.preventDefault()}
                   />
@@ -233,10 +264,13 @@ const ControlCompany = () => {
                     name="dateCreateTo"
                     onChange={handleData}
                     type="date"
-                    defaultValue={actualDate}
+                    value={dateCreateTo}
                     className="w-full text-center border rounded-md border-black px-2 sm:w-fit dark:invert"
                     onKeyDown={(e) => e.preventDefault()}
                   />
+                  <button onClick={buscarFecha} className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText">
+                    Buscar fecha
+                </button>
                 </div>
               </div>
               <div className="mr-40 font-bold shadow-sm shadow-black border-black p-2 text-xl rounded-xl text-center dark:text-darkText dark:shadow-darkText">
@@ -391,7 +425,7 @@ const ControlCompany = () => {
               </table>
             </div>
             <div className="mt-[-30px]">
-              <Pagination
+              <PaginationSuperSuperAdmin
                 page={page}
                 setPage={setPage}
                 size={size}

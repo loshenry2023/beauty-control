@@ -50,16 +50,10 @@ function UserProfiles() {
   const tokenID = token.token;
 
   const handlerDateFrom = (e) => {
-    if (createDateEnd !== "" && `${e.target.value} 00:00:00` > createDateEnd) {
-      toast.error("La fecha inicial no puede ser mayor a la fecha final");
-    }
     setCreateDateStart(`${e.target.value} 00:00:00`)
   };
 
   const handlerDateTo = (e) => {
-    if (createDateStart !== "" && `${e.target.value} 23:59:59` < createDateStart) {
-      toast.error("La fecha final no puede ser menor a la fecha inicial");
-    }
     setCreateDateEnd(`${e.target.value} 23:59:59`)
   };
 
@@ -104,8 +98,6 @@ function UserProfiles() {
     branch,
     specialty,
     role,
-    createDateEnd,
-    createDateStart,
     activarNuevoUsuario,
     tokenError,
   ]);
@@ -113,6 +105,19 @@ function UserProfiles() {
   const handleShowProfilesModal = () => {
     setShowResgisterFormModal(true);
   };
+
+  const buscarFecha = () => {
+    if (createDateStart > createDateEnd) {
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return
+    }
+
+    axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`, token)
+    .then(respuesta => {
+      dispatch(getUsers(respuesta.data))
+    })
+  }
+  
 
   if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
@@ -159,6 +164,9 @@ function UserProfiles() {
                           onKeyDown={(e) => e.preventDefault()}
                         />
                       </div>
+                      <button onClick={buscarFecha} className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText">
+                         Buscar fecha
+                      </button>
                     </div>
                   </section>
                   <section className="flex flex-col items-start sm:w-full">
