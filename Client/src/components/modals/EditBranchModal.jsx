@@ -279,16 +279,16 @@ const EditBranchModal = ({
                 <input
                   onChange={handleChange}
                   type="text"
-                  name="instagramLink"
+                  name="linkIg"
                   value={newBranch.linkIg}
                   placeholder="Link de Instagram"
                   className={`border border-black p-2 rounded w-full ${
-                    errors.instagramLink !== undefined &&
+                    errors.linkIg !== undefined &&
                     "border-2 border-red-500"
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
-                {errors.instagramLink !== "" && (
-                  <p className="text-red-500 p-1">{errors.instagramLink}</p>
+                {errors.linkIg !== "" && (
+                  <p className="text-red-500 p-1">{errors.linkIg}</p>
                 )}
               </div>
               <div>
@@ -298,16 +298,16 @@ const EditBranchModal = ({
                 <input
                   onChange={handleChange}
                   type="text"
-                  name="facebookLink"
+                  name="linkFB"
                   value={newBranch.linkFb}
                   placeholder="Link de Facebook"
                   className={`border border-black p-2 rounded w-full ${
-                    errors.facebookLink !== undefined &&
+                    errors.linkFb !== undefined &&
                     "border-2 border-red-500"
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
-                {errors.facebookLink !== "" && (
-                  <p className="text-red-500 p-1">{errors.facebookLink}</p>
+                {errors.linkFb !== "" && (
+                  <p className="text-red-500 p-1">{errors.linkFb}</p>
                 )}
               </div>
 
@@ -319,16 +319,16 @@ const EditBranchModal = ({
                 <input
                   onChange={handleChange}
                   type="text"
-                  name="tiktokLink"
+                  name="linkTk"
                   value={newBranch.linkTk}
                   placeholder="Link de TikTok"
                   className={`border border-black p-2 rounded w-full ${
-                    errors.tiktokLink !== undefined &&
+                    errors.linkTk !== undefined &&
                     "border-2 border-red-500"
                   } dark:text-darkText dark:bg-darkPrimary`}
                 />
-                {errors.tiktokLink !== "" && (
-                  <p className="text-red-500 p-1">{errors.tiktokLink}</p>
+                {errors.linkTk !== "" && (
+                  <p className="text-red-500 p-1">{errors.linkTk}</p>
                 )}
               </div>
 

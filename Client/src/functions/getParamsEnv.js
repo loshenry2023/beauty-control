@@ -26,6 +26,7 @@ export default function getParamsEnv() {
   const NEWCONSUMABLE = import.meta.env.VITE_NEW_CONSUMABLE || "/newconsumable";
   const EDITPRODUCT = import.meta.env.VITE_EDIT_PRODUCT || "/editproduct/:code";
   const EDITPRODUCTBASE = import.meta.env.VITE_EDIT_PRODUCT || "/editproduct";
+  const CONTROLTABLES = import.meta.env.VITE_CONTROL_TABLES|| "/controlTables"
 
   const CLOUD_NAME = import.meta.env.VITE_APP_CLOUD_NAME || "doyafxwje"; //estaba antes: doqyrz0sg
   const UPLOAD_PRESET = import.meta.env.VITE_APP_UPLOAD_PRESET || "ml_default"; // estaba antes: "gcx7ffyb";
@@ -69,6 +70,7 @@ export default function getParamsEnv() {
     HISTORYPRICEBASE,
     EDITPRODUCTBASE,
     DEVELOPEDBY,
-    SSADMIN
+    SSADMIN,
+    CONTROLTABLES
   };
 }

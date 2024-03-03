@@ -40,7 +40,10 @@ const {
   DATEDETAIL,
   SPECIALISTMONITORING,
   DEVELOPEDBY,
-  SSADMIN
+  SSADMIN,
+  CONTROLTABLES, 
+  CONSUMABLES, 
+  HISTORYPRICE
 } = getParamsEnv();
 
 const App = () => {
@@ -60,10 +63,10 @@ const App = () => {
         <Route path={DATEDETAIL} element={<SpecialistDate />} />
         <Route path={SPECIALISTMONITORING} element={<SpecialistMonitoring />} />
         <Route path={DEVELOPEDBY} element={<DevelopedBy />} />
-        <Route path="consumables" element={<Consumables />} />
-        <Route path="historyprice/:productId" element={<ConsHistoryPrice />} />
+        <Route path={CONSUMABLES} element={<Consumables />} />
+        <Route path={HISTORYPRICE} element={<ConsHistoryPrice />} />
         <Route path="*" element={<Error />} />
-        <Route path="controlTables" element={<ControlTables />} />
+        <Route path={CONTROLTABLES} element={<ControlTables />} />
         <Route path={SSADMIN} element={<SuperSuperAdminDashboard />} />
       </Routes>
     </div>
