@@ -21,6 +21,7 @@ VITE_HISTORY_PRICE_BASE=/historyprice
 VITE_NEW_CONSUMABLE=/newconsumable
 VITE_EDIT_PRODUCT=/editproduct/:code
 VITE_EDIT_PRODUCT_BASE=/editproduct
+VITE_CONTROL_TABLES=/controlTables
 
 VITE_APP_CLOUD_NAME=doyafxwje
 VITE_APP_UPLOAD_PRESET=ml_default

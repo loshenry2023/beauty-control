@@ -16,7 +16,7 @@ import { AiFillTool } from "react-icons/ai";
 
 // Variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
-const { AGENDA, USERPROFILES, CONSUMABLES, CLIENTSPROFILES, HOME, SPECIALISTMONITORING } = getParamsEnv();
+const { AGENDA, USERPROFILES, CONSUMABLES, CLIENTSPROFILES, HOME, SPECIALISTMONITORING, CONTROLTABLES } = getParamsEnv();
 
 const IconWithTooltip = ({ to, iconName, tooltipText }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -101,8 +101,7 @@ const SideBar = () => {
       <IconWithTooltip to={CLIENTSPROFILES} iconName="userGroup" tooltipText="Clientes" />
       <IconWithTooltip to={AGENDA} iconName="calendar" tooltipText="Agenda" />
       <IconWithTooltip to={CONSUMABLES} iconName="Consumables" tooltipText="Insumos" />
-      <IconWithTooltip to={SPECIALISTMONITORING} iconName="specialistmonitoring" tooltipText="Seguimiento especialistas" />
-     <IconWithTooltip to="/controlTables" onClick={() => handleIconClick("tableControl")} iconName="tableControl" tooltipText="Control de tablas" />
+      <IconWithTooltip to={CONTROLTABLES} onClick={() => handleIconClick("tableControl")} iconName="tableControl" tooltipText="Control de tablas" />
     </>
   )}
 
