@@ -9,11 +9,12 @@ server.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", "true");
     res.header(
         "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept,Authorization"
+        "Origin, X-Requested-With, Content-Type, Accept"
     );
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
     next();
 });
+//"Origin, X-Requested-With, Content-Type, Accept,Authorization"
 // Manejo de formato json (body):
 server.use(express.json());
 // Antepone "/beautycontrol" a las rutas:
