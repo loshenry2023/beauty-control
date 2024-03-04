@@ -63,11 +63,11 @@ const NavBar = () => {
 
   let roleColor;
   if (user.role === "superAdmin") {
-    roleColor = "linear-gradient(to right, #ffc8c8, #bf3d30)";
+    roleColor = "linear-gradient(to right, #D1CFCE, #868585, #525151)"; //
   } else if (user.role === "admin") {
-    roleColor = "linear-gradient(to right, #ffc8c8, #FFDBC7)";
+    roleColor = "linear-gradient(to right, #D1CFCE, #868585, #322e2e)"; //#FFDBC7
   } else if (user.role === "especialista") {
-    roleColor = "#ffc8c8";
+    roleColor = "#D1CFCE";
   }
 
   const handleLogout = () => {
@@ -89,10 +89,11 @@ const NavBar = () => {
 
   const showRed = localStorage.getItem('showRed');
 
+
   return (
     <>
       <nav
-        className={`h-20 flex pl-2 pr-10 justify-between items-center shadow-md shadow-grey`}
+        className={`h-20 flex pr-10 justify-between items-center shadow-md shadow-secondaryColor`}
         style={{ background: roleColor }}
       >
         <div className="flex flex-row items-center gap-5">
@@ -101,7 +102,7 @@ const NavBar = () => {
               <img
                 className="hidden sm:flex w-20"
                 src={
-                  "https://res.cloudinary.com/doqyrz0sg/image/upload/v1702388420/aznyz3d12hy3wr3kk9j9.png"
+                  "https://res.cloudinary.com/doyafxwje/image/upload/v1707517244/Logos/beuatycontrol-logo_hlmilv.png"
                 }
                 alt="logo"
               />
@@ -109,9 +110,9 @@ const NavBar = () => {
 
             <Link to={HOME}>
               <img
-                className="hidden sm:flex w-20"
+                className="hidden sm:flex w-24"
                 src={
-                  "https://res.cloudinary.com/doqyrz0sg/image/upload/v1702388420/aznyz3d12hy3wr3kk9j9.png"
+                  "https://res.cloudinary.com/doyafxwje/image/upload/v1707517244/Logos/beuatycontrol-logo_hlmilv.png"
                 }
                 alt="logo"
               />
@@ -124,13 +125,13 @@ const NavBar = () => {
             alt="userPhoto"
             className="h-10 w-10 shadow-md shadow-black rounded-full"
           />
-          <span className="text-sm font-medium sm:text-lg">
+          <span className=" font-medium sm:text-lg">
             {" "}
             {user.name} {" "} {user.lastName} {" - "} {user.role === "superAdmin" ? "Admin General" : capitalizeFirstLetter(user.role)}  {" - "} {workingBranch.branchName}
           </span>
         </div>
         <div className="flex gap-4 items-center pointer-events:auto">
-          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className="h-6 w-6 cursor-pointer" /> : null}
+          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className={user.role === "superAdmin" ? "h-6 w-6 cursor-pointer dark:text-black" : "h-6 w-6 cursor-pointer dark:text-darkText" }/> : null}
           {theme==="light" ?
           <MdDarkMode
             onClick={handleDarkMode}
@@ -139,11 +140,11 @@ const NavBar = () => {
           :
           <MdLightMode
             onClick={handleDarkMode}
-            className="h-6 w-6 cursor-pointer"
+            className="h-6 w-6 cursor-pointer dark:text-yellow-500"
           />}
-          <CiBellOn className="relative h-6 w-6" />
+          <CiBellOn className="relative h-6 w-6 " />
           {user.role === "superAdmin" || user.role === "admin" || appointments.count === 0 ? null :
-            showRed && <span onClick={() => eraseNotifications()} className="text-sm flex flex-row items-center justify-center font-bold mx-auto my-auto absolute w-4 h-4 top-[40px] right-[76px] rounded-full bg-red-500 cursor-pointer"> {appointments.count}  </span>}
+            showRed && <span onClick={() => eraseNotifications()} className=" flex flex-row items-center justify-center font-bold mx-auto my-auto absolute w-4 h-4 top-[40px] right-[76px] rounded-full bg-red-500 cursor-pointer"> {appointments.count}  </span>}
           <Link to={ROOT}>
             <IoExitOutline className="h-6 w-6 " onClick={handleLogout} />
           </Link>

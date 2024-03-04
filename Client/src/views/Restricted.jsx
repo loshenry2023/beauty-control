@@ -7,7 +7,7 @@ const Restricted = () => {
         <h1 className="text-3xl tracking-wide text-center font-fontTitle  dark:text-darkText">
           Acceso restringido{" "}
         </h1>
-        <h5 className="text-2xl tracking-wide text-center text-gray-700 dark:text-darkText">
+        <h5 className="text-xl tracking-wide text-center text-gray-700 dark:text-darkText">
           Lo sentimos pero no tienes acceso a esta página.
         </h5>
       </div>

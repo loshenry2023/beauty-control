@@ -1,13 +1,14 @@
 import React from 'react'
 
-const Pagination = ({page, size, setPage, setSize, count}) => {
+const Pagination = ({page, size, setPage, setSize, count, data}) => {
   const pagination = Math.ceil(count / size);
   return (
-    <section className="flex flex-col items-center gap-3">
-    <select
+    <section className="mt-10 flex flex-col items-center gap-3">
+      {data ? (<select
         name=""
         id=""
         defaultValue={10}
+        value={data.size}
         onChange={(e) => {
           setSize(e.target.value);
           setPage(0);
@@ -25,7 +26,29 @@ const Pagination = ({page, size, setPage, setSize, count}) => {
         <option value={8}>8</option>
         <option value={9}>9</option>
         <option value={10}>10</option>
-      </select>
+      </select>) :
+      <select
+          name=""
+          id=""
+          defaultValue={10}
+          onChange={(e) => {
+            setSize(e.target.value);
+            setPage(0);
+          }}
+          className="shadow shadow-black rounded-md dark:text-darkText dark:bg-darkPrimary"
+        >
+          {" "}
+          <option value={1}>1</option>
+          <option value={2}>2</option>
+          <option value={3}>3</option>
+          <option value={4}>4</option>
+          <option value={5}>5</option>
+          <option value={6}>6</option>
+          <option value={7}>7</option>
+          <option value={8}>8</option>
+          <option value={9}>9</option>
+          <option value={10}>10</option>
+        </select>}
         <div>
         <button
           onClick={

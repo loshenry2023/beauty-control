@@ -8,24 +8,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        primaryPink: '#e59494',
-        secondaryPink: '#ffc8c8',
+        primaryColor: '#525151',
+        secondaryColor: '#D1CFCE',
         beige: '#ede9e3',
-        grey: '#9b9b9b',
-        // darkPrimary: "#393646",
-        // darkBackground: "#4F4557",
         darkPrimary: "#0C0C0C",
         darkBackground: "#171717",
-        darkText: "#D1D5DB"
+        darkText: "#D1D5DB",
+        controlColor: "#4299e1"
       },
       boxShadow: {
         '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
       },
       fontFamily: {
-        fontTitle: ['Bebas Neue'],
-        fontSubTitle: ['Grandiflora One'],
-        fontParra: ['x', 'y'] // Hay que importarlas en el postcss.config
+        fontTitle: ['Alegreya Sans'],
+        fontBody: ['Clear Sans'],
       },
+      transitionDuration: {
+          '3000': '3000ms',
+        }
     },
   },
   plugins: [],

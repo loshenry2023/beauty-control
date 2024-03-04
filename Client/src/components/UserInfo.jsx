@@ -1,12 +1,19 @@
 // hooks, routers, reducers:
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { clearUserId, deleteUser, getUserId } from "../redux/actions";
+import { clearUserId, deleteUser, getUser, getUserId, setTokenError } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { Toaster, toast } from "react-hot-toast";
+import axios from "axios";
+
+//components
 import EditModal from "./modals/EditModal.jsx";
 import Loader from "./Loader.jsx";
 import "./loading.css";
+
+//toast
+import { toast } from "react-hot-toast";
+import ToasterConfig from "./Toaster.jsx";
+
 
 //icons
 import { MdEdit } from "react-icons/md";
@@ -15,8 +22,8 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 
 //variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
-import ToasterConfig from "./Toaster.jsx";
-const { USERPROFILES } = getParamsEnv();
+import ErrorToken from "../views/ErrorToken.jsx";
+const { USERPROFILES, API_URL_BASE } = getParamsEnv()
 
 const UserInfo = () => {
   const params = useParams();
@@ -30,19 +37,40 @@ const UserInfo = () => {
 
   const specialties = useSelector((state) => state?.specialties);
   const branches = useSelector((state) => state?.branches);
-  const userID = useSelector((state) => state?.userID);
+  const userID = useSelector((state) => state?.userDataId);
   const user = useSelector((state) => state?.user);
-
+  const tokenError = useSelector((state) => state?.tokenError);
   const token = { token: user.token };
   const tokenID = user.token;
 
+  let requestMade = false;
   useEffect(() => {
-    dispatch(getUserId(detailId, token))
-    .then(() => {setLoading(false)})
-  }, [detailId]);
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true;
+      axios.post(API_URL_BASE + `/v1/userdetails/${detailId}`, token)
+      .then(respuesta => {
+        dispatch(getUserId(respuesta.data))
+        requestMade = false;
+        setLoading(false)
+      })
+      .catch(error => {  
+        if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+          setLoading(false)
+         dispatch(setTokenError(error.request.status))
+      } else {
+        let errorMessage= ""   
+        if (!error.response) {
+          errorMessage = error.message;
+        } else {
+          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+        }
+        toast.error(errorMessage);
+      }})
+    }
+  }, [detailId, tokenError]);
 
   const confirmDelete = (detailId) => {
-    if (userID?.userName === "loshenry2023@gmail.com") {
+    if (userID?.userName === user.userName) {
       toast.error("Este usuario no puede ser eliminado");
     } else {
       setShowDeleteConfirmation(true);
@@ -75,65 +103,71 @@ const UserInfo = () => {
   const especialidades = userID?.specialties;
   const sedes = userID?.branches;
 
+
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
+    return (
+      <ErrorToken error={tokenError} />
+    );
+  } else {
     return (
       <>
         {loading ? <Loader /> : (
         <div className="relative w-full flex justify-center items-center dark:bg-darkBackground">
-          <div className=" bg-beige border-4 border-primaryPink border-double mx-auto sm:w-3/5 lg:w-3/5 lg:grid lg:grid-cols-2 rounded-lg shadow-md shadow-grey dark:shadow-black dark:bg-darkPrimary ">
+          <div className=" bg-secondaryColor border-4 border-black border-double mx-auto sm:w-3/5 lg:w-3/5 lg:grid lg:grid-cols-2 rounded-lg shadow-md shadow-secondaryColor dark:border-white dark:shadow-black dark:bg-darkPrimary ">
             <div className="flex items-center">
               <img
-                className=" w-full shadow-md shadow-black rounded-xl border-grey object-cover sm:mx-2 sm:h-80"
+                className=" w-full shadow-md shadow-black rounded-xl border-secondaryColor object-cover sm:mx-2 sm:h-80"
                 src={userID?.image}
               />
             </div>
-            <div className="py-4 px-4 gap-2 bg-beige text-gray-800 flex flex-col sm:items-start sm:justify-between dark:bg-darkPrimary">
+            <div className="py-4 px-4 gap-2 bg-secondaryColor text-gray-800 flex flex-col sm:items-start sm:justify-between dark:bg-darkPrimary">
               <div className="flex gap-2">
                 <IoMdArrowRoundBack
                   onClick={handleGoBack}
-                  className="h-5 w-5 mt-1 cursor-pointer dark:text-darkText"
+                  className="h-5 w-5 mt-1.5 cursor-pointer dark:text-darkText"
                 />
-                <h2 className="underline font-semibold text-xl leading-tight dark:text-darkText">
+                <h1 className="underline font-semibold text-2xl leading-tight dark:text-darkText">
                   {userID?.name} {userID?.lastName}
-                </h2>
+                </h1>
               </div>
-              <h3 className="text-lg font-medium leading-tight dark:text-darkText">
+              <h3 className="text-lg font-bold leading-tight dark:text-darkText">
                 Usuario:{" "}
-                <span className="text-md tracking-wide font-light">
+                <span className="text-md tracking-wide font-medium text-black dark:text-darkText">
                   {userID?.userName}
                 </span>
               </h3>
-              <h3 className="flex text-lg font-medium leading-tight dark:text-darkText">
+              <h3 className="flex text-lg font-bold leading-tight dark:text-darkText">
                 Rol:{" "}
-                <span className="pl-1 text-md tracking-wide font-light ">
+                <span className="pl-1 text-md tracking-wide ">
                   {" "}
-                  {userID?.role === "superAdmin" ? "Admin General" : `${userID.role .charAt(0).toUpperCase()}${userID.role .slice(1)}`}
+                  {userID?.role === "superAdmin" ? "Admin General" : `${userID?.role .charAt(0).toUpperCase()}${userID?.role .slice(1)}`}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium  dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Teléfono:{" "}
-                <span className="text-md tracking-wide font-light dark:text-darkText">
+                <span className="text-md tracking-wide font-medium dark:text-darkText">
                   {userID?.phone1}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Email:{" "}
-                <span className="text-md tracking-wide font-light dark:text-darkText">
+                <span className="text-md tracking-wide font-medium dark:text-darkText">
                   {" "}
                   {userID?.notificationEmail}{" "}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Comisión:{" "}
-                <span className="text-md tracking-wide font-light ">
+                <span className="text-md tracking-wide font-medium ">
                   {userID?.comission}%
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium sm:text-base lg:text-lg dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold sm:text-base lg:text-lg dark:text-darkText">
                 Especialidades:
                 {especialidades &&
                   especialidades.map((specialt, index) => (
                     <span
-                      className="text-md tracking-wide font-light"
+                      className="text-md tracking-wide font-medium"
                       key={index}
                     >
                       {" "}
@@ -141,13 +175,13 @@ const UserInfo = () => {
                     </span>
                   ))}
               </h3>
-              <h3 className="text-lg leading-tight font-medium first-line: dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold first-line: dark:text-darkText">
                 Sede:{" "}
-                <span className="text-md tracking-wide font-light dark:text-darkText">
+                <span className="text-md tracking-wide font-medium dark:text-darkText">
                   {sedes &&
                     sedes.map((sede, index) => (
                       <span
-                        className="text-md tracking-wide font-light"
+                        className="text-md tracking-wide font-medium"
                         key={index}
                       >
                         {" "}
@@ -156,9 +190,9 @@ const UserInfo = () => {
                     ))}
                 </span>
               </h3>
-              <h3 className="text-lg leading-tight font-medium dark:text-darkText">
+              <h3 className="text-lg leading-tight font-bold dark:text-darkText">
                 Fecha de creación:{" "}
-                <span className="text-md tracking-wide font-light ">
+                <span className="text-md tracking-wide font-medium ">
                   {createdAtInBogotaTimezone.split(",")[0]}
                 </span>
               </h3>
@@ -195,19 +229,19 @@ const UserInfo = () => {
                 window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
               }`}
             >
-              <p className="mb-4 text-sm sm:text-base">
+              <p className="mb-4  sm:text-base">
                 ¿Estás seguro de que deseas eliminar este usuario?
               </p>
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={() => deleteConfirmed(true)}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
                 >
                   Aceptar
                 </button>
                 <button
                   onClick={() => deleteConfirmed(false)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
                 >
                   Cancelar
                 </button>
@@ -217,7 +251,7 @@ const UserInfo = () => {
         )}
         <ToasterConfig />
       </>
-    );
+    )};
   } 
 
 

@@ -5,6 +5,9 @@ import Loader from "./Loader";
 import DonutChart from "./DonutChart";
 import DonutChartPayMethods from "./DonutChartPayMethods";
 import ErrorToken from "../views/ErrorToken";
+import getParamsEnv from "../functions/getParamsEnv.js";
+import axios from "axios";
+const { API_URL_BASE } = getParamsEnv();
 
 //Toast
 import { toast } from "react-hot-toast";
@@ -29,6 +32,9 @@ const Balance = ({ specialists, services, payMethods }) => {
   const [showAdditionalCharts, setShowAdditionalCharts] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
+  const [dateFrom, setDateFrom] = useState(formattedDate)
+  const [dateTo, setDateTo] = useState(formattedDate)
+
   const [fetchDataBalance, setFetchDataBalance] = useState({
     branchName: workingBranch.branchName,
     dateFrom: formattedDate,
@@ -49,124 +55,146 @@ const Balance = ({ specialists, services, payMethods }) => {
     return number.toLocaleString("es-CO");
   };
 
+  let requestMade = false;
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await dispatch(getBalance(fetchDataBalance));
-        setLoading(false);
+    if (!requestMade) {
+      requestMade = true;
+      axios.post(API_URL_BASE + "/v1/getbalance", fetchDataBalance)
+        .then((respuesta) => {
+          dispatch(getBalance(respuesta.data));
+          // Procesar datos
+          let totalIncomes = 0;
+          let specialistCounts = [];
+          let serviceCounts = [];
+          let paymentMethodIncomes = [];
 
-        // Procesar datos
-        let totalIncomes = 0;
-        let specialistCounts = [];
-        let serviceCounts = [];
-        let paymentMethodIncomes = [];
+          if (respuesta.data && respuesta.data.rows) {
+            respuesta.data.rows.forEach((user, index) => {
+              // calcular total ingresos
+              user.payments.forEach((payment) => {
+                totalIncomes += payment.Amount;
+              });
 
-        if (response.payload && response.payload.rows) {
-          response.payload.rows.forEach((user, index) => {
-            // calcular total ingresos
-            user.payments.forEach((payment) => {
-              totalIncomes += payment.Amount;
+              // datos gráfico de especialistas
+              specialistCounts.push({
+                id: `specialist-${index}`,
+                name: `${user.name} ${user.lastName}`,
+                value: user.services.length,
+              });
+
+              // datos gráfico de cantidad de servicios
+              services.forEach((service, serviceIndex) => {
+                const serviceCount = user.services.filter(
+                  (userService) =>
+                    userService.serviceName === service.serviceName
+                ).length;
+                const existingService = serviceCounts.find(
+                  (item) => item.id === `service-${serviceIndex}`
+                );
+
+                if (existingService) {
+                  existingService.value += serviceCount;
+                } else {
+                  serviceCounts.push({
+                    id: `service-${serviceIndex}`,
+                    name: service.serviceName,
+                    value: serviceCount,
+                  });
+                }
+              });
+
+              // ingresos reales por método de pago
+              paymentMethodIncomes = payMethods.map((payMethod) => {
+                const methodName = payMethod.paymentMethodName;
+                const methodData = paymentMethodIncomes.find(
+                  (item) => item.name === methodName
+                ) || { name: methodName, value: 0 };
+                methodData.value += user.payments
+                  .filter((payment) => payment.Method === methodName)
+                  .reduce((acc, payment) => acc + payment.Amount, 0);
+
+                return methodData;
+              });
             });
+          }
+          setChartDataSpecialists([...specialistCounts]);
+          setChartDataServicesCount([...serviceCounts]);
+          setChartDataPaymentMethods([...paymentMethodIncomes]);
+          requestMade = false;
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching balance data:", error);
+          setLoading(false);
+        });
+    }
+  }, [fetchDataBalance, specialists, services, payMethods, tokenError]);
 
-            // datos gráfico de especialistas
-            specialistCounts.push({
-              id: `specialist-${index}`,
-              name: `${user.name} ${user.lastName}`,
-              value: user.services.length,
-            });
+  // const handleDate = (e) => {
+  //   if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
+  //     if (e.target.value > fetchDataBalance.dateTo) {
+  //       const newDate = fetchDataBalance.dateTo;
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         dateFrom: newDate,
+  //       });
+  //       toast.error("La fecha inicial no puede ser mayor a la fecha final");
+  //       document.getElementById("dateFrom").value = newDate;
+  //     } else {
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
 
-            // datos gráfico de cantidad de servicios
-            services.forEach((service, serviceIndex) => {
-              const serviceCount = user.services.filter(
-                (userService) => userService.serviceName === service.serviceName
-              ).length;
-              const existingService = serviceCounts.find(
-                (item) => item.id === `service-${serviceIndex}`
-              );
-
-              if (existingService) {
-                existingService.value += serviceCount;
-              } else {
-                serviceCounts.push({
-                  id: `service-${serviceIndex}`,
-                  name: service.serviceName,
-                  value: serviceCount,
-                });
-              }
-            });
-
-            // ingresos reales por método de pago
-            paymentMethodIncomes = payMethods.map((payMethod) => {
-              const methodName = payMethod.paymentMethodName;
-              const methodData = paymentMethodIncomes.find(
-                (item) => item.name === methodName
-              ) || { name: methodName, value: 0 };
-              methodData.value += user.payments
-                .filter((payment) => payment.Method === methodName)
-                .reduce((acc, payment) => acc + payment.Amount, 0);
-
-              return methodData;
-            });
-          });
-        }
-
-        // actualizar gráficos y estado
-        setChartDataSpecialists([...specialistCounts]);
-
-        setChartDataServicesCount([...serviceCounts]);
-
-        setChartDataPaymentMethods([...paymentMethodIncomes]);
-      } catch (error) {
-        console.error("Error fetching balance data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [
-    dispatch,
-    fetchDataBalance,
-    specialists,
-    services,
-    payMethods,
-    tokenError,
-  ]);
+  //   if (e.target.name === "dateTo" && testData.test(e.target.value)) {
+  //     if (e.target.value < fetchDataBalance.dateFrom) {
+  //       const newDate = fetchDataBalance.dateFrom;
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         dateTo: newDate,
+  //       });
+  //       toast.error("La fecha final no puede ser menor a la fecha inicial");
+  //       document.getElementById("dateTo").value = newDate;
+  //     } else {
+  //       setFetchDataBalance({
+  //         ...fetchDataBalance,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
+  // };
 
   const handleDate = (e) => {
-    if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
-      if (e.target.value > fetchDataBalance.dateTo) {
-        const newDate = fetchDataBalance.dateTo;
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          dateFrom: newDate,
-        });
-        toast.error("La fecha inicial no puede ser mayor a la fecha final");
-        document.getElementById("dateFrom").value = newDate;
-      } else {
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          [e.target.name]: e.target.value,
-        });
-      }
+    if (e.target.name === "dateFrom"){
+      const newDate = e.target.value
+      setDateFrom(newDate)
+      document.getElementById("dateFrom").value = newDate;
     }
 
-    if (e.target.name === "dateTo" && testData.test(e.target.value)) {
-      if (e.target.value < fetchDataBalance.dateFrom) {
-        const newDate = fetchDataBalance.dateFrom;
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          dateTo: newDate,
-        });
-        toast.error("La fecha final no puede ser menor a la fecha inicial");
+    if (e.target.name === "dateTo") {
+        const newDate = e.target.value
+        setDateTo(newDate)
         document.getElementById("dateTo").value = newDate;
-      } else {
-        setFetchDataBalance({
-          ...fetchDataBalance,
-          [e.target.name]: e.target.value,
-        });
-      }
+      } 
+  }
+
+  const buscarFecha = () => {
+    console.log(dateFrom)
+    console.log(dateTo)
+    if(dateFrom > dateTo){
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return
     }
-  };
+
+    setFetchDataBalance({
+      branchName: workingBranch.branchName,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      token,
+  });
+};
 
   const handleDataToFetch = (e) => {
     setFetchDataBalance((prevData) => {
@@ -255,7 +283,7 @@ const Balance = ({ specialists, services, payMethods }) => {
           <Loader />
         ) : (
           <div className="flex flex-col mt-10 gap-5">
-            <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+            <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
               Balance
             </h1>
             <section className="flex flex-wrap md:flex-row gap-5">
@@ -269,7 +297,8 @@ const Balance = ({ specialists, services, payMethods }) => {
                   name="dateFrom"
                   defaultValue={formattedDate}
                   onChange={handleDate}
-                  className="w-full border rounded-md border-black px-2 text-sm dark:invert xl:w-fit"
+                  className="w-full border rounded-md border-black px-2  dark:invert xl:w-fit"
+                  onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
               <div className="flex gap-2 w-full xl:w-fit">
@@ -282,9 +311,13 @@ const Balance = ({ specialists, services, payMethods }) => {
                   name="dateTo"
                   defaultValue={formattedDate}
                   onChange={handleDate}
-                  className="w-full border rounded-md border-black px-2 text-sm dark:invert xl:w-fit"
+                  className="w-full border rounded-md border-black px-2  dark:invert xl:w-fit"
+                  onKeyDown={(e) => e.preventDefault()}
                 />
               </div>
+              <button onClick={buscarFecha} className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText">
+                    Buscar fecha
+                </button>
             </section>
             <section className="flex flex-col gap-6 md:flex-wrap xl:flex-row">
               <div className="flex gap-2 w-full xl:w-fit">
@@ -293,16 +326,20 @@ const Balance = ({ specialists, services, payMethods }) => {
                 </label>
                 <select
                   type="text"
-                  className="border w-full rounded-md border-black px-2 text-sm dark:invert xl:w-fit"
+                  className="border w-full rounded-md border-black px-2  dark:invert xl:w-fit"
                   onChange={(e) => handleDataToFetch(e)}
                   name="idUser"
                 >
                   <option value=""> -- Especialista -- </option>
-                  {specialists.map((especialist, index) => (
-                    <option name="idUser" key={index} value={especialist.id}>
-                      {especialist.name} {especialist.lastName}
-                    </option>
-                  ))}
+                  {specialists.length === 0 ? (
+                    <option value=""> Todavía no hay especialistas </option>
+                  ) : (
+                    specialists.map((especialist, index) => (
+                      <option name="idUser" key={index} value={especialist.id}>
+                        {especialist.name} {especialist.lastName}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
               <div className="flex gap-2 w-full xl:w-fit">
@@ -311,7 +348,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                 </label>
                 <select
                   type="text"
-                  className="border rounded-md w-full border-black px-2 text-sm  dark:invert xl:w-fit"
+                  className="border rounded-md w-full border-black px-2   dark:invert xl:w-fit"
                   onChange={(e) => handleDataToFetch(e)}
                   name="idService"
                 >
@@ -329,7 +366,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                 </label>
                 <select
                   type="text"
-                  className="border rounded-md w-full border-black px-2 text-sm  dark:invert xl:w-fit"
+                  className="border rounded-md w-full border-black px-2   dark:invert xl:w-fit"
                   onChange={(e) => handleDataToFetch(e)}
                   name="idPayment"
                 >
@@ -344,21 +381,21 @@ const Balance = ({ specialists, services, payMethods }) => {
             </section>
             <div className="w-full mt-10 flex flex-col items-center justify-between xl:flex-row sm:justify-start">
               <section className="flex flex-col gap-4 sm:flex-row xl:flex-col">
-                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800">
-                  <h1 className="text-2xl dark:text-darkText flex flex-col items-center">
+                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-secondaryColor dark:hover:bg-zinc-800">
+                  <h2 className="text-2xl dark:text-darkText flex flex-col items-center">
                     Total ingresos:{" "}
                     <span className=" mt-2">
                       {" "}
                       ${formatNumber(totalIncomes)}
                     </span>
-                  </h1>
+                  </h2>
                 </div>
-                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800">
-                  <h1 className="text-center text-2xl dark:text-darkText">
+                <div className="h-40 w-60 p-5 flex flex-row justify-center items-center rounded-2xl shadow-md shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-secondaryColor dark:hover:bg-zinc-800">
+                  <h2 className="text-center text-2xl dark:text-darkText">
                     {comision
                       ? `Comision: ${comision}%`
                       : "Selecciona un especialista para visualizar comisión"}
-                  </h1>
+                  </h2>
                 </div>
               </section>
               {totalIncomes !== 0 ? (
@@ -370,7 +407,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                   />
                   <div className="mx-2">
                     <button
-                      className="w-40 p-2 mt-10 rounded-2xl shadow-md font-bold shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800 dark:text-darkText xl:mt-0"
+                      className="w-40 p-2 mt-10 rounded-2xl shadow-md font-bold shadow-black hover:bg-secondaryColor transition-colors duration-700 dark:bg-darkPrimary  dark:hover:bg-zinc-800 dark:text-darkText xl:mt-0"
                       onClick={() => setShowDetails(!showDetails)}
                     >
                       {showDetails ? "Ocultar detalles" : "Mostrar detalles"}
@@ -379,7 +416,7 @@ const Balance = ({ specialists, services, payMethods }) => {
                       <ul className="mt-4 dark:text-darkText">
                         {chartDataPaymentMethods.map((entry) => (
                           <div
-                            className="text-xs"
+                            className=""
                             key={`legend-${entry.name}`} // Cambiado a entry.name como clave
                             style={{ marginBottom: "12px" }}
                           >
@@ -414,17 +451,15 @@ const Balance = ({ specialists, services, payMethods }) => {
                   </div>
                 </section>
               ) : (
-                <h2 className=" text-center w-full text-xl mt-10 xl:mt-0  dark:text-darkText">
-                  No hay informacion para los filtros seleccionados.
+                <h2 className=" text-center w-full text-3xl mt-10 xl:mt-0  dark:text-darkText">
+                  No hay informacion para los filtros seleccionados
                 </h2>
               )}
             </div>
             {totalIncomes !== 0 ? (
               <section className="mb-10 w-full flex flex-col items-center justify-center">
                 <button
-                  className={`mt-5 xl:ml-[70px] w-fit p-2 rounded-2xl shadow-md font-bold shadow-black transition duration-700 dark:bg-darkPrimary hover:bg-blue-500 dark:hover:bg-zinc-800 dark:text-darkText ${
-                    showAdditionalCharts ? "bg-blue-500 text-white" : ""
-                  }`}
+                  className="mt-5 xl:ml-[70px] w-fit p-2 px-4 rounded-2xl shadow-md font-bold shadow-black hover:bg-secondaryColor transition-colors duration-700 dark:bg-darkPrimary  dark:hover:bg-zinc-800 dark:text-darkText"
                   onClick={handleToggleCharts}
                 >
                   {showAdditionalCharts

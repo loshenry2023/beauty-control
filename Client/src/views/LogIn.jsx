@@ -14,7 +14,7 @@ import { AiFillYahoo } from "react-icons/ai";
 
 // Variables de entorno:
 import getParamsEnv from "../functions/getParamsEnv";
-const { ROOT, HOME, AGENDA, API_URL_BASE, BRANCH } = getParamsEnv();
+const { ROOT, HOME, AGENDA, API_URL_BASE, BRANCH, SSADMIN } = getParamsEnv();
 
 //Firebase
 import {
@@ -38,12 +38,16 @@ const LogIn = () => {
         dispatch(setBranch({ ...branches[0] }));
         if (role === "superAdmin") {
           navigate(HOME)
-        } else[
+        } else {
           navigate(AGENDA)
-        ]
+      }
       } else {
+        
         navigate(BRANCH)
       }
+    } else if (role === "superSuperAdmin") {
+      navigate(SSADMIN)
+    
     }
   }, [role]);
 
@@ -75,7 +79,7 @@ const LogIn = () => {
         idUser: idToken, // mando el gigantesco token real
       };
       const retrieveUser = await axios.post(
-        API_URL_BASE + "/userdata",
+        API_URL_BASE + "/v1/userdata",
         dataToValidate
       );
       const userData = retrieveUser.data;
@@ -83,7 +87,6 @@ const LogIn = () => {
       const { role, branches } = userData;
       setBranches(branches);
       setRole(role);
-
       dispatch(getToken(idToken));
     } catch (error) {
       if (!ultIntento) {
@@ -96,7 +99,11 @@ const LogIn = () => {
         } else {
           if (error.message.includes("404")) {
             toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)
-          } else {
+          } 
+          else if (error.message.includes("402")) {
+            toast.error(`La suscripción ha expirado. Para renovarla, contacta al administrador.`)
+          }
+          else {
             toast.error(`${error.message}. Por favor comunícate con el administrador.`)
           }
         };
@@ -126,7 +133,7 @@ const LogIn = () => {
       };
 
       const retrieveUser = await axios.post(
-        API_URL_BASE + "/userdata",
+        API_URL_BASE + "/v1/userdata",
         dataToValidate
       );
 
@@ -139,7 +146,11 @@ const LogIn = () => {
     } catch (error) {
       if (error.message.includes("404")) {
         toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)
-      } else {
+      } 
+      else if (error.message.includes("402")) {
+        toast.error(`La suscripción ha expirado. Para renovarla, contacta al administrador.`)
+      }
+      else {
         toast.error(`${error.message}. Por favor comunícate con el administrador.`)
       }
     }
@@ -147,34 +158,34 @@ const LogIn = () => {
 
   return (
     <section className="mx-auto">
-      <div className="bg-[url('https://res.cloudinary.com/doyafxwje/image/upload/v1703630993/LogIn/osoq2vut2vy2fivyauxm.jpg')] bg-cover bg-center flex flex-col items-center justify-center h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow-xl shadow-black max-w-sm">
+      <div className="bg-[url(https://images.unsplash.com/photo-1612538498456-e861df91d4d0?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] bg-cover bg-center flex flex-col items-center justify-center h-screen lg:py-0">
+        <div className="w-full bg-white rounded-lg shadow-sm shadow-black max-w-sm">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex justify-between">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
+              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 ">
                 Iniciar sesión
               </h1>
               <Link to={ROOT}>
                 {" "}
-                <GiExitDoor className="h-8 w-8" />{" "}
+                <GiExitDoor className="h-8 w-8 mt-0.5" />{" "}
               </Link>
             </div>
             <button
               onClick={() => handleYahoo(false)}
-              className="w-full px-4 py-2 border flex justify-center  gap-2 rounded-lg border-slate-700 hover:bg-grey hover:text-white transition-color duration-700 ease-in-out"
+              className="w-full px-4 py-2 border flex justify-center  gap-2 rounded-lg border-slate-700 hover:bg-secondaryColor transition-color duration-700"
             >
               <AiFillYahoo className="h-6 w-6 text-blue-900" />
               <span>Iniciar sesión con Yahoo</span>
             </button>
             <button
               onClick={handleGoogle}
-              className="w-full px-4 py-2 border flex justify-center gap-2 rounded-lg border-slate-700 hover:bg-grey hover:text-white transition-color duration-700 ease-in-out "
+              className="w-full px-4 py-2 border flex justify-center gap-2 rounded-lg border-slate-700 hover:bg-secondaryColor transition-color duration-700 "
             >
               <FcGoogle className="h-6 w-6" />
               <span>Iniciar sesión con Google</span>
             </button>
             {errorCredentials ? (
-              <p className="text-red-500 text-sm font-semibold ">
+              <p className="text-red-500  font-semibold ">
                 {errorCredentials}
               </p>
             ) : null}

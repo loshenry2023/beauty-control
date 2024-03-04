@@ -9,6 +9,7 @@ import UserDetail from "./views/UserDetail.jsx";
 import Agenda from "./views/Agenda.jsx";
 import SpecialistDate from "./views/SpecialistDate.jsx";
 import DevelopedBy from "./views/DevelopedBy/DevelopedBy.jsx";
+import SuperSuperAdminDashboard from "./views/SuperSuperAdminDashboard.jsx";
 
 import Consumables from "./views/Consumables.jsx";
 import ConsHistoryPrice from "./components/ConsHistoryPrice.jsx";
@@ -38,12 +39,16 @@ const {
   CLIENTSPROFILES,
   DATEDETAIL,
   SPECIALISTMONITORING,
-  DEVELOPEDBY
+  DEVELOPEDBY,
+  SSADMIN,
+  CONTROLTABLES, 
+  CONSUMABLES, 
+  HISTORYPRICE
 } = getParamsEnv();
 
 const App = () => {
   return (
-    <div>
+    <div className="font-fontBody text-md">
       <Routes>
         <Route path={ROOT} element={<Landing />} />
         <Route path={LOGIN} element={<LogIn />} />
@@ -58,10 +63,11 @@ const App = () => {
         <Route path={DATEDETAIL} element={<SpecialistDate />} />
         <Route path={SPECIALISTMONITORING} element={<SpecialistMonitoring />} />
         <Route path={DEVELOPEDBY} element={<DevelopedBy />} />
-        <Route path="consumables" element={<Consumables />} />
-        <Route path="historyprice/:productId" element={<ConsHistoryPrice />} />
+        <Route path={CONSUMABLES} element={<Consumables />} />
+        <Route path={HISTORYPRICE} element={<ConsHistoryPrice />} />
         <Route path="*" element={<Error />} />
-        <Route path="controlTables" element={<ControlTables />} />
+        <Route path={CONTROLTABLES} element={<ControlTables />} />
+        <Route path={SSADMIN} element={<SuperSuperAdminDashboard />} />
       </Routes>
     </div>
   );

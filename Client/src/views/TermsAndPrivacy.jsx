@@ -19,10 +19,10 @@ const TermsAndPrivacy = () => {
             alt="Logo"
           ></img>
           <ul className="flex">
-            <li className="mx-4 text-black hover:text-secondaryPink ">
+            <li className="mx-4 text-black hover:text-secondaryColor ">
               <Link to={ROOT}>Home</Link>
             </li>
-            <li className="mx-4 text-black hover:text-secondaryPink ">
+            <li className="mx-4 text-black hover:text-secondaryColor ">
               <Link to={LOGIN}>Log in</Link>
             </li>
           </ul>

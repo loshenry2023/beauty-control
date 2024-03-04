@@ -27,14 +27,6 @@ const DevelopedBy = () => {
       email: "tomas.bombau@gmail.com",
     },
     {
-      name: "Fernando Suppa",
-      role: "Full Stack Developer",
-      foto: "https://res.cloudinary.com/desaac6ma/image/upload/v1704989957/samples/FOTOS/Vana_-_Corporate_Headshot_2024-01-11-9_48_08AM_7-removebg-preview_gdxrb7.png",
-      linkedin: "https://www.linkedin.com/in/fernando-suppa-nieto/",
-      github: "https://github.com/fsuppanieto",
-      email: "fsuppanieto@gmail.com",
-    },
-    {
       name: "Ramiro Alet",
       role: "Full Stack Developer",
       foto: "https://res.cloudinary.com/desaac6ma/image/upload/v1704990122/samples/FOTOS/photo1_yxjjoi-removebg-preview_hvlpsi.png",
@@ -49,24 +41,6 @@ const DevelopedBy = () => {
       linkedin: "https://www.linkedin.com/in/paulo-damian-vinci/",
       github: "https://github.com/PauloDamianVinci",
       email: "paulodamianvinci@gmail.com",
-    },
-    {
-      name: "Matias Suppa",
-      role: "Full Stack Developer",
-      foto: "https://res.cloudinary.com/desaac6ma/image/upload/v1704990325/samples/FOTOS/Vana_-_Corporate_Headshot_2024-01-11-10_00_18AM_9-removebg-preview_sbmi3q.png",
-      linkedin:
-        "https://www.linkedin.com/in/matias-nicolas-suppa-nieto-139b6b234/",
-      github: "https://github.com/mactrias",
-      email: "matias.suppanieto@davinci.edu.ar",
-    },
-    {
-      name: "Daniel Castañeda",
-      role: "Full Stack Developer",
-      foto: "https://res.cloudinary.com/desaac6ma/image/upload/v1704906158/samples/FOTOS/IMG_20240109_230231_tn2cz4-removebg-preview_dmtal7.png",
-      linkedin:
-        "https://www.linkedin.com/in/luis-daniel-casta%C3%B1eda-abanto-5b3119216/",
-      github: "https://github.com/castanedad121",
-      email: "castanedad121@gmail.com",
     },
   ];
 
@@ -136,7 +110,7 @@ const DevelopedBy = () => {
                         className="drop-shadow-md cursor-pointer text-gray-900 px-2 hover:text-white hover:scale-110 dark:hover:text-white dark:text-primaryPink"
                         target="_blank"
                       >
-                        <IoMail onClick={() => {navigator.clipboard.writeText(member.email), toast(`Dirección ${member.email} copiada al portapapeles`)}} className="mb-1 text-3xl font-bold" />
+                        <IoMail onClick={() => { navigator.clipboard.writeText(member.email), toast(`Dirección ${member.email} copiada al portapapeles`) }} className="mb-1 text-3xl font-bold" />
                       </a>
                     </ul>
                   </div>

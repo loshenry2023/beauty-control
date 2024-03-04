@@ -5,47 +5,47 @@ import axios from "axios";
 import newConsumableValidation from "../../functions/newConsumableValidation";
 import getParamsEnv from "../../functions/getParamsEnv";
 import { toast } from "react-hot-toast";
+import Loader from "../Loader";
 
 const { API_URL_BASE, CONSUMABLES } = getParamsEnv();
 
-function NewConsumableModal({ onClose }) {
+function NewConsumableModal({ onClose, token }) {
   const dispatch = useDispatch();
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const user = useSelector((state) => state?.user);
+  const branches = user.branches;
+  const [selectedBranch, setSelectedBranch] = useState(null);
+
+  const [errors, setErrors] = useState({});
+  const [isCodeInUse, setIsCodeInUse] = useState(false);
+
+  const workingBranch = useSelector((state) => state?.workingBranch);
+
   const [newConsumable, setNewConsumable] = useState({
     productName: "",
     description: "",
     supplier: "",
     amount: 0,
     price: 0.0,
-    branchId: "",
+    brnchId: workingBranch.id || "",
     productCode: "",
   });
-  const [submissionStatus, setSubmissionStatus] = useState(null);
-  const user = useSelector((state) => state?.user);
-  const branches = user.branches;
-  const [selectedBranch, setSelectedBranch] = useState(null);
-  const [codeCounter, setCodeCounter] = useState(1);
-  const [errors, setErrors] = useState({});
-  const [isCodeInUse, setIsCodeInUse] = useState(false);
-
-  const workingBranch = useSelector((state) => state?.workingBranch);
 
   const updateNewConsumable = (field, value) => {
     setNewConsumable((prevConsumable) => ({
       ...prevConsumable,
       [field]: value,
     }));
+
+    // Manejo de errores en tiempo real
+    const validationErrors = newConsumableValidation({
+      ...newConsumable,
+      [field]: value,
+    });
+    setErrors(validationErrors);
   };
 
   useEffect(() => {
-    if (user && user.branches && user.branches.length > 0) {
-      const defaultBranchId = workingBranch.id;
-      setSelectedBranch(defaultBranchId);
-
-      selectedBranch;
-
-      updateNewConsumable("branchId", defaultBranchId);
-    }
-
     const close = (e) => {
       if (e.keyCode === 27) {
         onClose();
@@ -57,47 +57,53 @@ function NewConsumableModal({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newCode = codeCounter + 1;
-    setCodeCounter(newCode);
 
     const validationErrors = newConsumableValidation(newConsumable);
-
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      //console.error("Hubo errores de validación", validationErrors);
-    } else {
-      if (!selectedBranch) {
-        //console.error("error con la sucursal");
-        return;
-      }
+      return;
+    }
 
-      try {
-        const response = await axios.post(
-          API_URL_BASE + "/products",
-          newConsumable
-        );
+    setSubmitLoader(true);
 
-        if (response.statusText === "Created") {
-          setIsCodeInUse(false);
-          toast.success("Producto creado con éxito");
-          setSubmissionStatus("success");
-          onClose();
-        } else {
-          setSubmissionStatus("error");
-        }
-      } catch (error) {
-        toast.error(
-          `Código N°: ${newConsumable.productCode} en uso, por favor elija otro.`
-        );
-        setIsCodeInUse(true);
-        setSubmissionStatus("error");
+   
+
+    const data = {
+      amount: newConsumable.amount,
+      branchId: newConsumable.brnchId,
+      description: newConsumable.description,
+      price: newConsumable.price,
+      productCode: newConsumable.productCode,
+      productName: newConsumable.productName,
+      supplier: newConsumable.supplier,
+      token,
+    };
+
+    try {
+      const response = await axios.post(
+        API_URL_BASE + "/v1/productsCreate",
+        data
+      );
+
+      if (response.data.created === "ok") {
+        setSubmitLoader(false);
+       
+        setIsCodeInUse(false);
+        toast.success("Producto creado con éxito");
+        onClose();
+      } else {
+        setSubmitLoader(false);
       }
+    } catch (error) {
+      setSubmitLoader(false);
+      toast.error(error.response ? error.response.data : error);
     }
   };
 
   const handleGoBack = () => {
     onClose();
   };
+
   return (
     <div className="modal" style={{ zIndex: 1000 }}>
       <div
@@ -107,17 +113,17 @@ function NewConsumableModal({ onClose }) {
         <div>
           <div className="w-4/5 mx-auto bg-white shadow rounded-lg p-6 md:w-full dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Agregar nuevo insumo
               </h1>
               <IoClose
-                onClick={handleGoBack}
+                onClick={() => onClose()}
                 className="cursor-pointer mt-2 w-5 h-5 dark:text-darkText hover:scale-125"
               />
             </div>
             <form onSubmit={handleSubmit}>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Nombre:
                 </label>
                 <input
@@ -132,11 +138,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.productName && (
-                  <p className="text-xs text-red-500">{errors.productName}</p>
+                  <p className=" text-red-500">{errors.productName}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Código del producto:
                 </label>
                 <input
@@ -153,11 +159,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.productCode && (
-                  <p className="text-xs text-red-500">{errors.productCode}</p>
+                  <p className=" text-red-500">{errors.productCode}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   {" "}
                   Descripción:
                 </label>
@@ -173,11 +179,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.description && (
-                  <p className="text-xs text-red-500">{errors.description}</p>
+                  <p className=" text-red-500">{errors.description}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Proveedor:
                 </label>
                 <input
@@ -192,11 +198,11 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.supplier && (
-                  <p className="text-xs text-red-500">{errors.supplier}</p>
+                  <p className=" text-red-500">{errors.supplier}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Cantidad:
                 </label>
                 <input
@@ -207,15 +213,18 @@ function NewConsumableModal({ onClose }) {
                   placeholder="Cantidad..."
                   value={newConsumable.amount}
                   onChange={(e) =>
-                    updateNewConsumable("amount", parseInt(e.target.value, 10))
+                    updateNewConsumable(
+                      "amount",
+                      parseInt(e.target.value, 10)
+                    )
                   }
                 />
                 {errors.amount && (
-                  <p className="text-xs text-red-500">{errors.amount}</p>
+                  <p className=" text-red-500">{errors.amount}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold dark:text-darkText">
+                <label className="pl-1  font-bold dark:text-darkText">
                   Precio:
                 </label>
                 <input
@@ -230,7 +239,7 @@ function NewConsumableModal({ onClose }) {
                   }
                 />
                 {errors.price && (
-                  <p className="text-xs text-red-500">{errors.price}</p>
+                  <p className=" text-red-500">{errors.price}</p>
                 )}
               </div>
               <div className="first-letter:grid grid-cols-1 mb-2">
@@ -241,21 +250,18 @@ function NewConsumableModal({ onClose }) {
                 />
               </div>
               <div className=" flex justify-center mb-4 space-x-20 mt-6">
-                <button
-                  type="submit"
-                  onClick={handleSubmit}
-                  className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                >
-                  Agregar
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleGoBack}
-                  className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                >
-                  Cancelar
-                </button>
+                <div className="flex justify-center items-center">
+                  {!submitLoader ? (
+                    <button
+                      type="submit"
+                      className="h-10 w-[130px] cursor-pointer shadow shadow-black bg-primaryPink text-black px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                    >
+                      Agregar
+                    </button>
+                  ) : (
+                    <Loader />
+                  )}
+                </div>
               </div>
             </form>
           </div>

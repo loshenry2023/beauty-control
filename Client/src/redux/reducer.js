@@ -1,7 +1,7 @@
 import {
   GET_USER,
   GET_USERS,
-  GET_USER_ID,
+  USER_DATA_ID,
   GET_BRANCHES,
   GET_SPECIALTIES,
   ERROR,
@@ -44,7 +44,7 @@ const initialState = {
   workingBranch: {},
   appointments: {},
   user: {},
-  userID: {},
+  userDataId: {},
   users: [],
   calendar: [],
   count: 0,
@@ -144,11 +144,11 @@ const rootReducer = (
       return getCalendar;
 
     //! Trae usuario por ID
-    case GET_USER_ID:
+    case USER_DATA_ID:
       const getUserIDState = {
         ...state,
-        userID: { ...payload },
-      };
+        userDataId: payload,
+      };      
       localStorage.setItem("myAppReduxState", JSON.stringify(getUserIDState));
       return getUserIDState;
 
@@ -156,7 +156,7 @@ const rootReducer = (
     case CLEAR_USERID:
       const clearUserId = {
         ...state,
-        userID: payload,
+        userID: {...payload},
       };
       localStorage.setItem("myAppReduxState", JSON.stringify(clearUserId));
       return clearUserId;
@@ -206,7 +206,7 @@ const rootReducer = (
     case GET_CLIENT_ID:
       const getClientId = {
         ...state,
-        clientID: { ...payload },
+        clientID: payload,
       };
       localStorage.setItem("myAppReduxState", JSON.stringify(getClientId));
       return getClientId;

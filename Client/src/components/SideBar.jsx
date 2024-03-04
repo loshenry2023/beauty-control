@@ -16,7 +16,7 @@ import { AiFillTool } from "react-icons/ai";
 
 // Variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
-const { AGENDA, USERPROFILES, CONSUMABLES, CLIENTSPROFILES, HOME, SPECIALISTMONITORING } = getParamsEnv();
+const { AGENDA, USERPROFILES, CONSUMABLES, CLIENTSPROFILES, HOME, SPECIALISTMONITORING, CONTROLTABLES } = getParamsEnv();
 
 const IconWithTooltip = ({ to, iconName, tooltipText }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -41,7 +41,7 @@ const IconWithTooltip = ({ to, iconName, tooltipText }) => {
       <div className={`relative ${isHovered ? "text-white" : ""}`}>
         {renderIcon(iconName)}
         {tooltipVisible && (
-          <span className="tooltip absolute bg-secondaryPink text-black rounded p-2 opacity-100 transition-opacity ml-[50px] mt-[-30px] dark:bg-darkPrimary dark:text-darkText">
+          <span className="tooltip absolute bg-secondaryColor text-black rounded p-2 opacity-100 transition-opacity ml-[50px] mt-[-30px] dark:bg-darkPrimary dark:text-darkText">
             {tooltipText}
           </span>
         )}
@@ -78,7 +78,7 @@ const SideBar = () => {
   return (
     <div
       style={{ minHeight: dynamicMinHeight }}
-      className="bg-secondaryPink w-14 flex flex-col items-center gap-8 pointer-events-auto shadow-md shadow-grey dark:shadow-gray-100 dark:bg-darkPrimary dark:text-beige relative"
+      className="bg-secondaryColor w-14 flex flex-col items-center gap-8 pointer-events-auto shadow-md shadow-secondaryColor dark:shadow-gray-100 dark:bg-darkPrimary dark:text-beige relative"
     >
       <hr className="w-14 h-[1px] bg-beige border-0" />
       {user.role === "especialista" ? (
@@ -101,8 +101,7 @@ const SideBar = () => {
       <IconWithTooltip to={CLIENTSPROFILES} iconName="userGroup" tooltipText="Clientes" />
       <IconWithTooltip to={AGENDA} iconName="calendar" tooltipText="Agenda" />
       <IconWithTooltip to={CONSUMABLES} iconName="Consumables" tooltipText="Insumos" />
-      <IconWithTooltip to={SPECIALISTMONITORING} iconName="specialistmonitoring" tooltipText="Seguimiento especialistas" />
-     <IconWithTooltip to="/controlTables" onClick={() => handleIconClick("tableControl")} iconName="tableControl" tooltipText="Control de tablas" />
+      <IconWithTooltip to={CONTROLTABLES} onClick={() => handleIconClick("tableControl")} iconName="tableControl" tooltipText="Control de tablas" />
     </>
   )}
 

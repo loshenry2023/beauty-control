@@ -1,24 +1,37 @@
-// Importaciones de componentes y librerías
+// hooks, routers, reducers:
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getBranches,
+  getToken,
+  getUsers,
+  setTokenError,
+} from "../redux/actions";
+import axios from "axios";
+
+//components
+import ErrorToken from "./ErrorToken";
 import Calendar from "../components/Calendar";
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import Loader from "../components/Loader";
 import CreateAppointment from "../components/modals/CreateAppointment";
 import ListClients from "../components/modals/ListClients";
-import ErrorToken from "./ErrorToken";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getBranches,
-  getClients,
-  getServices,
-  getToken,
-  getUsers,
-} from "../redux/actions";
+
+// toast
+import ToasterConfig from "../../src/components/Toaster";
+import { toast } from "react-hot-toast";
+
+// icons
 import { FaPlusCircle } from "react-icons/fa";
+
+// variables de entorno
+import getParamsEnv from "../functions/getParamsEnv";
+const { API_URL_BASE } = getParamsEnv();
 
 const Agenda = () => {
   const [loading, setLoading] = useState(true);
+  const [auxUser, setAuxUser] = useState(false);
   const dispatch = useDispatch();
   const tokenError = useSelector((state) => state?.tokenError);
   const currentDate = new Date();
@@ -27,8 +40,6 @@ const Agenda = () => {
   const day = currentDate.getDate().toString().padStart(2, "0");
 
   const formattedDate = `${year}-${month}-${day}`;
-
-
 
   const branches = useSelector((state) => state?.branches);
   const tokenID = useSelector((state) => state?.token);
@@ -79,7 +90,6 @@ const Agenda = () => {
     dateTime: formattedDate,
   });
 
-  //console.log(dateInfo)
 
   const [isFormCompleted, setIsFormCompleted] = useState(false);
 
@@ -99,27 +109,40 @@ const Agenda = () => {
     setShowAppointmentModal(true);
   };
 
+  let requestMade = false
   useEffect(() => {
-    dispatch(getToken(tokenID));
-    dispatch(getBranches({ token: tokenID }));
-    dispatch(getServices({ token: tokenID }));
-    dispatch(
-      getUsers(
-        nameOrLastName,
-        attribute,
-        order,
-        page,
-        size,
-        branch,
-        specialty,
-        role,
-        createDateEnd,
-        createDateStart,
+    setAuxUser(false)
+    if (!requestMade) { // evito llamados en paralelo al pedir los datos iniciales
+      requestMade = true;
+      dispatch(getToken(tokenID))
+      axios.post(API_URL_BASE + "/v1/branches", { token: tokenID })
+      .then(respuesta => {
+        dispatch(getBranches( respuesta.data ))
+        return axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`,
         { token: tokenID }
-      )
-    );
-    setLoading(false);
-  }, [specialty, tokenError]);
+        )})
+      .then(respuesta2 => {
+        dispatch(getUsers(respuesta2.data))
+        setLoading(false);
+        setAuxUser(true)
+        requestMade = false;
+      })
+      .catch(error => { 
+        if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+            setLoading(false)
+           dispatch(setTokenError(error.request.status))
+        } else {
+          let errorMessage= ""     
+          if (!error.response) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          }
+          toast.error(errorMessage);
+        }
+      });
+    }
+  }, [specialty, tokenError]); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -212,7 +235,7 @@ const Agenda = () => {
     }));
   }, [chosenClient]);
 
-  if (tokenError === 401 || tokenError === 403) {
+  if (tokenError === 401 || tokenError === 402 ||  tokenError === 403) {
     return (
       <ErrorToken error={tokenError} />
     );
@@ -220,7 +243,7 @@ const Agenda = () => {
     return (
       <div>
         <NavBar />
-        <div className="flex flex-row h-full dark:bg-darkBackground">
+        <div className="flex flex-row mx-auto h-full dark:bg-darkBackground">
           <SideBar />
           {loading ? (
             <Loader />
@@ -228,23 +251,23 @@ const Agenda = () => {
             <div
               className={
                 user.role !== "especialista"
-                  ? "w-fit flex flex-col mx-auto m-10 gap-5"
-                  : "w-fit flex flex-col mx-auto m-10 gap-5 items-center"
+                  ? "flex flex-col mx-auto m-10 gap-5"
+                  : "flex flex-col mx-auto m-10 gap-5 items-center"
               }
             >
               <h1
                 className={
                   user.role !== "especialista"
-                    ? "items-start text-2xl underline underline-offset-4 tracking-wide font-fontTitle dark:text-beige sm:text-left"
-                    : "items-start text-2xl underline underline-offset-4 mb-10 tracking-wide font-fontTitle dark:text-beige sm:text-left"
+                    ? "text-center md:items-start text-3xl underline underline-offset-4 mx-5 tracking-wide font-fontTitle dark:text-beige sm:text-left"
+                    : "text-center md:items-start text-3xl underline underline-offset-4 mb-10 tracking-wide font-fontTitle dark:text-beige sm:text-left"
                 }
               >
                 Gestión de citas
               </h1>
               {user.role === "especialista" ? null : (
-                <section className="shadow shadow-black rounded-xl p-2 m-0 bg-secondaryPink dark:bg-darkPrimary dark:shadow-darkText">
-                  <h1 className="text-xl dark:text-darkText p-2 m-0 text-center xl:text-left">Agendar cita</h1>
-                  <div className="flex flex-col items-center flex-wrap gap-5 md:flex-row mr-5 mb-2 md:justify-center xl:justify-none">
+                <section className="shadow shadow-black rounded-xl p-2 mx-5 bg-secondaryColor dark:bg-darkPrimary dark:shadow-darkText">
+                  <h2 className="text-2xl  dark:text-darkText p-2 m-0 text-center xl:text-left">Agendar cita</h2>
+                  <div className=" flex flex-col items-center flex-wrap gap-5 md:flex-row mr-5 mb-2 md:justify-center xl:justify-none">
                     <FaPlusCircle
                       className="text-center mt-1.5 cursor-pointer dark:text-darkText"
                       onClick={() => setShowClientListModal(true)}
@@ -281,7 +304,7 @@ const Agenda = () => {
                       </select>
                     )}
 
-                    {!showEditAppointment && (
+                    {!showEditAppointment && dateInfo.service.name && auxUser ? (
                       <select
                         onChange={handleChange}
                         name="specialist"
@@ -304,25 +327,34 @@ const Agenda = () => {
                             )
                         )}
                       </select>
-                    )}
-                    {user.role === "especialista" ? null : (
-                  <button
-                    onClick={handleAppointmentModal}
-                    disabled={!isFormCompleted}
-                    className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-primaryPink cursor-pointer" : "bg-gray-300 cursor-not-allowed"
-                      } shadow shadow-black text-black ${isFormCompleted ? "hover:bg-blue-600" : "cursor-not-allowed"
-                      } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
-                        ? "dark:hover:bg-blue-600"
-                        : "dark:cursor-not-allowed"
-                      }`}
+                    ) :  <select
+                    disabled
+                    className="w-full mt-3 sm:mt-0 sm:w-60 pl-2 py-1  border cursor-not-allowed border-black rounded-md text-md dark:text-darkText dark:bg-darkPrimary dark:border-darkText md:w-64"
                   >
-                    Agregar Cita
-                  </button>
-                )}
+                    <option>
+                      -- Especialista--
+                    </option>
+                  </select>}
+                    {user.role === "especialista" ? null : (
+                      <button
+                        onClick={handleAppointmentModal}
+                        disabled={!isFormCompleted}
+                        className={`border border-black rounded-md mt-auto px-6 py-1 ${isFormCompleted ? "bg-white cursor-pointer" : "bg-white cursor-not-allowed"
+                          } shadow shadow-black text-black ${isFormCompleted ? "hover:scale-[1.02]" : "cursor-not-allowed"
+                          } focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:border-white ${isFormCompleted
+                            ? "dark:hover:bg-secondaryColor dark:hover:text-black"
+                            : "dark:cursor-not-allowed"
+                          }`}
+                      >
+                        Agregar Cita
+                      </button>
+                    )}
                   </div>
                 </section>
               )}
               <Calendar
+                setLoadingToProps = {setLoading}
+                loadingToProps = {loading}
                 setDateInfo={setDateInfo}
                 branches={branches}
                 services={services}
@@ -337,7 +369,6 @@ const Agenda = () => {
                 showEditAppointment={showEditAppointment}
                 dateInfo={dateInfo}
               />
-
             </div>
           )}
           {showClientListModal ? (
@@ -361,6 +392,7 @@ const Agenda = () => {
             />
           )}
         </div>
+        <ToasterConfig/>
       </div>
     );
   }

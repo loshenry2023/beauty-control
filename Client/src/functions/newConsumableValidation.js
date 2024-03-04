@@ -22,7 +22,7 @@ const newConsumableValidation = (data) => {
     validationErrors.price = "El precio debe ser mayor a 0";
   }
 
-  if (!data.branchId) {
+  if (!data.brnchId) {
     validationErrors.branchId = "Selecciona una sucursal";
   }
 
@@ -34,6 +34,10 @@ const newConsumableValidation = (data) => {
   if (data.description.length < 3) {
     validationErrors.description =
       "La descripción debe tener al menos 3 caracteres";
+  }
+
+  if (data.productCode.length === 0) {
+    validationErrors.productCode = "El codigo de producto no puede quedar vacío"
   }
 
   return validationErrors;

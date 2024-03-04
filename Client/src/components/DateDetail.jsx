@@ -1,23 +1,28 @@
+//hooks, reducer, actions
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { useParams } from "react-router-dom";
-import { getClientId, getPayMethods } from "../redux/actions/";
-import HistoryServices from "./HistoryServices";
+import { getClientId, setTokenError } from "../redux/actions/";
 import { toast } from "react-hot-toast";
-import ToasterConfig from "../components/Toaster";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
+//components
+import HistoryServices from "./HistoryServices";
+import ToasterConfig from "../components/Toaster";
+import Loader from "./Loader";
+import ErrorToken from "../views/ErrorToken"
 import { UploadWidgetDate } from "./UploadWidgetDate";
+import { UploadWidgetConsent } from "./UploadWidgetConsent";
+
+//icons
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
-import Loader from "./Loader";
-import { UploadWidgetConsent } from "./UploadWidgetConsent";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "./dateDetail.css";
-import getParamsEnv from "../functions/getParamsEnv";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import "./dateDetail.css";
 
+//variabels de entorno
+import getParamsEnv from "../functions/getParamsEnv";
 const { API_URL_BASE, AGENDA } = getParamsEnv();
 
 const DateDetail = () => {
@@ -26,6 +31,7 @@ const DateDetail = () => {
   const { id: appointmentId } = useParams();
   const branch = useSelector((state) => state?.workingBranch);
   const token = useSelector((state) => state?.token);
+  const tokenError = useSelector((state) => state?.tokenError);
   const calendar = useSelector((state) => state?.calendar);
   const clientInfo = useSelector((state) => state?.clientID);
   const payMethods = useSelector((state) => state?.payMethods);
@@ -68,11 +74,22 @@ const DateDetail = () => {
       );
       if (findAppointment) {
         setAppointment(findAppointment);
-        setIsLoading(true);
-        dispatch(getClientId(findAppointment.Client.id, { token }));
+        axios.post(API_URL_BASE + `/v1/getclient/${findAppointment.Client.id}`,{token})
+        .then(respuesta => {
+          dispatch(getClientId(respuesta.data));
+          setIsLoading(true);
+        })
+        .catch(error => { 
+            let errorMessage= ""     
+            if (!error.response) {
+              errorMessage = error.message;
+            } else {
+              errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+            }
+            toast.error(errorMessage);
+          })
       }
     }
-    dispatch(getPayMethods({ token }));
   }, [dispatch, token, appointmentId, clientId]);
 
   const handlePriceChange = (e, priceType) => {
@@ -156,7 +173,7 @@ const DateDetail = () => {
 
     try {
       const response = await axios.put(
-        `${API_URL_BASE}/calendar/${appointmentId}`,
+        `${API_URL_BASE}/v1/calendar/${appointmentId}`,
         data
       );
     } catch (error) {}
@@ -190,7 +207,7 @@ const DateDetail = () => {
     try {
       const dateData = {
         idUser: appointment.User.id,
-        idclient: appointment.Client.id,
+        idClient: appointment.Client.id,
         imageServiceDone: photo,
         date: appointment.date_from,
         conformity: consentURL || "",
@@ -209,9 +226,10 @@ const DateDetail = () => {
       };
 
       const response = await axios.post(
-        `${API_URL_BASE}/newhistoricproc`,
+        `${API_URL_BASE}/v1/newhistoricproc`,
         dateData
       );
+
       if (response.data.created === "ok") {
         toast.success("Cita Finalizada exitosamente");
         updateDateState();
@@ -225,7 +243,7 @@ const DateDetail = () => {
   };
 
   const Checkbox = () => (
-    <div className="flex items-center text-sm mt-[-20px]">
+    <div className="flex items-center  mt-[-20px]">
       <input
         type="checkbox"
         checked={isConsentVisible}
@@ -244,14 +262,15 @@ const DateDetail = () => {
     return <Loader />;
   }
 
+
   return (
     <div className="flex flex-col mx-auto py-10 overflow-auto">
       <div className="flex flex-row">
         <IoMdArrowRoundBack
           onClick={handleGoBack}
-          className="w-6 h-6 mt-1 mr-2 hover:scale-110 cursor-pointer dark:text-darkText"
+          className="w-6 h-6 mt-3 mr-2 hover:scale-110 cursor-pointer dark:text-darkText"
         />
-        <h1 className="mb-4 text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+        <h1 className="mb-4 text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
           {" "}
           Información de cita
         </h1>
@@ -259,8 +278,8 @@ const DateDetail = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-auto ">
         {/* Client Details */}
 
-        <div className="p-6 bg-secondaryPink rounded-md dark:bg-darkPrimary">
-          <div className="border-4 border-double border-primaryPink max-w-screen-sm rounded overflow-hidden shadow-lg mx-auto dark:border-zinc-800">
+        <div className="p-6 bg-primaryColor rounded-md dark:bg-darkPrimary">
+          <div className="bg-secondaryColor max-w-screen-sm rounded-2xl overflow-hidden shadow-lg mx-auto dark:border-4 dark:border-zinc-800">
             <div className="grid grid-cols-1 place-items-center xl:place-items-start xl:grid-cols-3 sm:p-5 dark:bg-darkBackground">
               <img
                 src={clientInfo.image}
@@ -268,36 +287,36 @@ const DateDetail = () => {
                 alt="client-photo"
               />
               <div className="m-4 col-span-2 ml-10 mt-0 space-y-2 dark:text-darkText">
-                <p className="font-medium mt-5 text-center xl:text-left xl:mt-0">
-                  Nombre: <span className="font-light">{clientInfo.name}</span>
+                <p className="font-bold mt-5 text-center xl:text-left xl:mt-0">
+                  Nombre: <span className="font-medium">{clientInfo.name}</span>
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   Apellido:{" "}
-                  <span className="font-light">{clientInfo.lastName}</span>
+                  <span className="font-medium">{clientInfo.lastName}</span>
                 </p>
-                <p className="font-medium text-center xl:text-left">
-                  Email: <span className="font-light">{clientInfo.email}</span>
+                <p className="font-bold text-center xl:text-left">
+                  Email: <span className="font-medium">{clientInfo.email}</span>
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   ID:{" "}
                   {clientInfo.id_pers ? (
-                    <span className="font-light">{clientInfo.id_pers} </span>
+                    <span className="font-medium">{clientInfo.id_pers} </span>
                   ) : (
-                    <span className="font-light"> - </span>
+                    <span className="font-medium"> - </span>
                   )}
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   Teléfono:{" "}
-                  <span className="font-light">{clientInfo.phoneNumber1}</span>{" "}
+                  <span className="font-medium">{clientInfo.phoneNumber1}</span>{" "}
                 </p>
-                <p className="font-medium text-center xl:text-left">
+                <p className="font-bold text-center xl:text-left">
                   Teléfono secundario:{" "}
                   {clientInfo.phoneNumber2 ? (
-                    <span className="font-light">
+                    <span className="font-medium">
                       {clientInfo.phoneNumber2}{" "}
                     </span>
                   ) : (
-                    <span className="font-light"> - </span>
+                    <span className="font-medium"> - </span>
                   )}
                 </p>
               </div>
@@ -306,9 +325,9 @@ const DateDetail = () => {
         </div>
 
         {/* Observations Section */}
-        <div className="flex items-center p-6 bg-secondaryPink rounded-md dark:bg-darkPrimary">
-          <div className="border-4 border-double border-primaryPink max-w-screen-sm rounded overflow-hidden shadow-lg mx-auto dark:border-zinc-800">
-            <div className="grid grid-cols-1 gap-20 p-5 mx-auto xl:h-60 xl:grid-cols-2 dark:bg-darkBackground">
+        <div className="flex items-center p-6 bg-primaryColor rounded-md dark:bg-darkPrimary">
+          <div className="bg-primaryColor max-w-screen-sm rounded-2xl overflow-hidden mx-auto dark:border-4 dark:border-zinc-800">
+            <div className="grid grid-cols-1 bg-secondaryColor gap-20 p-5 mx-auto xl:h-60 xl:grid-cols-2 dark:bg-darkBackground">
               <div
                 className={`flex flex-col flex-wrap gap-4 p-4 rounded-md shadow-sm md:justify-center shadow-black dark:text-darkText dark:bg-darkPrimary dark:shadow-darkText`}
                 style={observationSectionStyle}
@@ -332,7 +351,7 @@ const DateDetail = () => {
               </div>
               <div
                 className={`flex flex-col flex-wrap gap-4 p-4 rounded-md shadow-sm md:justify-center shadow-black dark:text-darkText dark:bg-darkPrimary dark:shadow-darkText ${
-                  isConsentVisible ? "visible" : "bg-gray-500"
+                  isConsentVisible ? "visible" : "bg-secondaryColor"
                 }`}
                 style={observationSectionStyleConsent}
               >
@@ -364,9 +383,9 @@ const DateDetail = () => {
 
         {/* History Services Section */}
         {isLoading && (
-          <div className="p-6 bg-secondaryPink rounded-md dark:bg-darkPrimary">
+          <div className="p-6 flex justify-center bg-primaryColor rounded-md dark:bg-darkPrimary">
             {clientInfo.HistoryServices ? (
-              <div className="overflow-auto max-h-[450px] scrollbar-container">
+              <div className="bg-secondaryColor w-full h-fit rounded-2xl overflow-auto max-h-[450px] scrollbar-container dark:bg-darkPrimary ">
                 <HistoryServices history={clientInfo.HistoryServices} />
               </div>
             ) : (
@@ -376,60 +395,60 @@ const DateDetail = () => {
         )}
 
         {/* Payment Section */}
-        <div className="p-6 bg-secondaryPink rounded-md flex flex-col gap-4 dark:bg-darkPrimary">
-          <div className="p-4 border-4 border-double border-primaryPink rounded overflow-hidden shadow-lg mx-auto dark:dark:border-zinc-800">
+        <div className="p-6 bg-primaryColor rounded-md flex flex-col gap-4 dark:bg-darkPrimary">
+          <div className="p-4 rounded-2xl bg-secondaryColor overflow-hidden shadow-lg mx-auto dark:bg-darkBackground dark:border-4  dark:dark:border-zinc-800">
             <div className="flex flex-col gap-6 mx-auto">
               <div className="flex flex-row rounded-lg dark:bg-darkBackground">
-                <div className=" rounded overflow-hidden shadow-lg p-6 flex flex-row flex-wrap gap-2 justify-center">
+                <div className=" rounded overflow-hidden p-6 flex flex-row flex-wrap gap-2 justify-center">
                   <div className="rounded overflow-hidden flex-grow p-6 shadow-sm shadow-black dark:bg-darkPrimary dark:shadow-darkText">
-                    <p className="text-xl font-medium text-gray-700 dark:text-darkText">
+                    <p className="text-xl font-medium text-black dark:text-darkText">
                       Procedimiento
                     </p>
-                    <p className="text-sm text-left 2xl:text-center dark:text-darkText">
+                    <p className=" text-left 2xl:text-center dark:text-darkText">
                       {appointment.Service.serviceName}
                     </p>
                   </div>
                   <div className="rounded overflow-auto shadow-sm flex-grow p-6 shadow-black dark:bg-darkPrimary dark:shadow-darkText">
-                    <label className="text-xl font-medium text-gray-700 dark:text-darkText">
+                    <label className="text-xl font-medium text-black dark:text-darkText">
                       Observaciones
                     </label>
-                    <p className="text-sm text-left 2xl:text-center dark:text-darkText">
+                    <p className=" text-left 2xl:text-center dark:text-darkText">
                       {appointment.obs !== " " ? appointment.obs : " - "}{" "}
                     </p>
                   </div>
                   <div className="rounded overflow-hidden shadow-sm flex-grow p-6 shadow-black dark:bg-darkPrimary dark:shadow-darkText">
-                    <p className="text-xl font-medium text-gray-700 dark:text-darkText">
+                    <p className="text-xl font-medium text-black dark:text-darkText">
                       {" "}
                       Precio final
                     </p>
-                    <p className="text-sm m-auto text-left 2xl:text-center dark:text-darkText">
+                    <p className=" m-auto text-left 2xl:text-center dark:text-darkText">
                       ${appointment.Service.price}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center flex-wrap md:flex-row sm:justify-start  gap-10 rounded-lg dark:bg-darkBackground">
-                <div className="rounded overflow-hidden shadow-sm shadow-black p-2 m-2 flex flex-col gap-4">
+              <div className="p-6 flex flex-col justify-center items-center flex-wrap md:flex-row sm:justify-start gap-10 rounded-lg dark:bg-darkPrimary">
+                <div className="rounded overflow-hidden shadow-sm shadow-black dark:shadow-white  p-2 m-2 flex flex-col gap-4 dark:bg-darkPrimary">
                   <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2 ">
-                    <label className="block text-md font-medium text-black dark:text-darkText">
+                    <label className="ml-1 block text-md font-medium text-black dark:text-darkText">
                       Precio $
                     </label>
                     <input
                       type="number"
                       value={price.amount1}
                       onChange={(e) => handlePriceChange(e, "amount1")}
-                      className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                      className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                       placeholder="Ingrese el precio"
                     />
                   </div>
                   <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2">
-                    <label className="block text-md font-medium text-black dark:bg-darkPrimary dark:text-darkText">
+                    <label className="ml-1 block text-md font-medium text-black dark:bg-darkPrimary dark:text-darkText">
                       Medio de Pago A
                     </label>
                     <select
                       value={paymentMethods.paymentMethod1}
                       onChange={(e) => handlePaymentMethodChange(e, 1)}
-                      className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                      className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                     >
                       <option value="" disabled>
                         Elige medio de pago
@@ -456,27 +475,27 @@ const DateDetail = () => {
                   )}
                 </button>
                 {showPayment2 && (
-                  <div className="rounded overflow-hidden shadow-sm shadow-black p-2 m-2 flex flex-col gap-4">
+                  <div className="rounded overflow-hidden shadow-sm shadow-black dark:shadow-white p-2 m-2 flex flex-col gap-4">
                     <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2 ">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-darkText">
+                      <label className="ml-1 block text-md font-medium text-black dark:bg-darkPrimary dark:text-darkText">
                         Precio $
                       </label>
                       <input
                         type="number"
                         value={price.amount2}
                         onChange={(e) => handlePriceChange(e, "amount2")}
-                        className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                        className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                         placeholder="Ingrese el precio"
                       />
                     </div>
                     <div className="mb-4 dark:bg-darkPrimary rounded-lg p-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:bg-darkPrimary dark:text-darkText">
+                      <label className="ml-1 block text-md font-medium text-black dark:text-darkText">
                         Medio de Pago B
                       </label>
                       <select
                         value={paymentMethods.paymentMethod2}
                         onChange={(e) => handlePaymentMethodChange(e, 2)}
-                        className="input rounded-lg dark:bg-darkPrimary dark:text-darkText"
+                        className="p-1 rounded-lg dark:bg-darkPrimary dark:border dark:text-darkText"
                       >
                         <option value="" disabled>
                           Elige medio de pago
@@ -499,11 +518,9 @@ const DateDetail = () => {
               <button
                 disabled={isButtonDisabled}
                 onClick={handleCheckPrice}
-                className={`btn bg-primaryPink px-4 py-2 rounded-full cursor-pointer shadow shadow-black ${
-                  isButtonDisabled ? "disabled-btn" : ""
-                } `}
+                className={isButtonDisabled ? "btn px-4 py-2 rounded-full shadow shadow-black dark:bg-red-500 disabled-btn cursor-not-allowed" : " cursor-pointer btn px-4 py-2 rounded-full shadow shadow-black dark:bg-red-500 disabled-btn"}
                 style={{
-                  backgroundColor: isButtonDisabled ? "grey" : "#e59494",
+                  backgroundColor: isButtonDisabled ? "" : "#A8D0B9",
                 }}
               >
                 Finalizar Cita
@@ -520,19 +537,19 @@ const DateDetail = () => {
               window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
             }`}
           >
-            <p className="mb-4 text-sm sm:text-base">
+            <p className="mb-4  sm:text-base">
               ¿Estás seguro de que deseas finalizar esta cita?
             </p>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => finishConfirmed(true)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
               >
                 Aceptar
               </button>
               <button
                 onClick={() => finishConfirmed(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
               >
                 Cancelar
               </button>
@@ -547,19 +564,19 @@ const DateDetail = () => {
               window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
             }`}
           >
-            <p className="mb-4 text-sm sm:text-base">
+            <p className="mb-4  sm:text-base">
               El importe a pagar es diferente al precio final ¿Deseas continuar?
             </p>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => priceConfirmed(true)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
               >
                 Aceptar
               </button>
               <button
                 onClick={() => priceConfirmed(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
               >
                 Cancelar
               </button>
@@ -568,7 +585,7 @@ const DateDetail = () => {
         </div>
       )}
     </div>
-  );
+  )
 };
 
 export default DateDetail;

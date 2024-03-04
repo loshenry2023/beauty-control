@@ -1,28 +1,34 @@
 //Hooks, components, reducer
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokenError } from "../redux/actions";
+import axios from "axios";
+
+//components
 import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import SpecialistTable from "../components/SpecialistTable";
-import { useSelector, useDispatch } from "react-redux";
-import { setTokenError } from "../redux/actions";
 import Loader from "../components/Loader";
-import axios from "axios";
 import Restricted from "./Restricted";
 import ErrorToken from "./ErrorToken";
 
-//Toast
+//toast
 import { toast } from "react-hot-toast";
 import ToasterConfig from "../components/Toaster";
 
+//variables de entorno
 import getParamsEnv from "../functions/getParamsEnv";
 const { API_URL_BASE } = getParamsEnv();
 
+//functions
+import { isEqual } from "../functions/isEqual";
+
 const SpecialistMonitoring = () => {
-  const testData = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 
   const dispatch = useDispatch();
-  const [specialistData, setSpecialsit] = useState({});
+  const [specialistData, setSpecialist] = useState({});
   const [loading, setLoading] = useState(true);
+  const [size, setSize] = useState(10);
   const count = specialistData.count;
   const user = useSelector((state) => state?.user);
   const token = useSelector((state) => state?.token);
@@ -36,6 +42,9 @@ const SpecialistMonitoring = () => {
     day < 10 ? "0" + day : day
   }`;
 
+  const [dateFrom, setDateFrom] = useState(formattedDate);
+  const [dateTo, setDateTo] = useState(formattedDate);
+
   const [filterDate, setFitlerDate] = useState({
     branchName: workingBranch.branchName,
     dateFrom: formattedDate,
@@ -44,65 +53,106 @@ const SpecialistMonitoring = () => {
   });
 
   const handleDate = (e) => {
-    if (e.target.name === "dateFrom" && testData.test(e.target.value)){
-      if (
-        e.target.value > filterDate.dateTo
-      ) {
-        const newDate = filterDate.dateTo
-        setFitlerDate({
-          ...filterDate,
-          dateFrom: newDate,
-        });
-        toast.error("La fecha inicial no puede ser mayor a la fecha final");
-        document.getElementById("dateFrom").value = newDate;
-      } else {
-        setFitlerDate({
-          ...filterDate,
-          [e.target.name]: e.target.value,
-        });
-      }
+    if (e.target.name === "dateFrom") {
+      const newDate = e.target.value;
+      setDateFrom(newDate);
     }
-    
-    if (e.target.name === "dateTo" && testData.test(e.target.value) ){
-      if (
-        e.target.value < filterDate.dateFrom
-      ) {
-        const newDate = filterDate.dateFrom
-        setFitlerDate({
-          ...filterDate,
-          dateTo: newDate,
-        });
-        toast.error("La fecha final no puede ser menor a la fecha inicial");
-        document.getElementById("dateTo").value = newDate;
-      } else {
-        setFitlerDate({
-          ...filterDate,
-          [e.target.name]: e.target.value,
-        });
-      }
+
+    if (e.target.name === "dateTo") {
+      const newDate = e.target.value;
+      setDateTo(newDate);
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${API_URL_BASE}/getbalance`,
-          filterDate
-        );
-        setSpecialsit(response.data);
-        setLoading(false);
-      } catch (error) {
-        if (error.request.status === 403) {
-          dispatch(setTokenError(error.request.status));
-        }
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [filterDate, tokenError]);
+  // const handleDate = (e) => {
+  //   if (e.target.name === "dateFrom" && testData.test(e.target.value)) {
+  //     if (e.target.value > filterDate.dateTo) {
+  //       const newDate = filterDate.dateTo;
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         dateFrom: newDate,
+  //       });
+  //       toast.error("La fecha inicial no puede ser mayor a la fecha final");
+  //       document.getElementById("dateFrom").value = newDate;
+  //     } else {
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
 
-  if (tokenError === 401 || tokenError === 403) {
+  //   if (e.target.name === "dateTo" && testData.test(e.target.value)) {
+  //     if (e.target.value < filterDate.dateFrom) {
+  //       const newDate = filterDate.dateFrom;
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         dateTo: newDate,
+  //       });
+  //       toast.error("La fecha final no puede ser menor a la fecha inicial");
+  //       document.getElementById("dateTo").value = newDate;
+  //     } else {
+  //       setFitlerDate({
+  //         ...filterDate,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
+  // };
+
+  const buscarFecha = () => {
+    if (dateFrom > dateTo) {
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return;
+    }
+
+    setFitlerDate({
+      branchName: workingBranch.branchName,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      token,
+    });
+
+    setLoading(true)
+  };
+
+  let requestMade = false;
+  useEffect(() => {
+    if (!requestMade) {
+      requestMade = true;
+      axios
+        .post(`${API_URL_BASE}/v1/getbalance`, filterDate)
+        .then((respuesta) => {
+          if (!isEqual(respuesta.data, specialistData)) {
+            setSpecialist(respuesta.data);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          if (
+            error.request.status === 401 ||
+            error.request.status === 402 ||
+            error.request.status === 403
+          ) {
+            setLoading(false);
+            dispatch(setTokenError(error.request.status));
+          } else {
+            let errorMessage = "";
+            if (!error.response) {
+              errorMessage = error.message;
+            } else {
+              errorMessage = `${error.response.status} ${
+                error.response.statusText
+              } - ${error.response.data.split(":")[1]}`;
+            }
+            toast.error(errorMessage);
+          }
+        });
+    }
+  }, [tokenError, filterDate])
+
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
   } else {
     return (
@@ -115,13 +165,13 @@ const SpecialistMonitoring = () => {
           ) : user.role === "superAdmin" ? (
             <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
               <div className="flex gap-2">
-                <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle text-black dark:text-darkText sm:text-left">
+                <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle text-black dark:text-darkText sm:text-left">
                   {" "}
                   Seguimiento Especialistas{" "}
                 </h1>
               </div>
               <div className="flex flex-col gap-5 md:flex-row">
-                <div className="flex  gap-2">
+                <div className="flex gap-2">
                   <label className="hidden md:inline dark:text-darkText">
                     Fecha inicial
                   </label>
@@ -129,9 +179,10 @@ const SpecialistMonitoring = () => {
                     id="dateFrom"
                     name="dateFrom"
                     type="date"
-                    defaultValue={formattedDate}
+                    value={dateFrom}
                     onChange={handleDate}
-                    className="w-full text-center border rounded-md border-black px-2 text-sm md:w-fit dark:invert"
+                    className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
+                    onKeyDown={(e) => e.preventDefault()}
                   />
                 </div>
                 <div className="flex gap-2">
@@ -142,15 +193,24 @@ const SpecialistMonitoring = () => {
                     id="dateTo"
                     name="dateTo"
                     type="date"
-                    defaultValue={formattedDate}
+                    value={dateTo}
                     onChange={handleDate}
-                    className="w-full text-center border rounded-md border-black px-2 text-sm md:w-fit dark:invert"
+                    className="w-full text-center border rounded-md border-black px-2  md:w-fit dark:invert"
+                    onKeyDown={(e) => e.preventDefault()}
                   />
                 </div>
+                <button
+                  onClick={buscarFecha}
+                  className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText"
+                >
+                  Buscar fecha
+                </button>
               </div>
               <SpecialistTable
                 count={count}
                 specialistData={specialistData.rows}
+                size={size}
+                setSize={setSize}
               />
             </div>
           ) : (

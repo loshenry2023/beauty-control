@@ -1,11 +1,10 @@
 // ! Envía una mail.
 const util = require('util');
 const showLog = require("../functions/showLog");
-const { EMAIL, PASSWORD_EMAIL, NODEMAILER_HOST, NODEMAILER_PORT } = require("../functions/paramsEnv");
+const { EMAIL, EMAIL_MAIN, PASSWORD_EMAIL, PASSWORD_EMAIL_MAIN, NODEMAILER_HOST, NODEMAILER_PORT } = require("../functions/paramsEnv");
 
-const sendMail = async (data) => {
+const sendMail = async (data, option = "") => {
     const { origin, target, subject, text, html } = data;
-    // Por ahora sólo recibo text pero no lo uso ni valido.
     if (!origin || !target || !subject || !html) { throw Error("Faltan datos"); }
     try {
         const nodemailer = require('nodemailer');
@@ -14,8 +13,8 @@ const sendMail = async (data) => {
             port: NODEMAILER_PORT,
             secure: true,
             auth: {
-                user: EMAIL,
-                pass: PASSWORD_EMAIL,
+                user: option === "." ? EMAIL_MAIN : EMAIL,
+                pass: option === "." ? PASSWORD_EMAIL_MAIN : PASSWORD_EMAIL,
             },
         });
         const sendMailAsync = util.promisify(transporter.sendMail).bind(transporter);

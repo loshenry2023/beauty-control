@@ -4,6 +4,7 @@ export default function getParamsEnv() {
   const LOGIN = import.meta.env.VITE_LOGIN || "/login";
   const BRANCH = import.meta.env.VITE_BRANCH || "/branch";
   const HOME = import.meta.env.VITE_HOME || "/home";
+  const SSADMIN = import.meta.env.VITE_SSADMIN || "/organizationControl"
   const USERPROFILES = import.meta.env.VITE_PROFILES || "/userProfiles";
   const AGENDA = import.meta.env.AGENDA || "/agenda";
   const USERDETAILBASE = import.meta.env.VITE_DETAIL_BASE || "/detail";
@@ -12,7 +13,7 @@ export default function getParamsEnv() {
   const CLIENTDETAIL = import.meta.env.VITE_CLIENT_DETAIL || "/client-detail/:id";
   const CLIENTSPROFILES = import.meta.env.VITE_CLIENTS_PROFILES || "/clientsProfiles";
   const TERMSANDPRIVACY = import.meta.env.VITE_TERMS_AND_PRIVACY || "/terms-and-privacy";
-  const API_URL_BASE = import.meta.env.VITE_API_URL_BASE || "http://localhost:3001/laura-vargas";
+  const API_URL_BASE = import.meta.env.VITE_API_URL_BASE || "http://localhost:3001/beautycontrol";
   const DATEDETAIL = import.meta.env.VITE_DATE_DETAIL || "/dateDetail/:id";
   const DATEDETAILBASE = import.meta.env.VITE_DATE_DETAIL_BASE || "/dateDetail";
   const SPECIALISTMONITORING = import.meta.env.VITE_SPECIALIST_MONITORING || "/specialistMonitoring";
@@ -25,17 +26,18 @@ export default function getParamsEnv() {
   const NEWCONSUMABLE = import.meta.env.VITE_NEW_CONSUMABLE || "/newconsumable";
   const EDITPRODUCT = import.meta.env.VITE_EDIT_PRODUCT || "/editproduct/:code";
   const EDITPRODUCTBASE = import.meta.env.VITE_EDIT_PRODUCT || "/editproduct";
+  const CONTROLTABLES = import.meta.env.VITE_CONTROL_TABLES|| "/controlTables"
 
   const CLOUD_NAME = import.meta.env.VITE_APP_CLOUD_NAME || "doyafxwje"; //estaba antes: doqyrz0sg
   const UPLOAD_PRESET = import.meta.env.VITE_APP_UPLOAD_PRESET || "ml_default"; // estaba antes: "gcx7ffyb";
 
-  const FIREBASE_API_KEY = import.meta.env.VITE_APP_FIREBASE_API_KEY || "AIzaSyAgacLbFO0UUII7SX_COA6tTgDCJh5MyIU";
-  const FIREBASE_AUTH_DOMAIN = import.meta.env.VITE_APP_FIREBASE_AUTH_DOMAIN || "laura-vargas-7f3ad.firebaseapp.com";
-  const FIREBASE_PROJECT_ID = import.meta.env.VITE_APP_FIREBASE_PROJECT_ID || "laura-vargas-7f3ad";
-  const FIREBASE_STORAGE_BUCKET = import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET || "laura-vargas-7f3ad.appspot.com";
-  const FIREBASE_MESSAGING_SENDER_ID = import.meta.env.VITE_APP_FIREBASE_MESSAGING_SENDER_ID || "658315611360";
-  const FIREBASE_APP_ID = import.meta.env.VITE_APP_FIREBASE_APP_ID || "1:658315611360:web:56f139b3d2af20fb13d485";
-
+  const FIREBASE_API_KEY = import.meta.env.VITE_APP_FIREBASE_API_KEY || "AIzaSyC6Ge76jJulwWTbLRGmTXwBSy6CCYvYa5w"; 
+  const FIREBASE_AUTH_DOMAIN = import.meta.env.VITE_APP_FIREBASE_AUTH_DOMAIN || "beauty-control-595c5.firebaseapp.com";
+  const FIREBASE_PROJECT_ID = import.meta.env.VITE_APP_FIREBASE_PROJECT_ID || "beauty-control-595c5";
+  const FIREBASE_STORAGE_BUCKET = import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET || "beauty-control-595c5.appspot.com";
+  const FIREBASE_MESSAGING_SENDER_ID = import.meta.env.VITE_APP_FIREBASE_MESSAGING_SENDER_ID || "699869510206";
+  const FIREBASE_APP_ID = import.meta.env.VITE_APP_FIREBASE_APP_ID || "1:699869510206:web:8e3a864f961409ebb2ef6f";
+  
   return {
     ROOT,
     BRANCH,
@@ -67,6 +69,8 @@ export default function getParamsEnv() {
     EDITPRODUCT,
     HISTORYPRICEBASE,
     EDITPRODUCTBASE,
-    DEVELOPEDBY
+    DEVELOPEDBY,
+    SSADMIN,
+    CONTROLTABLES
   };
 }

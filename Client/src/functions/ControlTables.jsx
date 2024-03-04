@@ -64,14 +64,14 @@ const ControlTables = () => {
           <SideBar />
           <div className="flex flex-col w-full p-4 items-center mx-auto">
             <div className="flex items-center justify-center mb-4">
-              <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+              <h1 className="underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
                 Control de tablas
               </h1>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 md:gap-8 justify-center sm:justify-start">
               <button
                 className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "clients" && "bg-secondaryPink"
+                  activeTab === "clients" && "bg-secondaryColor"
                 }`}
                 onClick={() => setActiveTab("clients")}
               >
@@ -79,7 +79,7 @@ const ControlTables = () => {
               </button>
               <button
                 className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "PayMethods" && "bg-secondaryPink"
+                  activeTab === "PayMethods" && "bg-secondaryColor"
                 }`}
                 onClick={() => setActiveTab("PayMethods")}
               >
@@ -87,7 +87,7 @@ const ControlTables = () => {
               </button>
               <button
                 className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "branches" && "bg-secondaryPink"
+                  activeTab === "branches" && "bg-secondaryColor"
                 }`}
                 onClick={() => setActiveTab("branches")}
               >
@@ -95,7 +95,7 @@ const ControlTables = () => {
               </button>
               <button
                 className={`mb-2 w-full sm:w-auto px-2 md:px-4 py-1 md:py-2 bg-gray-300 text-black rounded ${
-                  activeTab === "specialties" && "bg-secondaryPink"
+                  activeTab === "specialties" && "bg-secondaryColor"
                 }`}
                 onClick={() => setActiveTab("specialties")}
               >

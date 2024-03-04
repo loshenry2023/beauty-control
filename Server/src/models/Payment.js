@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
     "Payment",
     {
       id: {
-        type: DataTypes.UUID, // clave impredecible, versión 4
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
       },
     },
     {
-      paranoid: true, // Habilita eliminación suave
+      paranoid: true,
     }
   );
 };

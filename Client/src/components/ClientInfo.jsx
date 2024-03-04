@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
 
 // hooks, routers, reducers:
+import React, { useEffect, useState } from "react";
 import HistoryServices from "./HistoryServices";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import ToasterConfig from "./Toaster.jsx";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 //components
 import Loader from "./Loader.jsx";
-import { clearClientId, getClientId } from "../redux/actions.js";
+import { clearClientId, getClientId, setTokenError } from "../redux/actions.js";
+import HistoryCalendar from "./HistoryCalendar.jsx";
+import EditClient from "./modals/EditClient.jsx";
 
 //icons
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -16,13 +21,11 @@ import { MdDelete } from "react-icons/md";
 
 //variables de entorno
 import getParamsEnv from "../functions/getParamsEnv.js";
-import HistoryCalendar from "./HistoryCalendar.jsx";
-import axios from "axios";
-import ToasterConfig from "./Toaster.jsx";
-import { toast } from "react-hot-toast";
-import EditClient from "./modals/EditClient.jsx";
-import converterGMT from "../functions/converteGMT.js";
 const { CLIENTSPROFILES, API_URL_BASE } = getParamsEnv();
+
+//functions
+import converterGMT from "../functions/converteGMT.js";
+import ErrorToken from "../views/ErrorToken.jsx";
 
 
 const ClientInfo = () => {
@@ -38,14 +41,35 @@ const ClientInfo = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const token = useSelector(state => state?.token)
   const clientInfo = useSelector(state => state?.clientID)
+  const tokenError = useSelector((state) => state?.tokenError);
   const user = useSelector(state => state?.user)
   const [clientRender, setClientRender] = useState(false)
 
-
+  let requestMade = false
   useEffect(() => {
-    dispatch(getClientId(detailId, { token: token }))
-      .then(() => { setLoading(false) })
-  }, [detailId, clientRender]);
+    if (!requestMade) { 
+      requestMade = true;
+      axios.post(API_URL_BASE + `/v1/getclient/${detailId}`,{token})
+      .then(respuesta => {
+        dispatch(getClientId(respuesta.data))
+        setLoading(false)
+      })
+      .catch(error => { 
+        if (error.request.status === 401 || error.request.status === 401 || error.request.status === 403) {
+            setLoading(false)
+           dispatch(setTokenError(error.request.status))
+        } else {
+          let errorMessage= ""     
+          if (!error.response) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          }
+          toast.error(errorMessage);
+        }
+      });
+    }
+  }, [detailId, clientRender, tokenError]);
 
   const handleGoBack = () => {
     dispatch(clearClientId());
@@ -77,15 +101,27 @@ const ClientInfo = () => {
   const deleteConfirmed = async (confirmed) => {
     setShowDeleteConfirmation(true);
     if (confirmed) {
-      const deletedClient = await axios.post(`${API_URL_BASE}/deleteclient/${detailId}`, { token: token })
-      toast.success("Cliente eliminado correctamente");
-      setTimeout(() => {
-        navigate(CLIENTSPROFILES);
-      }, 3000);
+      try {
+        const deletedClient = await axios.post(`${API_URL_BASE}/v1/deleteclient/${detailId}`, { token: token })
+        toast.success("Cliente eliminado correctamente");
+        setTimeout(() => {
+          navigate(CLIENTSPROFILES);
+        }, 3000);
+      } catch (error) {
+        const errorMessage = error.response ? error.response.data : 'Ocurrió un error';
+        toast.error(`Hubo un problema con la eliminación. ${errorMessage}`);
+      }
+     
     } else {
       setShowDeleteConfirmation(false);
     }
   }
+
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
+    return (
+      <ErrorToken error={tokenError} />
+    );
+  } else {
   return (
     <>
       {loading ? <Loader /> : (
@@ -110,16 +146,16 @@ const ClientInfo = () => {
                 alt="client-photo"
               />
               <div className="m-4 sm:col-span-2 sm:ml-10 sm:mt-0 ">
-                <p className="text-md tracking-wide font-light dark:text-darkText"> <span className="font-medium dark:text-darkText">Nombre:</span> {clientInfo.name}</p>
-                <p className="text-md tracking-wide font-light dark:text-darkText"> <span className="font-medium dark:text-darkText">Apellido:</span> {clientInfo.lastName}</p>
-                <p className="text-md tracking-wide font-light dark:text-darkText"><span className="font-medium dark:text-darkText">Email:</span> {clientInfo.email}</p>
-                <p className="text-md tracking-wide font-light dark:text-darkText"> <span className="font-medium dark:text-darkText">Fecha de nacimiento:</span> {clientInfo.birthday ? <span className='font-light'>{converterGMT(clientInfo.birthday).split(" ")[0]} </span> : <span className='font-light'> - </span>}</p>
-                <p className="text-md tracking-wide font-light dark:text-darkText"> <span className="font-medium dark:text-darkText">ID:</span> {clientInfo.id_pers ? <span className='font-light'>{clientInfo.id_pers} </span> : <span className='font-light'> - </span>}</p>
-                <p className="text-md tracking-wide font-light dark:text-darkText"><span className="font-medium dark:text-darkText">Teléfono:</span> {clientInfo.phoneNumber1}</p>
-                <p className="text-md tracking-wide font-light dark:text-darkText"><span className="font-medium dark:text-darkText">Teléfono secundario: </span> {clientInfo.phoneNumber2 ? clientInfo.phoneNumber2 : "-"}</p>
+                <p className="text-md tracking-wide font-medium dark:text-darkText"> <span className="font-bold dark:text-darkText">Nombre:</span> {clientInfo.name}</p>
+                <p className="text-md tracking-wide font-medium dark:text-darkText"> <span className="font-bold dark:text-darkText">Apellido:</span> {clientInfo.lastName}</p>
+                <p className="text-md tracking-wide font-medium dark:text-darkText"><span className="font-bold dark:text-darkText">Email:</span> {clientInfo.email}</p>
+                <p className="text-md tracking-wide font-medium dark:text-darkText"> <span className="font-bold dark:text-darkText">Fecha de nacimiento:</span> {clientInfo.birthday ? <span className='font-medium'>{converterGMT(clientInfo.birthday).split(" ")[0]} </span> : <span className='font-light'> - </span>}</p>
+                <p className="text-md tracking-wide font-medium dark:text-darkText"> <span className="font-bold dark:text-darkText">ID:</span> {clientInfo.id_pers ? <span className='font-medium'>{clientInfo.id_pers} </span> : <span className='font-light'> - </span>}</p>
+                <p className="text-md tracking-wide font-medium dark:text-darkText"><span className="font-bold dark:text-darkText">Teléfono:</span> {clientInfo.phoneNumber1}</p>
+                <p className="text-md tracking-wide font-medium dark:text-darkText"><span className="font-bold dark:text-darkText">Teléfono secundario: </span> {clientInfo.phoneNumber2 ? clientInfo.phoneNumber2 : "-"}</p>
                 <div className="flex flex-row gap-5 mt-2">
-                  <button onClick={handleShowHistory} className="cursor-pointer rounded shadow-sm px-1 my-1 shadow-black bg-primaryPink dark:bg-darkPrimary dark:text-darkText dark:hover:bg-zinc-800">Procedimientos anteriores</button>
-                  <button onClick={handleShowCalendar} className="cursor-pointer rounded shadow-sm px-1 my-1 shadow-black bg-primaryPink dark:bg-darkPrimary dark:text-darkText dark:hover:bg-zinc-800">Turnos anteriores</button>
+                  <button onClick={handleShowHistory} className="cursor-pointer rounded shadow-sm p-2 my-1 hover:bg-secondaryColor transition-colors duration-700 shadow-black bg-primaryPink dark:bg-darkPrimary dark:text-darkText dark:hover:bg-zinc-800">Procedimientos anteriores</button>
+                  <button onClick={handleShowCalendar} className="cursor-pointer rounded shadow-sm p-2 my-1 hover:bg-secondaryColor transition-colors duration-700 shadow-black bg-primaryPink dark:bg-darkPrimary dark:text-darkText dark:hover:bg-zinc-800">Turnos anteriores</button>
                 </div>
                 <div className="flex gap-5 pt-2">
                 </div>
@@ -136,19 +172,19 @@ const ClientInfo = () => {
             className={`bg-white p-6 rounded-lg shadow-lg text-center sm:flex sm:flex-col ${window.innerWidth < 340 ? "max-w-sm" : "max-w-md"
               }`}
           >
-            <p className="mb-4 text-sm sm:text-base">
+            <p className="mb-4  sm:text-base">
               ¿Estás seguro de que deseas eliminar este cliente?
             </p>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => deleteConfirmed(true)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600  sm:text-base"
               >
                 Aceptar
               </button>
               <button
                 onClick={() => deleteConfirmed(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm sm:text-base"
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600  sm:text-base"
               >
                 Cancelar
               </button>
@@ -159,7 +195,7 @@ const ClientInfo = () => {
       <ToasterConfig />
     </>
 
-  );
+  )}
 };
 
 export default ClientInfo;

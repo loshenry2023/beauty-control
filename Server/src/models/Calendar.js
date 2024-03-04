@@ -3,7 +3,7 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   sequelize.define("Calendar", {
     id: {
-      type: DataTypes.UUID, // clave impredecible, versión 4
+      type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
       allowNull: false,
@@ -33,6 +33,6 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
   }, {
-    paranoid: true, // Habilita eliminación suave
+    paranoid: true,
   });
 };

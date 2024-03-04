@@ -40,9 +40,7 @@ export const UploadWidgetConsent = ({
   return (
     <button
       disabled={!isConsentVisible}
-      className={` ${
-        isConsentVisible ? "" : "bg-gray-400 hover:bg-gray-400"
-      }  flex items-center cursor-pointer shadow shadow-black bg-primaryPink text-black rounded-md px-2 hover:bg-blue-600 transition duration-300 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary dark:hover:bg-zinc-800`}
+      className={!isConsentVisible ? "cursor-not-allowed bg-secondaryColor flex items-center shadow shadow-black bg-primaryPink text-black rounded-md px-2 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary" : "cursor-pointer shadow shadow-black bg-primaryPink text-black rounded-md px-2 hover:bg-primaryColor hover:text-white transition-colors duration-700 dark:text-darkText dark:shadow-darkText dark:bg-darkPrimary dark:hover:bg-zinc-800"}
       onClick={() => widgetRef.current.open()}
     >
       Subir PDF

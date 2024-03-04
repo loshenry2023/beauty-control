@@ -10,6 +10,12 @@ import ClientFilters from "../ClientFilters";
 import ClientsTable from "../ClientsTable";
 import Pagination from "../Pagination";
 
+import axios from "axios";
+import getParamsEnv from "../../functions/getParamsEnv";
+import Loader from "../Loader";
+const { API_URL_BASE } = getParamsEnv();
+
+
 
 const ListClients = ({ setShowClientListModal, setChosenClient }) => {
 
@@ -26,6 +32,7 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
   const [size, setSize] = useState(10);
   const [createDateStart, setCreateDateStart] = useState("");
   const [createDateEnd, setCreateDateEnd] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const [showClientFormModal, setShowClientFormModal] = useState(false);
   const [activarNuevoCliente, setActivarNuevoCliente] = useState(false);
@@ -34,20 +41,16 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
     setShowClientFormModal(true)
   }
 
+  let requestMade = false;
   useEffect(() => {
-    dispatch(
-      getClients(
-        nameOrLastName,
-        attribute,
-        order,
-        page,
-        size,
-        createDateEnd,
-        createDateStart,
-        birthdaysMonth,
-        { token }
-      )
-    )
+    if (!requestMade) {
+      requestMade = true
+      axios.post(API_URL_BASE + `/v1/getclients?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}&birthdaysMonth=${birthdaysMonth}`, {token})
+      .then(respuesta => {
+        dispatch(getClients(respuesta.data))
+        setLoading(false)
+      })
+    }
     const close = (e) => {
       if(e.keyCode === 27){
         if(showClientFormModal === false) {setShowClientListModal(false)}
@@ -74,18 +77,21 @@ const ListClients = ({ setShowClientListModal, setChosenClient }) => {
     <div className="flex flex-col rounded m-5 p-3 gap-3 w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto border border-white bg-white dark:bg-darkBackground">
       <div className="flex flex-row justify-between">
         <>
-          <IoPersonAddOutline onClick={showCreateModal} className='h-6 w-6 mt-0.5 cursor-pointer dark:text-darkText' />
+          <IoPersonAddOutline onClick={showCreateModal} className='h-7 w-7 mt-0.5 cursor-pointer dark:text-darkText' />
         </>
-        <h2 className="text-xl dark:text-darkText">Elige un cliente</h2>
+        <h1 className="text-2xl dark:text-darkText">Elige un cliente</h1>
         <>
           <IoClose className='h-6 w-6 mt-0.5 cursor-pointer hover:scale-125 dark:text-darkText' onClick={() => setShowClientListModal(false)} />
         </>
       </div>
       <ClientFilters setNameOrLastName={setNameOrLastName} nameOrLastName={nameOrLastName} setAttribute={setAttribute} setOrder={setOrder} setPage={setPage} setSize={setSize} />
+      {loading ? <Loader /> :
       <div>
-        <ClientsTable count={count} setChosenClient={setChosenClient} setShowClientListModal={setShowClientListModal} clients={clients} />
-      </div>
+      <ClientsTable count={count} setChosenClient={setChosenClient} setShowClientListModal={setShowClientListModal} clients={clients} />
       <Pagination page={page} setPage={setPage} size={size} setSize={setSize} count={count} />
+    </div>
+      }
+      
     </div>
     {showClientFormModal ?
       <CreateClient

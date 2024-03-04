@@ -1,37 +1,58 @@
-// ! Almacena un nuevo registro en tabla.
-//const showLog = require("../functions/showLog");
+// ! Almacena registros en tabla.
 const { Op } = require('sequelize');
+const showLog = require('../functions/showLog');
+const createDBname = require('../functions/createDBname');
+const createNewDB = require("../functions/createNewDB");
+const createBasicData = require("../functions/createBasicData");
+const logData = require("../functions/logData");
+const sendMail = require("../functions/sendMail");
+const { EMAIL, EMAIL_MAIN } = require("../functions/paramsEnv");
 
-const postReg = async (tableName, tableNameText, data, conn = "", tableName2 = "", tableName3 = "", tableName4 = "", tableName5 = "") => {
+const postReg = async (dataInc) => {
+    const { userLogged, tableName, tableNameText, data, conn, tableName2, tableName3, tableName4, tableName5, dbName, nameCompany } = dataInc;
+    let dataLog = {
+        nameCompany: nameCompany,
+        dbName: dbName,
+        userName: userLogged
+    }
     try {
         let resp;
         switch (tableNameText) {
             case "Branch":
-                resp = await AddRegBranch(tableName, data);
+                resp = await AddRegBranch({ Branch: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Payment":
-                resp = await AddRegPayment(tableName, data);
+                resp = await AddRegPayment({ Payment: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Specialty":
-                resp = await AddRegSpecialty(tableName, data);
+                resp = await AddRegSpecialty({ Specialty: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Service":
-                resp = await AddRegService(tableName, data, conn);
+                resp = await AddRegService({ Service: tableName, data: data, conn: conn, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "Client":
-                resp = await AddRegClient(tableName, data, conn);
+                resp = await AddRegClient({ User: tableName, data: data, conn: conn, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "User":
-                resp = await AddRegUser(tableName, data, conn);
+                resp = await AddRegUser({ User: tableName, data: data, conn: conn, Company: tableName2, dbName: dbName, dataLog: dataLog });
+                return { "created": "ok", "id": resp };
+            case "Company":
+                resp = await AddRegCompany({ Company: tableName, data: data, userLogged: userLogged, dataLog: dataLog });
+                return { "created": "ok", "id": resp };
+            case "CompanyMain":
+                resp = await AddRegUserMain({ Company: tableName, data: data });
                 return { "created": "ok", "id": resp };
             case "CatGastos":
-                resp = await AddRegCatGastos(tableName, data);
+                resp = await AddRegCatGastos({ CatGastos: tableName, data: data, dataLog: dataLog });
                 return { "created": "ok", "id": resp };
             case "HistoryService":
-                resp = await AddRegHistoricProc(tableName, data, conn, tableName2, tableName3, tableName4);
+                resp = await AddRegHistoricProc({ HistoryService: tableName, data: data, conn: conn, Client: tableName2, Incoming: tableName3, dataLog: dataLog });
                 return { "created": "ok" };
             case "Calendar":
-                resp = await AddRegCalendar(tableName, data, conn, tableName2, tableName3, tableName4, tableName5);
+                resp = await AddRegCalendar({ Calendar: tableName, data: data, conn: conn, User: tableName2, Service: tableName3, Client: tableName4, Branch: tableName5, dataLog: dataLog });
+                return { "created": "ok" };
+            case "Product":
+                resp = await AddRegProduct({ Product: tableName, data: data, conn: conn, Branch: tableName2, PriceHistory: tableName3, dataLog: dataLog });
                 return { "created": "ok" };
             default:
                 throw new Error("Tabla no válida");
@@ -41,7 +62,242 @@ const postReg = async (tableName, tableNameText, data, conn = "", tableName2 = "
     }
 }
 
-async function AddRegCalendar(Calendar, data, conn, User, Service, Client, Branch) {
+async function AddRegProduct(dataMain) {
+
+    const { Product, data, conn, Branch, PriceHistory, dataLog } = dataMain;
+    const { price, branchId: brnchId, productCode, productName, description, supplier, amount } = data;
+    let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
+    try {
+        if (!price || !brnchId || !productCode || !productName || !description || !supplier || !amount) { throw Error("Faltan datos"); }
+        const existingProduct = await Product.findOne({
+            where: { productCode, branchId: brnchId },
+        });
+        if (existingProduct) {
+            throw Error("El código de insumo ya existe");
+        }
+        const productBranch = await Branch.findByPk(brnchId);
+        if (!productBranch) {
+            throw Error("Sede no encontrada");
+        }
+        transaction = await conn.transaction();
+        const newProduct = await Product.create({
+            productCode, productName, description, supplier, amount, branchId: brnchId
+        }, { transaction });
+        // Obtengo el último precio registrado para ese producto:
+        const existingPrice = await PriceHistory.findOne({
+            where: { prodId: productCode, branchId: brnchId },
+            order: [["createdAt", "DESC"]],
+        });
+        let doAnex = true;
+        if (existingPrice) {
+            // Comparo el valor actual con el último registrado:
+            if (Number(existingPrice.price) === Number(price)) {
+                doAnex = false;
+            }
+        }
+        if (doAnex) {
+            // Lo agrego al historial de precios:
+            const newProduct = await PriceHistory.create({
+                branchId: brnchId, prodId: productCode, price
+            }, { transaction });
+        }
+        await transaction.commit();
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Product ${productCode}, sede ${productBranch.branchName} was created` });
+        return newProduct;
+    } catch (error) {
+        if (transaction) await transaction.rollback();
+        throw Error(`${error}`);
+    }
+}
+
+async function AddRegService(dataMain) {
+    const { Service, data, conn, dataLog } = dataMain;
+    const { serviceName, duration, price, ImageService, specialty } = data;
+    let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
+    try {
+        if (!serviceName || !duration || !price || !ImageService || !specialty) { throw Error("Faltan datos"); }
+        const svcLowercase = serviceName.toLowerCase();
+        const existingSpec = await Service.findOne({
+            where: { serviceName: { [Op.iLike]: svcLowercase } },
+        });
+        if (existingSpec) {
+            throw Error("El procedimiento ya existe");
+        }
+        // Inicio la transacción:
+        transaction = await conn.transaction();
+        const [SvcCreated, created] = await Service.findOrCreate({
+            where: { serviceName, duration, price, ImageService },
+        });
+        // Busco las especialidades para agregar las relaciones:
+        for (const spec of specialty) {
+            await SvcCreated.addSpecialties(spec, { transaction });
+        }
+        await transaction.commit();
+        // Obtengo el id para devolver:
+        const svcCreated = await Service.findOne({
+            where: { serviceName: serviceName },
+        });
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Service ${serviceName} was created` });
+        return svcCreated.id;
+    } catch (error) {
+        if (transaction) await transaction.rollback();
+        throw Error(`${error}`);
+    }
+}
+
+async function AddRegUser(dataMain) {
+    const { User, data, conn, Company, dbName, dataLog } = dataMain;
+    const { userName, name, lastName, role, notificationEmail, phone1, phone2, image, comission, branch, specialty } = data;
+    let wasCreated = false;
+    let transaction;
+    try {
+        // Es un alta de usuario:
+        if (!userName || !name || !lastName || !role || !notificationEmail || !phone1 || !image || !comission || !branch || !specialty) { throw Error('Faltan datos'); }
+        const nameLowercase = userName.toLowerCase();
+        const existingUser = await Company.findOne({
+            where: { userName: { [Op.iLike]: nameLowercase } },
+        });
+        if (existingUser) {
+            throw Error('El usuario ya existe');
+        }
+        // Obtengo la información relacionada con la empresa:
+        const existingData = await Company.findOne({
+            where: {
+                dbName: dbName
+            }
+        });
+        if (!existingData) {
+            throw Error('No se encontró información asociada de la empresa');
+        }
+        // Primero: lo agrego a la tabla de empresas:
+        const regCompanyCreated = await Company.create({
+            userName, dbName, nameCompany: existingData.nameCompany, subscribedPlan: existingData.subscribedPlan, imgCompany: existingData.imgCompany, expireAt: existingData.expireAt, token: '', firstLogin: "1"
+        });
+        wasCreated = true;
+        // Obtengo el id para llevar a la tabla de usuarios:
+        const companyIdCreated = await Company.findOne({
+            where: { userName },
+        });
+        // Segundo: lo agrego a la tabla de usuarios de la empresa (si falla la transacción debo eliminar el anterior):
+        // Inicio la transacción:
+        transaction = await conn.transaction();
+        const [UserCreated, created] = await User.findOrCreate({
+            where: { id: companyIdCreated.id, userName, notificationEmail, name, lastName, phoneNumber1: phone1, phoneNumber2: phone2, image, comission, role, first: "0" },
+            transaction,
+        });
+        // Busco las sedes para agregar las relaciones:
+        for (const brnch of branch) {
+            await UserCreated.addBranches(brnch, { transaction });
+        }
+        // Busco las especialidades para agregar las relaciones:
+        for (const spec of specialty) {
+            await UserCreated.addSpecialties(spec, { transaction });
+        }
+        await transaction.commit();
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `User ${userName} ${role} was created` });
+
+        return companyIdCreated.id;
+    } catch (error) {
+        // Anulo la operación:
+        if (transaction) await transaction.rollback();
+        // También elimino el usuario de la tabla de empresas:
+        if (wasCreated) {
+            const toDelete = await Company.findOne({
+                where: { userName },
+            });
+            await toDelete.destroy();
+        }
+        throw Error(`${error}`);
+    }
+}
+
+async function AddRegCompany(dataMain) {
+    const { Company, data, userLogged, dataLog } = dataMain;
+    // Es un alta de empresa con su usuario inicial:
+    const { userName, nameCompany, expireAt, subscribedPlan, imgCompany, origin } = data;
+    try {
+        if (!userName || !nameCompany || !expireAt || !subscribedPlan || !imgCompany || !origin) { throw Error('Faltan datos'); }
+        const nameCompanyLowercase = nameCompany.toLowerCase();
+        const existingCompany = await Company.findOne({
+            where: { nameCompany: { [Op.iLike]: nameCompanyLowercase } },
+        });
+        if (existingCompany) {
+            throw Error('El nombre de empresa ya existe');
+        }
+        const userNameLowercase = userName.toLowerCase();
+        const existingUser = await Company.findOne({
+            where: { userName: { [Op.iLike]: userNameLowercase } },
+        });
+        if (existingUser) {
+            throw Error('El nombre de usuario ya existe');
+        }
+        const dbName = await createDBname(); // nombre de base de datos aleatorio
+        // Lo agrego a la tabla de empresas:
+        const regCompanyCreated = await Company.create({
+            userName, dbName, nameCompany, subscribedPlan, expireAt, imgCompany, firstLogin: "1"
+        });
+        // Obtengo el id para devolver:
+        const companyCreated = await Company.findOne({
+            where: { userName },
+        });
+        // Empiezo a crear la base de datos, las tablas y los datos básicos asociados con la nueva empresa:
+        if (await createNewDB(dbName, nameCompany, userLogged)) {
+            await createBasicData(dbName, nameCompany, userName, companyCreated.id);
+        } else {
+            throw Error('No se pudo crear la base de datos de la nueva empresa');
+        }
+        // Mail de notificación:
+        const data = {
+            origin: EMAIL_MAIN,
+            target: EMAIL_MAIN,
+            subject: "¡Bienvenidos a Beauty Control!",
+            html: `<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'> <html dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'> <head> <meta charset='UTF-8'> <meta content='width=device-width, initial-scale=1' name='viewport'> <meta name='x-apple-disable-message-reformatting'> <meta http-equiv='X-UA-Compatible' content='IE=edge'> <meta content='telephone=no' name='format-detection'> <title></title>     <link href='https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i' rel='stylesheet'>  </head> <body> <div dir='ltr' class='es-wrapper-color'>  <table class='es-wrapper' width='100%' height='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-email-paddings' valign='top'> <table cellpadding='0' cellspacing='0' class='es-header esd-footer-popover' align='center'> <tbody> <tr> <td class='esd-stripe' align='center' esd-custom-block-id='35507'> <table bgcolor='#ffffff' class='es-header-body' align='center' cellpadding='0' cellspacing='0' width='550' style='border-right:1px solid transparent;border-bottom:1px solid transparent;'> <tbody> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='509' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-block-image' align='center' style='font-size: 0px;'><img src='https://res.cloudinary.com/doyafxwje/image/upload/v1707517244/Logos/beuatycontrol-logo_hlmilv.png' alt='logoCompañía' style='display: block;' width='150'></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td width='509' class='esd-container-frame' align='center' valign='top'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td align='center' class='esd-block-text es-p15' > <h1 style='text-align: center; font-size: 18px; color: black; margin-bottom: 2px;'><span style='font-size:22px;'> Hola, ${nameCompany}!</h1> <p style='text-align: center; font-size: 16px; color: black;'> Ya tienes habilitado el acceso a Beauty Control -> ${origin}. Tu suscripción expira el ${expireAt}</p> <p style='text-align: center; font-size: 16px; color: black;'>¡Ingresa con tu cuenta de email haciendo click <a href='https://google.com/linkaldeploy'>aquí</a>! </p> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p5' style='background-color: transparent;' bgcolor='transparent' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='539' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </div> </body> </html>`,
+        }
+        await sendMail(data, ".");
+        const data2 = {
+            origin: EMAIL,
+            target: userName,
+            subject: "¡Bienvenidos a Beauty Control!",
+            html: `<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'> <html dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'> <head> <meta charset='UTF-8'> <meta content='width=device-width, initial-scale=1' name='viewport'> <meta name='x-apple-disable-message-reformatting'> <meta http-equiv='X-UA-Compatible' content='IE=edge'> <meta content='telephone=no' name='format-detection'> <title></title>     <link href='https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i' rel='stylesheet'>  </head> <body> <div dir='ltr' class='es-wrapper-color'>  <table class='es-wrapper' width='100%' height='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-email-paddings' valign='top'> <table cellpadding='0' cellspacing='0' class='es-header esd-footer-popover' align='center'> <tbody> <tr> <td class='esd-stripe' align='center' esd-custom-block-id='35507'> <table bgcolor='#ffffff' class='es-header-body' align='center' cellpadding='0' cellspacing='0' width='550' style='border-right:1px solid transparent;border-bottom:1px solid transparent;'> <tbody> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='509' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-block-image' align='center' style='font-size: 0px;'><img src='https://res.cloudinary.com/doyafxwje/image/upload/v1707517244/Logos/beuatycontrol-logo_hlmilv.png' alt='logoCompañía' style='display: block;' width='150'></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p20r es-p20l' align='left'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td width='509' class='esd-container-frame' align='center' valign='top'> <table cellpadding='0' cellspacing='0' width='100%'> <tbody> <tr> <td align='center' class='esd-block-text es-p15' > <h1 style='text-align: center; font-size: 18px; color: black; margin-bottom: 2px;'><span style='font-size:22px;'> Hola, ${nameCompany}!</h1> <p style='text-align: center; font-size: 16px; color: black;'> Ya tienes habilitado el acceso a Beauty Control. Tu suscripción expira el ${expireAt}</p> <p style='text-align: center; font-size: 16px; color: black;'>¡Ingresa con tu cuenta de email haciendo click <a href='https://google.com/linkaldeploy'>aquí</a>! </p> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td class='esd-structure es-p5' style='background-color: transparent;' bgcolor='transparent' align='left'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> <tr> <td class='esd-container-frame' width='539' valign='top' align='center'> <table width='100%' cellspacing='0' cellpadding='0'> <tbody> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </div> </body> </html>`,
+        }
+        await sendMail(data2);
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Company ${nameCompany}, database ${dbName} was created` });
+        return companyCreated.id;
+    } catch (error) {
+        throw Error(`${error}`);
+    }
+}
+
+async function AddRegUserMain(dataMain) {
+    // Es un alta de usuario superSuperAdmin:
+    const { Company, data } = dataMain;
+    const { userName, dbName, nameCompany, expireAt, subscribedPlan, imgCompany } = data;
+    let transaction;
+    try {
+        if (!userName || !dbName || !nameCompany || !expireAt || !subscribedPlan || !imgCompany) { throw Error('Faltan datos'); }
+        const nameLowercase = userName.toLowerCase();
+        const existingUser = await Company.findOne({
+            where: { userName: { [Op.iLike]: nameLowercase } },
+        });
+        if (existingUser) {
+            throw Error('El usuario ya existe');
+        }
+        // Lo agrego a la tabla de empresas:
+        const regCompanyCreated = await Company.create({
+            userName, dbName, nameCompany, subscribedPlan, expireAt, imgCompany, firstLogin: "1",
+        });
+        // Obtengo el id para devolver:
+        const userCreated = await Company.findOne({
+            where: { userName },
+        });
+        return userCreated.id;
+    } catch (error) {
+        throw Error(`${error}`);
+    }
+}
+
+async function AddRegCalendar(dataMain) {
+    const { Calendar, data, conn, User, Service, Client, Branch, dataLog } = dataMain;
     const { idUser, idService, idClient, idBranch, date_from, date_to, obs } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -75,6 +331,7 @@ async function AddRegCalendar(Calendar, data, conn, User, Service, Client, Branc
         }
         await regCreated.setBranch(branch, { transaction });
         await transaction.commit();
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Calendar event usr ${idUser}, svc ${idService}, clnt ${idClient}, bnch ${idBranch}, dte ${date_from} was created` });
         return;
     } catch (error) {
         if (transaction) await transaction.rollback();
@@ -82,14 +339,15 @@ async function AddRegCalendar(Calendar, data, conn, User, Service, Client, Branc
     }
 }
 
-async function AddRegHistoricProc(HistoryService, data, conn, Client, Incoming, User) {
-    const { idUser, idclient, imageServiceDone, date, amount1, amount2, conformity, branchName, paymentMethodName1, paymentMethodName2, serviceName, attendedBy, email, name, lastName, id_pers } = data;
+async function AddRegHistoricProc(dataMain) {
+    const { HistoryService, data, conn, Client, Incoming, dataLog } = dataMain;
+    const { idUser, idClient, imageServiceDone, date, amount1, amount2, conformity, branchName, paymentMethodName1, paymentMethodName2, serviceName, attendedBy, email, name, lastName, id_pers } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
-        if (!idUser || !idclient || !imageServiceDone || !date || !branchName || !paymentMethodName1 || !paymentMethodName2 || !serviceName || !attendedBy || !email || !name || !lastName || !amount1 || !amount2) { throw Error("Faltan datos"); }
+        if (!idUser || !idClient || !imageServiceDone || !date || !branchName || !paymentMethodName1 || !paymentMethodName2 || !serviceName || !attendedBy || !email || !name || !lastName || !amount1 || !amount2) { throw Error("Faltan datos"); }
         // Inicio la transacción:
         transaction = await conn.transaction();
-        const client = await Client.findByPk(idclient);
+        const client = await Client.findByPk(idClient);
         if (!client) { throw Error("Cliente no encontrado"); }
         const regCreated = await HistoryService.create({
             imageServiceDone, date, conformity, branchName, serviceName, attendedBy, email, name, lastName, id_pers, idUser,
@@ -99,8 +357,8 @@ async function AddRegHistoricProc(HistoryService, data, conn, Client, Incoming, 
         await Incoming.create({ amount: amount2, paymentMethodName: paymentMethodName2, DateIncoming: date, HistoryServiceId: regCreated.id }, { transaction });
         // Relación: asocio el historial de servicio con el cliente:
         await client.addHistoryService(regCreated, { transaction });
-
         await transaction.commit();
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Historic proc usr ${idUser}, clnt ${idClient}, mnt1 ${amount1}, mnt2 ${amount2}, bnch ${branchName}, pay1 ${paymentMethodName1} pay2 ${paymentMethodName2} was created` });
         return;
     } catch (error) {
         if (transaction) await transaction.rollback();
@@ -108,7 +366,8 @@ async function AddRegHistoricProc(HistoryService, data, conn, Client, Incoming, 
     }
 }
 
-async function AddRegClient(User, data, conn) {
+async function AddRegClient(dataMain) {
+    const { User, data, conn, dataLog } = dataMain;
     const { email, name, lastName, id_pers, phone1, phone2, image, birthday } = data;
     let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
     try {
@@ -133,6 +392,8 @@ async function AddRegClient(User, data, conn) {
         const clientCreated = await User.findOne({
             where: { name: name, lastName: lastName, email: email },
         });
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Client ${email} ${name} ${lastName} ${id_pers} was created` });
+
         return clientCreated.id;
     } catch (error) {
         if (transaction) await transaction.rollback();
@@ -140,80 +401,9 @@ async function AddRegClient(User, data, conn) {
     }
 }
 
-async function AddRegService(Service, data, conn) {
-    const { serviceName, duration, price, ImageService, specialty } = data;
-    let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
-    try {
-        if (!serviceName || !duration || !price || !ImageService || !specialty) { throw Error("Faltan datos"); }
-        const svcLowercase = serviceName.toLowerCase();
-        const existingSpec = await Service.findOne({
-            where: { serviceName: { [Op.iLike]: svcLowercase } },
-        });
-        if (existingSpec) {
-            throw Error("El procedimiento ya existe");
-        }
-        // Inicio la transacción:
-        transaction = await conn.transaction();
-        const [SvcCreated, created] = await Service.findOrCreate({
-            where: { serviceName, duration, price, ImageService },
-        });
-        // Busco las especialidades para agregar las relaciones:
-        for (const spec of specialty) {
-            await SvcCreated.addSpecialties(spec, { transaction });
-        }
-        await transaction.commit();
-        // Obtengo el id para devolver:
-        const svcCreated = await Service.findOne({
-            where: { serviceName: serviceName },
-        });
-        return svcCreated.id;
-    } catch (error) {
-        if (transaction) await transaction.rollback();
-        throw Error(`${error}`);
-    }
-}
-
-async function AddRegUser(User, data, conn) {
-    const { userName, name, lastName, role, notificationEmail, phone1, phone2, image, comission, branch, specialty } = data;
-    let transaction; // manejo transacciones para evitar registros defectuosos por relaciones mal solicitadas
-    try {
-        if (!userName || !name || !lastName || !role || !notificationEmail || !phone1 || !image || !comission || !branch || !specialty) { throw Error("Faltan datos"); }
-        const nameLowercase = userName.toLowerCase();
-        const existingUser = await User.findOne({
-            where: { userName: { [Op.iLike]: nameLowercase } },
-        });
-        if (existingUser) {
-            throw Error("El usuario ya existe");
-        }
-        // Inicio la transacción:
-        transaction = await conn.transaction();
-        const [UserCreated, created] = await User.findOrCreate({
-            where: { userName, notificationEmail, name, lastName, phoneNumber1: phone1, phoneNumber2: phone2, image, comission, token: "", role },
-            transaction,
-        });
-        // Busco las sedes para agregar las relaciones:
-        for (const brnch of branch) {
-            await UserCreated.addBranches(brnch, { transaction });
-        }
-        // Busco las especialidades para agregar las relaciones:
-        for (const spec of specialty) {
-            await UserCreated.addSpecialties(spec, { transaction });
-        }
-
-        await transaction.commit();
-        // Obtengo el id para devolver:
-        const userCreated = await User.findOne({
-            where: { userName: userName },
-        });
-        return userCreated.id;
-    } catch (error) {
-        if (transaction) await transaction.rollback();
-        throw Error(`${error}`);
-    }
-}
-
-async function AddRegBranch(Branch, data) {
-    const { branchName, coordinates, address, phoneNumber, openningHours, clossingHours, workingDays } = data;
+async function AddRegBranch(dataMain) {
+    const { Branch, data, dataLog } = dataMain;
+    const { branchName, coordinates, address, phoneNumber, openningHours, clossingHours, workingDays, linkFb = "", linkIg = "", linkTk = "" } = data;
     try {
         if (!branchName || !phoneNumber || !address) { throw Error("Faltan datos"); }
         const branchLowercase = branchName.toLowerCase();
@@ -224,19 +414,21 @@ async function AddRegBranch(Branch, data) {
             throw Error("La sede ya existe");
         }
         const [BranchCreated, created] = await Branch.findOrCreate({
-            where: { branchName, phoneNumber, address, coordinates, openningHours, clossingHours, workingDays },
+            where: { branchName, phoneNumber, address, coordinates, openningHours, clossingHours, workingDays, linkFb, linkIg, linkTk },
         });
         // Obtengo el id para devolver:
         const branchCreated = await Branch.findOne({
             where: { branchName: branchName },
         });
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Branch ${branchName} was created` });
         return branchCreated.id;
     } catch (error) {
         throw Error(`${error}`);
     }
 }
 
-async function AddRegPayment(Payment, data) {
+async function AddRegPayment(dataMain) {
+    const { Payment, data, dataLog } = dataMain;
     const { paymentMethodName } = data;
     try {
         if (!paymentMethodName) { throw Error("Faltan datos"); }
@@ -254,13 +446,15 @@ async function AddRegPayment(Payment, data) {
         const payCreated = await Payment.findOne({
             where: { paymentMethodName: paymentMethodName },
         });
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Payment method ${paymentMethodName} was created` });
         return payCreated.id;
     } catch (error) {
         throw Error(`${error}`);
     }
 }
 
-async function AddRegSpecialty(Specialty, data) {
+async function AddRegSpecialty(dataMain) {
+    const { Specialty, data, dataLog } = dataMain;
     const { specialtyName } = data;
     try {
         if (!specialtyName) { throw Error("Faltan datos"); }
@@ -278,13 +472,15 @@ async function AddRegSpecialty(Specialty, data) {
         const specCreated = await Specialty.findOne({
             where: { specialtyName: specialtyName },
         });
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Specialty ${specialtyName} was created` });
         return specCreated.id;
     } catch (error) {
         throw Error(`${error}`);
     }
 }
 
-async function AddRegCatGastos(CatGastos, data) {
+async function AddRegCatGastos(dataMain) {
+    const { CatGastos, data, dataLog } = dataMain;
     const { catName } = data;
     try {
         if (!catName) { throw Error("Faltan datos"); }
@@ -302,6 +498,7 @@ async function AddRegCatGastos(CatGastos, data) {
         const catCreated = await CatGastos.findOne({
             where: { catName: catName },
         });
+        logData({ op: "C", nameCompany: dataLog.nameCompany, dbName: dataLog.dbName, userName: dataLog.userName, desc: `Expense category ${catName} was created` });
         return catCreated.id;
     } catch (error) {
         throw Error(`${error}`);

@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
     "Branch",
     {
       id: {
-        type: DataTypes.UUID, // clave impredecible, versión 4
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
@@ -38,11 +38,23 @@ module.exports = (sequelize) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      linkFb: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      linkIg: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      linkTk: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       deletedAt: {
         type: DataTypes.DATE,
         allowNull: true,
       },
     }, {
-    paranoid: true, // Habilita eliminación suave
+    paranoid: true,
   });
 };

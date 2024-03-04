@@ -21,7 +21,7 @@ const UserDetail = () => {
         <SideBar />
         {user?.role === "superAdmin" || user?.role === "admin" ?
           <UserInfo /> : (
-            <Restricted />)}
+          <Restricted />)}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import {
   GET_USER,
   GET_USERS,
-  GET_USER_ID,
+  USER_DATA_ID,
   GET_BRANCHES,
   GET_SPECIALTIES,
   DELETE_USER,
@@ -68,7 +68,7 @@ export const getcalendarcount = (calendarData) => {
   return async function (dispatch) {
     try {
       const response = await axios.post(
-        API_URL_BASE + "/getcalendarcount",
+        API_URL_BASE + "/v1/getcalendarcount",
         calendarData
       );
       return dispatch({
@@ -89,137 +89,76 @@ export const getcalendarcount = (calendarData) => {
   };
 };
 
-export const getBranches = (token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(API_URL_BASE + "/branches", token);
-      return dispatch({
-        type: GET_BRANCHES,
-        payload: response.data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
+export const getBranches = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const branchA = a.branchName.toLowerCase();
+    const branchB = b.branchName.toLowerCase();
+  
+    if (branchA < branchB) {
+      return -1;
     }
-  };
+    if (branchB > branchA) {
+      return 1;
+    }
+    return 0;
+  })
+
+  return {
+    type: GET_BRANCHES,
+    payload: respuestaOrdenada,
+  }
 };
 
-export const getSpecialties = (token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(API_URL_BASE + "/specialties", token);
-      return dispatch({
-        type: GET_SPECIALTIES,
-        payload: response.data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
+export const getSpecialties = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const specialtyA = a.specialtyName.toLowerCase();
+    const specialtyB = b.specialtyName.toLowerCase();
+  
+    if (specialtyA < specialtyB) {
+      return -1;
     }
-  };
-};
+    if (specialtyA > specialtyB) {
+      return 1;
+    }
+    return 0;
+  });
 
-export const getServices = (token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(API_URL_BASE + "/getservices", token);
-      return dispatch({
-        type: GET_SERVICES,
-        payload: response.data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
+  return {
+    type: GET_SPECIALTIES,
+    payload: respuestaOrdenada,
   };
 };
 
 export const getClients = (
-  nameOrLastName,
-  attribute,
-  order,
-  page,
-  size,
-  createDateEnd,
-  createDateStart,
-  birthdaysMonth,
-  token
+  // nameOrLastName,
+  // attribute,
+  // order,
+  // page,
+  // size,
+  // createDateEnd,
+  // createDateStart,
+  // birthdaysMonth,
+  // token
+  respuesta
 ) => {
-  const endPoint = API_URL_BASE + "/getclients?";
-  return async function (dispatch) {
-    try {
-      const { data } = await axios.post(
-        `${endPoint}nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}&birthdaysMonth=${birthdaysMonth}`,
-        token
-      );
-      const modifiedData = data.rows.map((user) => {
-        const { createdAt, ...rest } = user;
-        const createdAtInBogotaTimezone = converterGMT(createdAt);
-        return { ...rest, createdAt: createdAtInBogotaTimezone };
-      });
-      return dispatch({
-        type: GET_CLIENTS,
-        payload: modifiedData,
-        countClient: data.count,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
+  const modifiedData = respuesta.rows.map((user) => {
+    const { createdAt, ...rest } = user;
+    const createdAtInBogotaTimezone = converterGMT(createdAt);
+    return { ...rest, createdAt: createdAtInBogotaTimezone };
+  })
+
+  return {
+    type: GET_CLIENTS,
+    payload: modifiedData,
+    countClient: respuesta.count,
+  }
 };
 
-export const getClientId = (id, token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(
-        `${API_URL_BASE}/getclient/${id}`,
-        token
-      );
-      return dispatch({
-        type: GET_CLIENT_ID,
-        payload: response.data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
+export const getClientId = (respuesta) => {
+  return {
+    type: GET_CLIENT_ID,
+    payload: respuesta
+  }
 };
 
 export const clearClientId = () => ({
@@ -227,148 +166,72 @@ export const clearClientId = () => ({
   payload: {},
 });
 
-export const getUsers = (
-  nameOrLastName,
-  attribute,
-  order,
-  page,
-  size,
-  branch,
-  specialty,
-  role,
-  createDateEnd,
-  createDateStart,
-  token
-) => {
-  const endPoint = API_URL_BASE + "/users?";
-  return async function (dispatch) {
-    try {
-      const { data } = await axios.post(
-        `${endPoint}nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`,
-        token
-      );
+export const getUsers = (response) => {
+  const modifiedData = response.rows.map((user) => {
+    const { createdAt, ...rest } = user;
+    const createdAtInBogotaTimezone = converterGMT(createdAt); // Assuming converterGMT is a defined function
+    return { ...rest, createdAt: createdAtInBogotaTimezone };
+  });
 
-      const modifiedData = data.rows.map((user) => {
-        const { createdAt, ...rest } = user;
-        const createdAtInBogotaTimezone = converterGMT(createdAt);
-        return { ...rest, createdAt: createdAtInBogotaTimezone };
-      });
-
-      return dispatch({
-        type: GET_USERS,
-        payload: modifiedData,
-        count: data.count,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
+  return {
+    type: GET_USERS,
+    payload: modifiedData,
+    count: response.count,
   };
 };
 
-export const getspecialists = (branchWorking, token) => {
-  const endPoint = API_URL_BASE + "/specialists?";
-  return async function (dispatch) {
-    try {
-      const { data } = await axios.post(
-        `${endPoint}branchWorking=${branchWorking}`,
-        token
-      );
+export const getCalendar = (response) => {
+  // const endPoint = API_URL_BASE + "/v1/getcalendar?";
+  // return async function (dispatch) {
+  //   try {
+  //     const { data } = await axios.post(
+  //       `${endPoint}branch=${branch}&dateFrom=${dateFrom}&dateTo=${dateTo}&userId=${userId}`,
+  //       token
+  //     );
+  const modifiedData = response.map((calendar) => {
+    const { date_from, date_to, ...rest } = calendar;
+    const date_fromInBogotaTimezone = converterGMT(date_from);
+    const date_toInBogotaTimezone = converterGMT(date_to);
+    // const date_fromInBogotaTimezone = converterGMT(date_from);
+    // const date_toInBogotaTimezone = converterGMT(date_to);
+    return {
+      ...rest,
+      date_from: date_fromInBogotaTimezone,
+      date_to: date_toInBogotaTimezone,
+    };
+  });
 
-      return dispatch({
-        type: GET_SPECIALISTS,
-        payload: data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
+  return {
+    type: GET_CALENDAR,
+    payload: modifiedData,
   };
 };
+//   } catch (error) {
+//     // Errores 401 y 403 son para quitar al usuario de la sesión:
+//     if (error.request.status === 401 || error.request.status === 403) {
+//       return dispatch({
+//         type: SET_TOKEN_ERROR,
+//         payload: error.request.status,
+//       });
+//     } else {
+//       throw Error(error.message);
+//     }
+//   }
+// };
 
-export const getCalendar = (branch, dateFrom, dateTo, userId, token) => {
-  const endPoint = API_URL_BASE + "/getcalendar?";
-  return async function (dispatch) {
-    try {
-      const { data } = await axios.post(
-        `${endPoint}branch=${branch}&dateFrom=${dateFrom}&dateTo=${dateTo}&userId=${userId}`,
-        token
-      );
 
-      const modifiedData = data.map((calendar) => {
-        const { date_from, date_to, ...rest } = calendar;
-        const date_fromInBogotaTimezone = converterGMT(date_from);
-        const date_toInBogotaTimezone = converterGMT(date_to);
-        // const date_fromInBogotaTimezone = converterGMT(date_from);
-        // const date_toInBogotaTimezone = converterGMT(date_to);
-        return {
-          ...rest,
-          date_from: date_fromInBogotaTimezone,
-          date_to: date_toInBogotaTimezone,
-        };
-      });
-      return dispatch({
-        type: GET_CALENDAR,
-        payload: modifiedData,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
-};
-
-export const getUserId = (id, token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(
-        `${API_URL_BASE}/userdetails/${id}`,
-        token
-      );
-      return dispatch({
-        type: GET_USER_ID,
-        payload: response.data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
+export const getUserId = (respuesta) => {
+  return {
+    type: USER_DATA_ID,
+    payload: respuesta
+  }
 };
 
 export const deleteUser = (id, token) => {
   return async function (dispatch) {
     try {
       const response = await axios.post(
-        `${API_URL_BASE}/deleteuserdata/${id}`,
+        `${API_URL_BASE}/v1/deleteuserdata/${id}`,
         { token }
       );
       return dispatch({
@@ -393,7 +256,7 @@ export const deleteUser = (id, token) => {
 export const setLogout = (token) => {
   return async function (dispatch) {
     try {
-      const response = await axios.post(API_URL_BASE + "/logoutuser", {
+      const response = await axios.post(API_URL_BASE + "/v1/logoutuser", {
         token,
       });
       return dispatch({
@@ -409,27 +272,34 @@ export const setLogout = (token) => {
   };
 };
 
-export const getBalance = (balance) => {
-  return async function (dispatch) {
-    try {
-      const { data } = await axios.post(API_URL_BASE + "/getbalance", balance);
+export const getBalance = (respuesta) => {
+  return {
+    type: GET_BALANCE,
+    payload: respuesta,
+  }
+  // return async function (dispatch) {
+  //   try {
+  //     const { data } = await axios.post(
+  //       API_URL_BASE + "/v1/getbalance",
+  //       balance
+  //     );
 
-      return dispatch({
-        type: GET_BALANCE,
-        payload: data,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
+  //     return dispatch({
+  //       type: GET_BALANCE,
+  //       payload: data,
+  //     });
+  //   } catch (error) {
+  //     // Errores 401 y 403 son para quitar al usuario de la sesión:
+  //     if (error.request.status === 401 || error.request.status === 403) {
+  //       return dispatch({
+  //         type: SET_TOKEN_ERROR,
+  //         payload: error.request.status,
+  //       });
+  //     } else {
+  //       throw Error(error.message);
+  //     }
+  //   }
+  // };
 };
 
 export const clearUserId = () => ({
@@ -478,7 +348,7 @@ export const getProducts = (
   return async (dispatch) => {
     dispatch(getProductsRequest());
     try {
-      const response = await axios.post(API_URL_BASE + "/products", {
+      const response = await axios.post(API_URL_BASE + "/v1/products", {
         productName,
         description,
         code,
@@ -506,7 +376,7 @@ export const getProducts = (
   };
 };
 
-export const createProductRequest = () => ({
+/* export const createProductRequest = () => ({
   type: CREATE_PRODUCT_REQUEST,
 });
 
@@ -528,7 +398,7 @@ export const createProduct = (newProductData) => {
       const state = getState();
 
       const response = await axios.post(
-        API_URL_BASE + "/productsCreate",
+        API_URL_BASE + "/v1/productsCreate",
         newProductData
       );
       dispatch(createProductSuccess(response.data));
@@ -552,7 +422,7 @@ export const editProduct = (productId, updatedProduct) => {
 
     try {
       const response = await axios.put(
-        `${API_URL_BASE}/products/${productId}`,
+        `${API_URL_BASE}/v1/products/${productId}`,
         updatedProduct,
         {
           headers: {
@@ -601,7 +471,7 @@ export const getProductPricesHistory = (productId) => async (dispatch) => {
   try {
     dispatch(getProductPricesHistoryRequest());
     const response = await axios.get(
-      API_URL_BASE + `/products/${productId}/prices-history`
+      API_URL_BASE + `/v1/products/${productId}/prices-history`
     );
     dispatch(getProductPricesHistorySuccess(response.data));
   } catch (error) {
@@ -641,7 +511,7 @@ export const updateProductPrice = (productId, newPrice) => {
 
     try {
       const response = await axios.put(
-        API_URL_BASE + `/products/${productId}/price`,
+        API_URL_BASE + `/v1/products/${productId}/price`,
         {
           newPrice,
         }
@@ -665,30 +535,57 @@ export const updateProductPrice = (productId, newPrice) => {
       }
     }
   };
-};
-
-export const getPayMethods = (token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(API_URL_BASE + "/payments", token);
-      return dispatch({
-        type: GET_PAY_METHODS,
-        payload: response.data,
-      });
-    } catch (error) {
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
+}; */
+//baba
+export const getPayMethods = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const payMethodA = a.paymentMethodName.toLowerCase();
+    const payMethodB = b.paymentMethodName.toLowerCase();
+  
+    if (payMethodA < payMethodB) {
+      return -1;
     }
-  };
+    if (payMethodB > payMethodA) {
+      return 1;
+    }
+    return 0;
+  })
+
+  return {
+    type: GET_PAY_METHODS,
+    payload: respuestaOrdenada 
+  }
 };
 
-export const setTokenError = (error) => ({
-  type: SET_TOKEN_ERROR,
-  payload: error,
+export const getspecialists = (response) => ({
+  type: GET_SPECIALISTS,
+  payload: response,
 });
+
+
+export const getServices = (respuesta) => {
+  const respuestaOrdenada = respuesta.sort((a, b) => {
+    const serviceA = a.serviceName.toLowerCase();
+    const serviceB = b.serviceName.toLowerCase();
+  
+    if (serviceA < serviceB) {
+      return -1;
+    }
+    if (serviceB > serviceA) {
+      return 1;
+    }
+    return 0;
+  })
+
+  return {
+    type: GET_SERVICES,
+    payload: respuestaOrdenada,
+  }
+};
+
+export const setTokenError = (error) => {
+  return{
+    type: SET_TOKEN_ERROR,
+    payload: error,
+  }
+};

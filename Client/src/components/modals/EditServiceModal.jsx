@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import Loader from '../Loader'
-
+import Loader from "../Loader";
 
 //icons
 import { IoClose } from "react-icons/io5";
@@ -49,8 +48,8 @@ const EditServiceModal = ({
     return () => window.removeEventListener("keydown", close);
   }, [service]);
 
-  const [submitLoader, setSubmitLoader] = useState(false)
-  const [disableSubmit, setDisableSubmit] = useState(false)
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -126,9 +125,8 @@ const EditServiceModal = ({
     }
 
     try {
-
-      setDisableSubmit(true)
-      setSubmitLoader(true)
+      setDisableSubmit(true);
+      setSubmitLoader(true);
 
       const data = {
         serviceName: service.name,
@@ -140,18 +138,18 @@ const EditServiceModal = ({
       };
 
       const response = await axios.put(
-        `${API_URL_BASE}/service/${filaService.id}`,
+        `${API_URL_BASE}/v1/service/${filaService.id}`,
         data
       );
 
       if (response.data.updated === "ok") {
-        setSubmitLoader(false)
+        setSubmitLoader(false);
         setAux(!aux);
         toast.success("Procedimiento modificado exitosamente");
 
         setTimeout(() => {
           closeModal();
-          setDisableSubmit(false)
+          setDisableSubmit(false);
           setService({
             name: "",
             specialty: {
@@ -164,13 +162,13 @@ const EditServiceModal = ({
           });
         }, 3000);
       } else {
-        setDisableSubmit(false)
-            setSubmitLoader(false)
+        setDisableSubmit(false);
+        setSubmitLoader(false);
         toast.error("Hubo un problema con la modificación");
       }
     } catch (error) {
-      setDisableSubmit(false)
-            setSubmitLoader(false)
+      setDisableSubmit(false);
+      setSubmitLoader(false);
       toast.error(
         `Hubo un problema con la modificación. ${error.response.data}`
       );
@@ -186,7 +184,7 @@ const EditServiceModal = ({
         <div>
           <div className="w-4/5 mx-auto bg-white shadow rounded-lg p-6 md:w-full dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Editar procedimiento
               </h1>
               <IoClose
@@ -197,7 +195,7 @@ const EditServiceModal = ({
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 <div>
-                  <label className="pl-1 text-sm font-bold dark:text-darkText">
+                  <label className="pl-1  font-bold dark:text-darkText">
                     Nombre
                   </label>
                   <input
@@ -211,11 +209,11 @@ const EditServiceModal = ({
                     } dark:text-darkText dark:bg-darkPrimary`}
                   />
                   {errors.name !== "" && (
-                    <p className="text-xs text-red-500">{errors.name}</p>
+                    <p className=" text-red-500">{errors.name}</p>
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-sm font-bold dark:text-darkText mb-1">
+                  <label className=" font-bold dark:text-darkText mb-1">
                     Especialidad
                   </label>
                   <select
@@ -240,13 +238,13 @@ const EditServiceModal = ({
                     ))}
                   </select>
                   {errors.specialty !== "" && (
-                    <p className="text-xs text-red-500">{errors.specialty}</p>
+                    <p className=" text-red-500">{errors.specialty}</p>
                   )}
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 <div>
-                  <label className="mb-2 text-sm font-bold text-gray-900 dark:text-darkText">
+                  <label className="mb-2  font-bold text-gray-900 dark:text-darkText">
                     Duración
                   </label>
                   <input
@@ -260,11 +258,11 @@ const EditServiceModal = ({
                     } dark:text-darkText dark:bg-darkPrimary`}
                   />
                   {errors.duration !== "" && (
-                    <p className="text-xs text-red-500">{errors.duration}</p>
+                    <p className=" text-red-500">{errors.duration}</p>
                   )}
                 </div>
                 <div>
-                  <label className="mb-2 text-sm font-bold text-gray-900 dark:text-darkText">
+                  <label className="mb-2  font-bold text-gray-900 dark:text-darkText">
                     Precio
                   </label>
                   <input
@@ -278,7 +276,7 @@ const EditServiceModal = ({
                     value={service.price}
                   />
                   {errors.price !== "" && (
-                    <p className="text-xs text-red-500">{errors.price}</p>
+                    <p className=" text-red-500">{errors.price}</p>
                   )}
                 </div>
               </div>
@@ -298,16 +296,17 @@ const EditServiceModal = ({
               </div>
 
               <div className="flex justify-center items-center">
-              {!submitLoader ?
-                                    <button
-                                    type="submit"
-                                    disabled={disableSubmit}
-                                    className="mt-2 px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-blue-600 focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
-                                >
-                                    Editar procedimiento
-                                </button> :
-                <Loader />
-              }
+                {!submitLoader ? (
+                  <button
+                    type="submit"
+                    disabled={disableSubmit}
+                    className="px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 focus:outline-none dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                  >
+                    Editar procedimiento
+                  </button>
+                ) : (
+                  <Loader />
+                )}
               </div>
             </form>
           </div>

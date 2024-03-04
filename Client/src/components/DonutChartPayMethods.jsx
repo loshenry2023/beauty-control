@@ -58,7 +58,7 @@ function DonutChartPayMethods({ data, title }) {
             y="40%"
             width="20%"
             height="20%"
-            className=" text-sm flex flex-row items-center justify-center "
+            className="  flex flex-row items-center justify-center "
           >
             <div
               style={{

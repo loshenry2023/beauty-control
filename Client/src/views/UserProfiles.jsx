@@ -1,7 +1,7 @@
 //hooks, componentes, reducer
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBranches, getSpecialties, getUsers } from "../redux/actions";
+import { getBranches, getSpecialties, getUsers, setTokenError } from "../redux/actions";
 import RegisterForm from "../components/modals/RegisterForm";
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
@@ -9,6 +9,9 @@ import ProfilesTable from "../components/ProfilesTable";
 import Loader from "../components/Loader";
 import ErrorToken from "./ErrorToken";
 import "./loading.css";
+import axios from "axios";
+import getParamsEnv from "../functions/getParamsEnv";
+const { API_URL_BASE } = getParamsEnv();
 
 //icons
 import { IoPersonAddOutline } from "react-icons/io5";
@@ -47,40 +50,45 @@ function UserProfiles() {
   const tokenID = token.token;
 
   const handlerDateFrom = (e) => {
-    if(createDateEnd !== "" && `${e.target.value} 00:00:00` > createDateEnd){
-      toast.error("La fecha inicial no puede ser mayor a la fecha final");
-    }
     setCreateDateStart(`${e.target.value} 00:00:00`)
   };
 
   const handlerDateTo = (e) => {
-    if(createDateStart !== "" && `${e.target.value} 23:59:59`< createDateStart){
-      toast.error("La fecha final no puede ser menor a la fecha inicial");
-    }
     setCreateDateEnd(`${e.target.value} 23:59:59`)
   };
 
+  let requestMade = false;
   useEffect(() => {
-    dispatch(
-      getUsers(
-        nameOrLastName,
-        attribute,
-        order,
-        page,
-        size,
-        branch,
-        specialty,
-        role,
-        createDateEnd,
-        createDateStart,
-        token
-      )
-    )
-      .then(dispatch(getBranches(token)))
-      .then(dispatch(getSpecialties(token)))
-      .then(() => {
-        setLoading(false);
-      });
+    if (!requestMade) { 
+    requestMade = true;
+    axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`, token)
+    .then(respuesta => {
+      dispatch(getUsers(respuesta.data))
+      return axios.post(API_URL_BASE + `/v1/specialties`, token)
+    })
+    .then(respuesta2 => {
+      dispatch(getSpecialties(respuesta2.data))
+      return axios.post(API_URL_BASE + `/v1/branches`, token)
+      })
+    .then(respuesta3 => {
+      dispatch(getBranches(respuesta3.data))
+      setLoading(false)
+    })
+    .catch(error => { 
+      if (error.request.status === 401 || error.request.status === 402 || error.request.status === 403) {
+        setLoading(false)
+         dispatch(setTokenError(error.request.status))
+      } else {
+        let errorMessage= ""     
+        if (!error.response) {
+          errorMessage = error.message;
+        } else {
+          errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+        }
+        toast.error(errorMessage);
+      }
+    })
+    }
   }, [
     nameOrLastName,
     attribute,
@@ -90,8 +98,6 @@ function UserProfiles() {
     branch,
     specialty,
     role,
-    createDateEnd,
-    createDateStart,
     activarNuevoUsuario,
     tokenError,
   ]);
@@ -100,7 +106,20 @@ function UserProfiles() {
     setShowResgisterFormModal(true);
   };
 
-  if (tokenError === 401 || tokenError === 403) {
+  const buscarFecha = () => {
+    if (createDateStart > createDateEnd) {
+      toast.error("La fecha inicial no puede ser mayor a la fecha final");
+      return
+    }
+
+    axios.post(API_URL_BASE + `/v1/users?nameOrLastName=${nameOrLastName}&attribute=${attribute}&order=${order}&page=${page}&size=${size}&branch=${branch}&specialty=${specialty}&role=${role}&createDateEnd=${createDateEnd}&createDateStart=${createDateStart}`, token)
+    .then(respuesta => {
+      dispatch(getUsers(respuesta.data))
+    })
+  }
+  
+
+  if (tokenError === 401 || tokenError === 402 || tokenError === 403) {
     return <ErrorToken error={tokenError} />;
   } else {
     return (
@@ -114,7 +133,7 @@ function UserProfiles() {
                 <Loader />
               ) : (
                 <div className="flex flex-col mt-10 gap-5 w-2/3 mx-auto">
-                  <h1 className="text-2xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
+                  <h1 className="text-3xl underline underline-offset-4 tracking-wide text-center font-fontTitle dark:text-beige sm:text-left">
                     Plantilla de empleados
                   </h1>
                   <section className="flex flex-col gap-2 sm:flex sm:flex-row sm:gap-5 sm:w-full">
@@ -128,7 +147,8 @@ function UserProfiles() {
                           onChange={handlerDateFrom}
                           type="date"
                           defaultValue={""}
-                          className="w-full text-center border rounded-md border-black px-2 text-sm sm:w-fit dark:invert"
+                          className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
+                          onKeyDown={(e) => e.preventDefault()}
                         />
                       </div>
                       <div className="flex gap-2">
@@ -140,9 +160,13 @@ function UserProfiles() {
                           onChange={handlerDateTo}
                           type="date"
                           defaultValue={""}
-                          className="w-full text-center border rounded-md border-black px-2 text-sm sm:w-fit dark:invert"
+                          className="w-full text-center border rounded-md border-black px-2  sm:w-fit dark:invert"
+                          onKeyDown={(e) => e.preventDefault()}
                         />
                       </div>
+                      <button onClick={buscarFecha} className="border hover:bg-secondaryColor transition-colors duration-700 border-black px-2 rounded-md flex gap-2 dark:hover:bg-blue-500 dark:border-darkText dark:text-darkText">
+                         Buscar fecha
+                      </button>
                     </div>
                   </section>
                   <section className="flex flex-col items-start sm:w-full">
@@ -155,14 +179,14 @@ function UserProfiles() {
                         }}
                         type="text"
                         placeholder="Buscar por nombre..."
-                        className="w-full border border-black focus:outline-none focus:ring-1 focus:ring-grey px-1 text-sm dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
+                        className="w-full border border-black focus:outline-none focus:ring-1 focus:ring-secondaryColor px-1  dark:bg-darkPrimary dark:placeholder-darkText dark:text-darkText"
                       />
                       <select
                         onChange={(e) => {
                           setOrder(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value="asc"> -- Ordenar por -- </option>
                         <option value="asc">A-Z</option>
@@ -173,7 +197,7 @@ function UserProfiles() {
                           setAttribute(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value="createdAt"> -- Ordenar por -- </option>
                         <option value="name">Nombre</option>
@@ -185,7 +209,7 @@ function UserProfiles() {
                           setBranch(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value=""> -- Seleccionar Sede -- </option>
                         {branches &&
@@ -200,7 +224,7 @@ function UserProfiles() {
                           setSpecialty(e.target.value);
                           setPage(0);
                         }}
-                        className="w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className="w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value="">
                           {" "}
@@ -218,7 +242,7 @@ function UserProfiles() {
                           setRole(e.target.value);
                           setPage(0);
                         }}
-                        className=" w-full border border-black rounded-md text-xs dark:text-darkText dark:bg-darkPrimary"
+                        className=" w-full border border-black rounded-md  dark:text-darkText dark:bg-darkPrimary"
                       >
                         <option value=""> -- Seleccionar Rol --</option>
                         <option value="superAdmin">Super Admin</option>

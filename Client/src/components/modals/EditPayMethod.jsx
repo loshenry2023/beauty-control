@@ -99,7 +99,7 @@ const EditPayMethodModal = ({
       };
 
       const response = await axios.put(
-        `${API_URL_BASE}/payment/${filaPayMethod.id}`,
+        `${API_URL_BASE}/v1/payment/${filaPayMethod.id}`,
         data
       );
 
@@ -148,7 +148,7 @@ const EditPayMethodModal = ({
         <div>
           <div className="w-4/5 mx-auto bg-white shadow rounded-lg p-6 md:w-full dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Modificar método de pago
               </h1>
               <IoClose
@@ -159,7 +159,7 @@ const EditPayMethodModal = ({
             <form onSubmit={handleSubmit}>
               <div className=" mb-2">
                 <div>
-                  <label className="pl-1 text-sm font-bold dark:text-darkText">
+                  <label className="pl-1  font-bold dark:text-darkText">
                     Nombre
                   </label>
                   <input
@@ -175,7 +175,7 @@ const EditPayMethodModal = ({
                   {Object.keys(errors).map(
                     (key) =>
                       errors[key] && (
-                        <p key={key} className="text-xs text-red-500">
+                        <p key={key} className=" text-red-500">
                           {errors[key]}
                         </p>
                       )
@@ -188,7 +188,7 @@ const EditPayMethodModal = ({
                                     <button
                                     type="submit"
                                     disabled={disableSubmit}
-                                    className="mt-2 px-4 py-2 w-fit rounded bg-primaryPink shadow shadow-black text-black hover:bg-blue-600 focus:outline-none transition-colors dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
+                                    className="mt-2 px-4 py-2 w-full rounded bg-primaryPink shadow shadow-black text-black hover:bg-secondaryColor transition-colors duration-700 dark:text-darkText dark:bg-darkPrimary dark:hover:bg-blue-600"
                                 >
                                     Modificar método de pago
                                 </button>:

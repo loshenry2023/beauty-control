@@ -14,26 +14,24 @@ import getParamsEnv from "../functions/getParamsEnv";
 import EditConsumableForm from "./EditConsumableForm";
 const { HISTORYPRICEBASE, EDITPRODUCTBASE } = getParamsEnv();
 
-const ConsumablesTable = ({ products, user, onClose }) => {
+const ConsumablesTable = ({ products, user, onClose, workingBranch, aux, setAux }) => {
   const navigate = useNavigate();
-  const [productsData, setProductsData] = useState(products);
+  const [productData, setProductData] = useState(products);
 
   const [showEditConsumableModal, setEditConsumableModal] = useState(false);
-  const [code, setCode] = useState("");
 
   const handleShowEditModal = (fila) => {
     setEditConsumableModal(true);
-    setCode(fila);
+    setProductData(fila);
   };
 
-  useEffect(() => {}, [productsData]);
 
-  if (products && products.rows && Array.isArray(products.rows)) {
+  if (products && products.products && Array.isArray(products.products)) { 
     return (
       <>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="border border-black w-full text-sm text-left rtl:text-right text-black dark:text-beige dark:border-beige">
-            <thead className="bg-secondaryPink text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-gre">
+          <table className="border border-black w-full  text-left rtl:text-right text-black dark:text-beige dark:border-beige">
+            <thead className="bg-secondaryColor text-black text-left dark:bg-darkPrimary dark:text-darkText dark:border-gre">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Codigo
@@ -62,11 +60,11 @@ const ConsumablesTable = ({ products, user, onClose }) => {
               </tr>
             </thead>
             <tbody>
-              {products.rows.map((fila, index) => (
+              {products && products.products.map((fila, index) => (
                 <tr
                   props={fila}
                   key={index}
-                  className="text-xs hover:bg-gray-200 cursor-pointer dark:hover:bg-gray-200 dark:hover:text-black"
+                  className=" hover:bg-gray-200 cursor-pointer dark:hover:bg-gray-200 dark:hover:text-black"
                 >
                   <td className="px-6 py-4">{fila.productCode}</td>
                   <td className="px-6 py-4">{fila.productName}</td>
@@ -74,26 +72,15 @@ const ConsumablesTable = ({ products, user, onClose }) => {
                   <td className="px-6 py-4">{fila.supplier}</td>
                   <td className="px-6 py-4">{fila.amount}</td>
                   <td className="px-6 py-4">
-                    {fila.Branch && Array.isArray(fila.Branch)
-                      ? fila.Branch.map((branch) => branch.branchName).join(
-                          ", "
-                        )
-                      : fila.Branch && fila.Branch.branchName}
+                    {workingBranch.branchName}
                   </td>
                   {user?.role !== "admin" && (
                     <td className="px-6 py-4">
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        {fila.PriceHistories.length > 0
-                          ? fila.PriceHistories.map((priceHistory, index) => (
-                              <span key={index}>
-                                {priceHistory.price}
-                                {index < fila.PriceHistories.length - 1 && ", "}
-                              </span>
-                            ))
-                          : "No history"}
-                        {user?.role === "superAdmin" && fila.code && (
+                       <span className="mr-3">{Math.floor(fila.price)}</span>
+                        {user?.role === "superAdmin" &&  (
                           <Link
-                            to={`${HISTORYPRICEBASE}/${fila.code}`}
+                            to={`${HISTORYPRICEBASE}/${fila.productCode}`}
                             className="text-blue-500 "
                             style={{ display: "flex", alignItems: "center" }}
                           >
@@ -104,7 +91,7 @@ const ConsumablesTable = ({ products, user, onClose }) => {
                     </td>
                   )}
                   <td className="px-6 py-4">
-                    <FiEdit onClick={() => handleShowEditModal(fila.code)} />
+                    <FiEdit onClick={() => handleShowEditModal(fila)} />
                   </td>
                 </tr>
               ))}
@@ -114,11 +101,11 @@ const ConsumablesTable = ({ products, user, onClose }) => {
 
         {showEditConsumableModal && (
           <EditConsumableForm
-            onClose={onClose}
-            setEditConsumableModal={setEditConsumableModal}
-            code={code}
-            setProductsData={setProductsData}
-            user={user}
+          aux={aux}
+          setAux={setAux}
+          setEditConsumableModal={setEditConsumableModal}
+          productData={productData}
+          user={user}
           />
         )}
       </>

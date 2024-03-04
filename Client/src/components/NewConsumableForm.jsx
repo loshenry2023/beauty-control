@@ -60,7 +60,7 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
 
       try {
         const response = await axios.post(
-          API_URL_BASE + "/products",
+          API_URL_BASE + "/v1/products",
           newConsumable
         );
 
@@ -88,7 +88,7 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
         <div className="container">
           <div className="w-full bg-white shadow rounded-lg p-6 md:mx-auto md:w-1/2 2xl:w-1/3 dark:bg-darkBackground">
             <div className="flex justify-between">
-              <h1 className="text-xl font-semibold mb-4 text-black dark:text-darkText">
+              <h1 className="text-2xl font-semibold mb-4 text-black dark:text-darkText">
                 Agregar nuevo insumo
               </h1>
               <IoClose
@@ -98,7 +98,7 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
             </div>
             <form onSubmit={handleSubmit}>
               <div className="first-letter:grid grid-cols-1 mb-2">
-                <label className="pl-1 text-sm font-bold">Nombre:</label>
+                <label className="pl-1  font-bold">Nombre:</label>
                 <input
                   className={`border p-2 rounded w-full ${errors.productName ? "border-red-500" : "border-black"
                     }`}
@@ -109,11 +109,11 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
                   }
                 />
                 {errors.productName && (
-                  <p className="text-xs text-red-500">{errors.productName}</p>
+                  <p className=" text-red-500">{errors.productName}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold">
+                <label className="pl-1  font-bold">
                   Código del producto:
                 </label>
                 <input
@@ -126,11 +126,11 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
                   }
                 />
                 {errors.productCode && (
-                  <p className="text-xs text-red-500">{errors.productCode}</p>
+                  <p className=" text-red-500">{errors.productCode}</p>
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-2">
-                <label className="pl-1 text-sm font-bold">Descripción:</label>
+                <label className="pl-1  font-bold">Descripción:</label>
                 <input
                   className={`border p-2 rounded w-full ${errors.description ? "border-red-500" : "border-black"
                     }`}
@@ -141,11 +141,11 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
                   }
                 />
                 {errors.description && (
-                  <p className="text-xs text-red-500">{errors.description}</p>
+                  <p className=" text-red-500">{errors.description}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold">Proveedor:</label>
+                <label className="pl-1  font-bold">Proveedor:</label>
                 <input
                   className={`border p-2 rounded w-full ${errors.supplier ? "border-red-500" : "border-black"
                     }`}
@@ -156,11 +156,11 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
                   }
                 />
                 {errors.supplier && (
-                  <p className="text-xs text-red-500">{errors.supplier}</p>
+                  <p className=" text-red-500">{errors.supplier}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold">Cantidad:</label>
+                <label className="pl-1  font-bold">Cantidad:</label>
                 <input
                   className={`border p-2 rounded w-full ${errors.amount ? "border-red-500" : "border-black"
                     }`}
@@ -171,11 +171,11 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
                   }
                 />
                 {errors.amount && (
-                  <p className="text-xs text-red-500">{errors.amount}</p>
+                  <p className=" text-red-500">{errors.amount}</p>
                 )}
               </div>
               <div>
-                <label className="pl-1 text-sm font-bold">Precio:</label>
+                <label className="pl-1  font-bold">Precio:</label>
                 <input
                   className={`border p-2 rounded w-full ${errors.price ? "border-red-500" : "border-black"
                     }`}
@@ -186,7 +186,7 @@ function NewConsumableForm({ onAddConsumable, onCancel }) {
                   }
                 />
                 {errors.price && (
-                  <p className="text-xs text-red-500">{errors.price}</p>
+                  <p className=" text-red-500">{errors.price}</p>
                 )}
               </div>
               <div>
