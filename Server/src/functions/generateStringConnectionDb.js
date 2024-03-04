@@ -13,7 +13,8 @@ function generateStringConnectionDb(databaseName) {
     if (databaseName === "") {
         if (SECURE) {
             // conexión segura (para BD remota):
-            strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}?sslmode=require&dialect=postgres-co`;
+            //strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}?sslmode=require&dialect=postgres-co`; // cadena para Vercel
+            strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}?sslmode=no-verify&dialect=postgres-co`;
         } else {
             // conexión no segura (para BD local):
             strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}`;
@@ -21,7 +22,8 @@ function generateStringConnectionDb(databaseName) {
     } else {
         if (SECURE) {
             // conexión segura (para BD remota):
-            strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${databaseName}?sslmode=require&dialect=postgres-co`;
+            //strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${databaseName}?sslmode=require&dialect=postgres-co`; // cadena para Vercel
+            strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${databaseName}?sslmode=no-verify&dialect=postgres-co`;
         } else {
             // conexión no segura (para BD local):
             strConn = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${databaseName}`;
