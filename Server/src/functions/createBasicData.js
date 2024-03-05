@@ -41,7 +41,9 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                     phoneNumber: branch.phoneNumber,
                     linkFb: branch.linkFb,
                     linkIg: branch.linkIg,
-                    linkTk: branch.linkTk
+                    linkTk: branch.linkTk,
+                    openningHours: branch.openningHours,
+                    clossingHours: branch.clossingHours,
                 },
             });
             branchCrtd = branchCreated;
