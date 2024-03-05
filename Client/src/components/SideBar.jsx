@@ -101,6 +101,7 @@ const SideBar = () => {
       <IconWithTooltip to={CLIENTSPROFILES} iconName="userGroup" tooltipText="Clientes" />
       <IconWithTooltip to={AGENDA} iconName="calendar" tooltipText="Agenda" />
       <IconWithTooltip to={CONSUMABLES} iconName="Consumables" tooltipText="Insumos" />
+      <IconWithTooltip to={SPECIALISTMONITORING} iconName="specialistmonitoring" tooltipText="Seguimiento especialistas" />
       <IconWithTooltip to={CONTROLTABLES} onClick={() => handleIconClick("tableControl")} iconName="tableControl" tooltipText="Control de tablas" />
     </>
   )}

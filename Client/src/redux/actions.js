@@ -227,30 +227,11 @@ export const getUserId = (respuesta) => {
   }
 };
 
-export const deleteUser = (id, token) => {
-  return async function (dispatch) {
-    try {
-      const response = await axios.post(
-        `${API_URL_BASE}/v1/deleteuserdata/${id}`,
-        { token }
-      );
-      return dispatch({
-        type: DELETE_USER,
-        payload: response.data,
-        idDelete: id,
-      });
-    } catch (error) {
-      // Errores 401 y 403 son para quitar al usuario de la sesión:
-      if (error.request.status === 401 || error.request.status === 403) {
-        return dispatch({
-          type: SET_TOKEN_ERROR,
-          payload: error.request.status,
-        });
-      } else {
-        throw Error(error.message);
-      }
-    }
-  };
+export const deleteUser = (id) => {
+  return {
+    type: DELETE_USER,
+    payload: id
+  }
 };
 
 export const setLogout = (token) => {
