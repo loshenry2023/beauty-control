@@ -15,10 +15,15 @@ const putProductHandler = async (req, res) => {
             showLog(checked.mensaje);
             return res.status(checked.code).send(checked.mensaje);
         }
-        if (checked.role !== "superAdmin") {
-            showLog(checked.role !== "superAdmin" ? `Wrong role.` : `Wrong token.`);
+        //        showLog(checked.role);
+        if (checked.role !== "superAdmin" && checked.role !== "admin") {
+            showLog((checked.role !== "superAdmin" && checked.role !== "admin") ? `Wrong role.` : `Wrong token.`);
             return res.status(401).send(`Sin permiso.`);
         }
+
+
+
+
         if (!id) { throw Error("Faltan datos"); }
 
         const { conn, Product, Branch, PriceHistory } = await connectDB(checked.dbName);
