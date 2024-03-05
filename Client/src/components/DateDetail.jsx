@@ -23,6 +23,7 @@ import "./dateDetail.css";
 
 //variabels de entorno
 import getParamsEnv from "../functions/getParamsEnv";
+import { getPayMethods } from "../redux/actions";
 const { API_URL_BASE, AGENDA } = getParamsEnv();
 
 const DateDetail = () => {
@@ -67,30 +68,38 @@ const DateDetail = () => {
   const [aux, setAux] = useState(false);
   const [showPriceConfirmation, setShowPriceConfirmation] = useState();
 
+  let requestMade = false;
   useEffect(() => {
+    if (!requestMade) { 
+      setIsLoading(true);
+      requestMade = true;
+      axios.post(API_URL_BASE + "/v1/payments", { token })
+        .then(respuesta => {
+          dispatch(getPayMethods(respuesta.data)); 
+        })
     if (calendar) {
       const findAppointment = calendar.find(
         (date) => date.id === appointmentId
       );
-      if (findAppointment) {
-        setAppointment(findAppointment);
-        axios.post(API_URL_BASE + `/v1/getclient/${findAppointment.Client.id}`,{token})
-        .then(respuesta => {
-          dispatch(getClientId(respuesta.data));
-          setIsLoading(true);
+    if (findAppointment) {
+      setAppointment(findAppointment);
+      axios.post(API_URL_BASE + `/v1/getclient/${findAppointment.Client.id}`,{token})
+      .then(respuesta => {
+        dispatch(getClientId(respuesta.data));
+        setIsLoading(true);
+      })
+      .catch(error => { 
+          let errorMessage= ""     
+          if (!error.response) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
+          }
+          toast.error(errorMessage);
         })
-        .catch(error => { 
-            let errorMessage= ""     
-            if (!error.response) {
-              errorMessage = error.message;
-            } else {
-              errorMessage = `${error.response.status} ${error.response.statusText} - ${error.response.data.split(":")[1]}`
-            }
-            toast.error(errorMessage);
-          })
-      }
     }
-  }, [dispatch, token, appointmentId, clientId]);
+    }
+  }}, [dispatch, token, appointmentId, clientId]);
 
   const handlePriceChange = (e, priceType) => {
     const updatedPrice = { ...price, [priceType]: e.target.value };
@@ -264,7 +273,7 @@ const DateDetail = () => {
 
 
   return (
-    <div className="flex flex-col mx-auto py-10 overflow-auto">
+    <div className="h-full flex flex-col mx-auto py-10 ">
       <div className="flex flex-row">
         <IoMdArrowRoundBack
           onClick={handleGoBack}

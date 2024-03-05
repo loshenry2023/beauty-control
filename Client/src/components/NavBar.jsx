@@ -123,7 +123,7 @@ const NavBar = () => {
           <img
             src={user.image}
             alt="userPhoto"
-            className="h-10 w-10 shadow-md shadow-black rounded-full"
+            className="h-10 w-10  shadow-md shadow-black rounded-full"
           />
           <span className=" font-medium sm:text-lg">
             {" "}
@@ -131,22 +131,22 @@ const NavBar = () => {
           </span>
         </div>
         <div className="flex gap-4 items-center pointer-events:auto">
-          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className={user.role === "superAdmin" ? "h-6 w-6 cursor-pointer dark:text-black" : "h-6 w-6 cursor-pointer dark:text-darkText" }/> : null}
+          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className={user.role === "superAdmin" ? "h-6 w-6 cursor-pointer text-darkText" : "h-6 w-6 cursor-pointer text-darkText" }/> : null}
           {theme==="light" ?
           <MdDarkMode
             onClick={handleDarkMode}
-            className="h-6 w-6 cursor-pointer"
+            className="h-6 w-6 cursor-pointer text-darkText"
           />
           :
           <MdLightMode
             onClick={handleDarkMode}
-            className="h-6 w-6 cursor-pointer dark:text-yellow-500"
+            className="h-6 w-6 cursor-pointer  dark:text-yellow-500"
           />}
-          <CiBellOn className="relative h-6 w-6 " />
+          <CiBellOn className="relative h-6 w-6 text-darkText" />
           {user.role === "superAdmin" || user.role === "admin" || appointments.count === 0 ? null :
             showRed && <span onClick={() => eraseNotifications()} className=" flex flex-row items-center justify-center font-bold mx-auto my-auto absolute w-4 h-4 top-[40px] right-[76px] rounded-full bg-red-500 cursor-pointer"> {appointments.count}  </span>}
           <Link to={ROOT}>
-            <IoExitOutline className="h-6 w-6 " onClick={handleLogout} />
+            <IoExitOutline className="h-6 w-6 text-darkText " onClick={handleLogout} />
           </Link>
         </div>
       </nav>

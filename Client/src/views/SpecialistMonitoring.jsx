@@ -129,7 +129,6 @@ const SpecialistMonitoring = () => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log(error);
           if (
             error.request.status === 401 ||
             error.request.status === 402 ||
