@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getBranches,
+  getServices,
   getToken,
   getUsers,
   setTokenError,
@@ -123,6 +124,10 @@ const Agenda = () => {
         )})
       .then(respuesta2 => {
         dispatch(getUsers(respuesta2.data))
+        return axios.post(API_URL_BASE + "/v1/getservices", { token: tokenID });
+      })
+      .then(respuesta3 => {
+        dispatch(getServices(respuesta3.data));
         setLoading(false);
         setAuxUser(true)
         requestMade = false;
