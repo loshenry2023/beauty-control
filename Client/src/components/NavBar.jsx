@@ -131,7 +131,7 @@ const NavBar = () => {
           </span>
         </div>
         <div className="flex gap-4 items-center pointer-events:auto">
-          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className={user.role === "superAdmin" ? "h-6 w-6 cursor-pointer text-darkText" : "h-6 w-6 cursor-pointer text-darkText" }/> : null}
+          {user.branches.length > 1 ? <TbStatusChange onClick={changeBranch} className={user.role === "superAdmin" || user.role === "admin" ? "h-6 w-6 cursor-pointer text-darkText" : "h-6 w-6 cursor-pointer " }/> : null}
           {theme==="light" ?
           <MdDarkMode
             onClick={handleDarkMode}
