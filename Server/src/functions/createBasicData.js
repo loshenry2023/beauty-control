@@ -7,7 +7,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
     await conn.sync();
     try {
         // TODO Creo las sedes:
-        const firstBranchName = `${nameCompany}, sede 1 (¡ponle un nombre!)`;
+        const firstBranchName = `Sede 1`;
         const branchesList = [
             {
                 branchName: firstBranchName,
@@ -21,7 +21,7 @@ async function createBasicData(dbName, nameCompany, userName, idUser) {
                 clossingHours: "20:00",
             },
             {
-                branchName: `${nameCompany}, sede 2 (¡ponle un nombre!)`,
+                branchName: `Sede 2`,
                 address: "Carga un domicilio",
                 phoneNumber: "0000000000",
                 coordinates: "¡Carga el link de Google Maps apuntando a tu sucursal!",
