@@ -133,8 +133,6 @@ const LogIn = () => {
             };
 
 
-            //console.log(API_URL_BASE)
-
 
             const retrieveUser = await axios.post(
                 API_URL_BASE + "/v1/userdata",

@@ -181,8 +181,6 @@ const Balance = ({ specialists, services, payMethods }) => {
   }
 
   const buscarFecha = () => {
-    console.log(dateFrom)
-    console.log(dateTo)
     if(dateFrom > dateTo){
       toast.error("La fecha inicial no puede ser mayor a la fecha final");
       return

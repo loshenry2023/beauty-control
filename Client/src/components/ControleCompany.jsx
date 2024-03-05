@@ -173,8 +173,6 @@ const ControlCompany = () => {
   };
 
   const buscarFecha = () => {
-    console.log(dateCreateFrom)
-    console.log(dateCreateTo)
     if(dateCreateFrom > dateCreateTo){
       toast.error("La fecha inicial no puede ser mayor a la fecha final");
       return
