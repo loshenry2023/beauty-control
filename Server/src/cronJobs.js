@@ -35,10 +35,10 @@ async function DailyProcess() {
 }
 
 // ! ATENCIÓN: se debe entregar con el cron corriendo una vez al día.
-//cron.schedule('*/10 * * * * *', () => { // para pruebas de envíos frecuentes
-//cron.schedule('0 * * * *', () => { // una vez x hora
-//cron.schedule('0 9,17 * * *', () => { // a las 9hs y a las 17hs de Colombia
-cron.schedule('0 8 * * *', () => { // una vez al día a las 8hs de Colombia - este es el que debe quedar habilitado !!
+cron.schedule('*/10 * * * * *', () => { // para pruebas de envíos frecuentes
+    //cron.schedule('0 * * * *', () => { // una vez x hora
+    //cron.schedule('0 9,17 * * *', () => { // a las 9hs y a las 17hs de Colombia
+    //cron.schedule('0 8 * * *', () => { // una vez al día a las 8hs de Colombia - este es el que debe quedar habilitado !!
     DailyProcess();
 }, {
     scheduled: true,
