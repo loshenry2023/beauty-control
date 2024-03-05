@@ -20,6 +20,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCalendar, getspecialists, setTokenError } from "../redux/actions";
 import ToasterConfig from "./Toaster";
 
+//functions
+import {tiempoAMinutos, minutosATiempo} from "../functions/tiempoAMinutos";
+
 const { API_URL_BASE, DATEDETAILBASE } = getParamsEnv();
 
 const Calendar = ({
@@ -91,10 +94,40 @@ const Calendar = ({
   };
   const [effectControl, setEffectControl] = useState(false);
 
+  const usingBranch = branches.filter(b => b.branchName == workingBranch.branchName)
+
+const apertura = usingBranch[0].openningHours
+const cierre = usingBranch[0].clossingHours
+
+const aperturaMinutos = tiempoAMinutos(apertura);
+const cierreMinutos = tiempoAMinutos(cierre);
+
+const diferenciaMinutos = cierreMinutos - aperturaMinutos;
+
+const duracionRango = diferenciaMinutos / 3;
+
+let rango1Inicio = aperturaMinutos;
+let rango1Fin = aperturaMinutos + duracionRango;
+let rango2Inicio = rango1Fin;
+let rango2Fin = rango1Fin + duracionRango;
+let rango3Inicio = rango2Fin;
+let rango3Fin = cierreMinutos;
+
+// Redondear los límites de los rangos a la hora más cercana en punto
+rango1Fin = Math.ceil(rango1Fin / 60) * 60;
+rango2Inicio = Math.ceil(rango2Inicio / 60) * 60;
+rango2Fin = Math.ceil(rango2Fin / 60) * 60;
+rango3Inicio = Math.ceil(rango3Inicio / 60) * 60;
+
+// Convertir los límites de los rangos a formato de tiempo
+const rango1 = { hourFrom: minutosATiempo(rango1Inicio), hourTo: minutosATiempo(rango1Fin) };
+const rango2 = { hourFrom: minutosATiempo(rango2Inicio), hourTo: minutosATiempo(rango2Fin) };
+const rango3 = { hourFrom: minutosATiempo(rango3Inicio), hourTo: minutosATiempo(rango3Fin) };
+
   const range = [
-    { hourFrom: "06:00:00", hourTo: "09:59:59" },
-    { hourFrom: "10:00:00", hourTo: "13:59:59" },
-    { hourFrom: "14:00:00", hourTo: "20:00:00" },
+    rango1,
+    rango2,
+    rango3,
   ];
 
   const handleDelete = async () => {
@@ -352,7 +385,7 @@ const Calendar = ({
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
-                6:00 AM - 10:00 AM
+               {`${rango1.hourFrom} a ${rango1.hourTo}`}
               </button>
 
               <button
@@ -391,7 +424,7 @@ const Calendar = ({
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
-                10:00 AM - 2:00 PM
+                {`${rango2.hourFrom} a ${rango2.hourTo}`}
               </button>
 
               <button
@@ -429,7 +462,7 @@ const Calendar = ({
                     : "border border-black px-1 rounded-md dark:text-darkText dark:border dark:border-beige dark:bg-darkPrimary"
                 }
               >
-                2:00 PM - 8:00 PM
+                {`${rango3.hourFrom} a ${rango3.hourTo}`}
               </button>
             </div>
             <div>

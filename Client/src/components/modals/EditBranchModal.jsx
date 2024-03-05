@@ -73,9 +73,9 @@ const EditBranchModal = ({
     newBranch.coordinates !== filaBranch.coordinates ||
     newBranch.openningHours !== filaBranch.openningHours ||
     newBranch.clossingHours !== filaBranch.clossingHours ||
-    newBranch.instagramLink !== filaBranch.instagramLink ||
-    newBranch.facebookLink !== filaBranch.facebookLink ||
-    newBranch.tiktokLink !== filaBranch.tiktokLink;
+    newBranch.linkIg !== filaBranch.linkIg ||
+    newBranch.linkFb !== filaBranch.linkFb ||
+    newBranch.linkTk !== filaBranch.linkTk;
   
     if (!isFormModified) {
       toast.error("Debes modificar al menos un campo para editar la sede");
@@ -94,9 +94,9 @@ const EditBranchModal = ({
         openningHours: newBranch.openningHours,
         clossingHours: newBranch.clossingHours,
         workingDays: newBranch.workingDays,
-        instagramLink: newBranch.instagramLink,
-        facebookLink: newBranch.facebookLink,
-        tiktokLink: newBranch.tiktokLink,
+        linkIg: newBranch.linkIg,
+        linkFb: newBranch.linkFb,
+        linkTk: newBranch.linkTk,
         token: token,
       };
   
@@ -298,7 +298,7 @@ const EditBranchModal = ({
                 <input
                   onChange={handleChange}
                   type="text"
-                  name="linkFB"
+                  name="linkFb"
                   value={newBranch.linkFb}
                   placeholder="Link de Facebook"
                   className={`border border-black p-2 rounded w-full ${
