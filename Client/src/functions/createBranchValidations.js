@@ -4,8 +4,8 @@ function branchValidation(branch) {
     // Validación de nombre
     if (!branch.name) {
         errors.name = "El nombre no puede estar vacío";
-    } else if (branch.name.length > 30) {
-        errors.name = "El nombre no puede tener más de 30 caracteres";
+    } else if (branch.name.length > 50) {
+        errors.name = "El nombre no puede tener más de 50 caracteres";
     }
 
     // Validación de dirección
@@ -27,16 +27,16 @@ function branchValidation(branch) {
 
     // Validación de hora de apertura
     if (!branch.openningHours) {
-        errors.openingHours = "La hora de apertura no puede estar vacía";
+        errors.openningHours = "La hora de apertura no puede estar vacía";
     }
 
     // Validación de hora de cierre
     if (!branch.clossingHours) {
-        errors.closingHours = "La hora de cierre no puede estar vacía";
+        errors.clossingHours = "La hora de cierre no puede estar vacía";
     }
 
     // Validación de enlace de Instagram
-   /*  if (!branch.instagramLink) {
+    /* if (!branch.instagramLink) {
         errors.instagramLink = "El enlace de Instagram no puede estar vacío";
     }
 
@@ -49,7 +49,7 @@ function branchValidation(branch) {
     if (!branch.tiktokLink) {
         errors.tiktokLink = "El enlace de TikTok no puede estar vacío";
     }
- */
+    */
     return errors;
 }
 
