@@ -12,3 +12,4 @@ EMAIL_MAIN = erraticless@gmail.com
 PASSWORD_EMAIL_MAIN = kjpz oxne brrp ytju
 NODEMAILER_HOST = smtp.gmail.com
 NODEMAILER_PORT = 465
+LINK_FRONT = https://beauty-control-front.vercel.app/
