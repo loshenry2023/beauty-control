@@ -233,7 +233,7 @@ const CreateCompanyModal = ({
                                         name="expireAt"
                                         value={company.expireAt}
                                         placeholder="FECHA DE EXPIRACIÓN"
-                                        className={`border border-black p-2 rounded w-full dark:text-darkText dark:bg-darkPrimary`}
+                                        className={`border border-black p-2 rounded w-full  dark:invert`}
                                         onKeyDown={(e) => e.preventDefault()}
                                     />
                                     {errors.expireAt !== "" && (
