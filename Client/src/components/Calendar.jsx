@@ -341,7 +341,7 @@ const rango3 = { hourFrom: minutosATiempo(rango3Inicio), hourTo: minutosATiempo(
               )}
             </div>
           </div>
-          <div className="flex flex-col items-center md:items-start w-72 sm:px-5 overflow-auto sm:w-96 sm:h-96 md:w-[600px]">
+          <div className="flex flex-col w-72 sm:px-5 overflow-auto sm:w-96 sm:h-96 md:w-[600px]">
             {/* // se pued eponer mas con h-full // */}
             <h2 className="text-2xl font-semibold mb-2 dark:text-darkText">
               {capitalizedDate(formatedDate)}
