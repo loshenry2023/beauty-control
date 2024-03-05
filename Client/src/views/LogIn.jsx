@@ -122,8 +122,9 @@ const LogIn = () => {
                 prompt: "select_account",
             });
 
+            //console.log("01");
             const googleUser = await signInWithPopup(auth, googleProvider);
-
+            //console.log("02");
             // Obtengo el token de acceso:
             const accessToken = await googleUser.user.getIdToken();
 
@@ -146,6 +147,8 @@ const LogIn = () => {
             setRole(role);
             dispatch(getToken(accessToken));
         } catch (error) {
+
+            //console.log("NO VA ", error);
             if (error.message.includes("404")) {
                 toast.error(`No estás autorizado. Verifica tus datos y si el error persiste, comunícate con el administrador.`)
             }
