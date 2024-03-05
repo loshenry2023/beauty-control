@@ -15,6 +15,7 @@ const EMAIL_MAIN = process.env.EMAIL_MAIN || "erraticless@gmail.com";
 const PASSWORD_EMAIL_MAIN = process.env.PASSWORD_EMAIL_MAIN || "kjpz oxne brrp ytju";
 const NODEMAILER_HOST = process.env.NODEMAILER_HOST || "smtp.gmail.com";
 const NODEMAILER_PORT = process.env.NODEMAILER_PORT || 465;
+const LINK_FRONT = process.env.LINK_FRONT || "https://beauty-control-front.vercel.app/";
 
 module.exports = {
     DB_USER,
@@ -30,5 +31,6 @@ module.exports = {
     EMAIL_MAIN,
     PASSWORD_EMAIL_MAIN,
     NODEMAILER_HOST,
-    NODEMAILER_PORT
+    NODEMAILER_PORT,
+    LINK_FRONT
 };
