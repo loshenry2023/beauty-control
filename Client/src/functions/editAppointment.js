@@ -24,15 +24,15 @@ const validateEditAppointment = (data) => {
     validationErrors.date = "La fecha es incorrecta. Ingrese formato MM/DD/YYYY"
   }
 
-  if (!data.date_from || !isValidTime(data.date_from)) {
-    validationErrors.date_from = "Selecciona una hora de inicio válida entre las 6:00 am y las 8:00 pm";
-  }
+  // if (!data.date_from || !isValidTime(data.date_from)) {
+  //   validationErrors.date_from = "Selecciona una hora de inicio válida entre las 6:00 am y las 8:00 pm";
+  // }
 
-  if (!data.date_to || !isValidTime(data.date_to)) {
-    validationErrors.date_to = "Selecciona una hora de finalización válida entre las 6:00 am y las 8:00 pm";
-  } else if (data.date_from && data.date_to && data.date_from >= data.date_to) {
-    validationErrors.date_to = "La hora de finalización debe ser posterior a la hora de inicio";
-  }
+  // if (!data.date_to || !isValidTime(data.date_to)) {
+  //   validationErrors.date_to = "Selecciona una hora de finalización válida entre las 6:00 am y las 8:00 pm";
+  // } else if (data.date_from && data.date_to && data.date_from >= data.date_to) {
+  //   validationErrors.date_to = "La hora de finalización debe ser posterior a la hora de inicio";
+  // }
 
   if (!data.idUser) {
     validationErrors.specialist = "Selecciona un especialista"

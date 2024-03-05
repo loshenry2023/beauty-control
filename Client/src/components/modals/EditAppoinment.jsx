@@ -135,14 +135,14 @@ const EditAppointment = ({ setShowEditAppointment, setSpecialty, token, date, se
       error = validateEditAppointment(data)[name];
     } else
 
-      if (name === "date_from" || name === "date_to") {
-        const data = {
-          date_from: name === "date_from" ? value : AppointmentInfo.date_from,
-          date_to: name === "date_to" ? value : AppointmentInfo.date_to,
-        };
+      // if (name === "date_from" || name === "date_to") {
+      //   const data = {
+      //     date_from: name === "date_from" ? value : AppointmentInfo.date_from,
+      //     date_to: name === "date_to" ? value : AppointmentInfo.date_to,
+      //   };
 
-        error = validateEditAppointment(data)[name];
-      }
+      //   error = validateEditAppointment(data)[name];
+      // }
 
     if (name === 'branch') {
       const parsedValue = JSON.parse(value);
