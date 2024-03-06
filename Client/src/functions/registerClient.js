@@ -50,8 +50,8 @@ const validateClientInput = (data) => {
 
   if (!data.id_pers) {
     null
-   } else if (data.id_pers.length > 0 && data.id_pers.length !== 8) {
-      validationErrors.id_pers = "El documento debe tener 8 dígitos";
+   } else if (data.id_pers.length > 0 && data.id_pers.length > 10) {
+      validationErrors.id_pers = "El documento debe tener como máximo 10 dígitos";
     }  
   
   return validationErrors;

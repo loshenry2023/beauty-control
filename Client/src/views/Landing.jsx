@@ -69,10 +69,10 @@ const Landing = () => {
     <section>
       <div
         id="home"
-        className="bg-[url('https://res.cloudinary.com/doyafxwje/image/upload/v1709648160/Landing/photo-1600948836101-f9ffda59d250_hck27t.avif')] bg-cover flex flex-col h-screen lg:py-0"
+        className="bg-[url('https://res.cloudinary.com/doyafxwje/image/upload/v1709648160/Landing/photo-1600948836101-f9ffda59d250_hck27t.avif')] bg-cover flex flex-col h-full md:h-screen lg:py-0"
       >
         <div>
-          <nav className="relative overflow-hidden flex flex-row justify-between items-center">
+          <nav className="relative overflow-hidden flex flex-row justify-between items-center ">
             <img
               src="https://res.cloudinary.com/doyafxwje/image/upload/v1707517244/Logos/beuatycontrol-logo_hlmilv.png"
               alt=""
