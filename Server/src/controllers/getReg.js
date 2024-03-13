@@ -206,6 +206,33 @@ const getReg = async (dataInc) => {
                     order: [["createdAt", "DESC"]],
                 });
                 break;
+            case "Admins":
+                const { branchWorkingAdm } = dataQuery;
+                reg = await tableName.findAll({
+                    include: [
+                        {
+                            model: tableName2, //Branch,
+                            where: { branchName: { [Op.iLike]: `%${branchWorkingAdm}%` } },
+                            as: "Branches",
+                            through: { attributes: [] },
+                            attributes: ["id", "branchName"],
+                        },
+                    ],
+                    where: {
+                        role: `admin`,
+                    },
+                    order: [["lastName", "asc"]],
+                    attributes: [
+                        "id",
+                        "name",
+                        "lastName",
+                        "userName",
+                        "role",
+                        "createdAt",
+                        "comission",
+                    ],
+                });
+                break;
             case "Specialists":
                 const { branchWorking } = dataQuery;
                 reg = await tableName.findAll({
